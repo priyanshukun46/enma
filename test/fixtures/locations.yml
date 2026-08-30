@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  location_type: MyString
+  latitude: 1.5
+  longitude: 1.5
+  population: 1
+  accessibility_score: 1.5
+  district: MyString
+  state: MyString
+
+two:
+  name: MyString
+  location_type: MyString
+  latitude: 1.5
+  longitude: 1.5
+  population: 1
+  accessibility_score: 1.5
+  district: MyString
+  state: MyString

@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  emergency_type: MyString
+  severity: MyString
+  latitude: 1.5
+  longitude: 1.5
+  status: MyString
+
+two:
+  title: MyString
+  emergency_type: MyString
+  severity: MyString
+  latitude: 1.5
+  longitude: 1.5
+  status: MyString
