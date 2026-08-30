@@ -2,11 +2,17 @@ class RoutesController < ApplicationController
   before_action :load_form_options
 
   def index
-    # Handle pre-fill from Emergency Command Center
+    # Handle pre-fill from Emergency Command Center or URL params or default to Guwahati -> Shillong
     if params[:emergency_id].present?
       prefill_from_emergency(params[:emergency_id])
-    elsif params[:origin_id].present? && params[:destination_id].present?
-      process_route_calculation(params[:origin_id], params[:destination_id], params[:vehicle_type])
+    else
+      origin_id = params[:origin_id].presence || Location.find_by(name: "Guwahati")&.id || @locations.first&.id
+      destination_id = params[:destination_id].presence || Location.find_by(name: "Shillong")&.id || @locations.second&.id
+      vehicle_type = params[:vehicle_type].presence || "Truck"
+
+      if origin_id.present? && destination_id.present? && origin_id.to_s != destination_id.to_s
+        process_route_calculation(origin_id, destination_id, vehicle_type)
+      end
     end
 
     respond_to do |format|
@@ -18,7 +24,7 @@ class RoutesController < ApplicationController
   def calculate
     origin_id = params[:origin_id]
     destination_id = params[:destination_id]
-    vehicle_type = params[:vehicle_type]
+    vehicle_type = params[:vehicle_type].presence || "Truck"
 
     if origin_id.blank? || destination_id.blank?
       respond_to do |format|
@@ -113,6 +119,8 @@ class RoutesController < ApplicationController
   end
 
   def save_calculated_routes(orig, dest, vtype, results)
+    return unless results && results[:routes]
+
     results[:routes].each do |type_key, route_data|
       LogisticsRoute.create!(
         origin: orig,

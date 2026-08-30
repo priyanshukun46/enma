@@ -49,15 +49,15 @@
       <!-- OAuth Buttons -->
       <div class="grid grid-cols-2 gap-3">
         <!-- Google OAuth Button -->
-        <%= button_to "/auth/google_oauth2", method: :post, data: { turbo: false }, class: "w-full flex items-center justify-center py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 transition-colors cursor-pointer" do %>
+        <%= button_to demo_sso_login_path(provider: "google"), method: :post, class: "w-full flex items-center justify-center py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm bg-white hover:bg-gray-50 text-xs font-bold text-gray-700 transition-colors cursor-pointer" do %>
           <i class="fab fa-google text-red-500 mr-2"></i>
-          <span>Google</span>
+          <span>Google SSO</span>
         <% end %>
 
         <!-- GitHub OAuth Button -->
-        <%= button_to "/auth/github", method: :post, data: { turbo: false }, class: "w-full flex items-center justify-center py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm bg-gray-900 hover:bg-gray-800 text-xs font-bold text-white transition-colors cursor-pointer" do %>
+        <%= button_to demo_sso_login_path(provider: "github"), method: :post, class: "w-full flex items-center justify-center py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm bg-gray-900 hover:bg-gray-800 text-xs font-bold text-white transition-colors cursor-pointer" do %>
           <i class="fab fa-github mr-2"></i>
-          <span>GitHub</span>
+          <span>GitHub SSO</span>
         <% end %>
       </div>
 

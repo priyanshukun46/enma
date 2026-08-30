@@ -1,274 +1,208 @@
-<div class="space-y-8 max-w-7xl mx-auto pb-16">
+<div class="space-y-6 max-w-7xl mx-auto pb-12"
+     data-controller="route-planner-map"
+     <% if @origin && @destination && @results.present? %>
+       data-route-planner-map-origin-value="<%= @origin.to_json %>"
+       data-route-planner-map-destination-value="<%= @destination.to_json %>"
+       data-route-planner-map-routes-value="<%= @results[:routes].to_json %>"
+       data-route-planner-map-emergencies-value="<%= @results[:active_emergencies].to_json %>"
+       data-route-planner-map-active-route-value="<%= @results[:recommended_route_type] %>"
+     <% end %>>
+
   <!-- Page Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-4">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 gap-2">
     <div>
       <div class="flex items-center space-x-2.5">
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
-          Smart Navigation Engine
+          Google Maps Navigation
         </span>
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Multi-Route Navigation &amp; Recommendation</h2>
       </div>
-      <p class="text-xs text-slate-500 mt-1">Multi-criteria road routing, terrain risk evaluation, and turn-by-turn logistics guidance across North East India.</p>
+      <p class="text-xs text-slate-500 mt-0.5">Turn-by-turn road routing, hazard bypass intelligence, and GPS navigation across the North East.</p>
     </div>
-
-    <% if @active_emergencies_count > 0 %>
-      <div>
-        <%= link_to emergencies_path, class: "inline-flex items-center px-3.5 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl border border-red-200 transition-colors" do %>
-          <i class="fas fa-radiation mr-1.5 animate-pulse"></i>
-          <span><%= @active_emergencies_count %> Active Emergencies</span>
-        <% end %>
-      </div>
-    <% end %>
   </div>
 
-  <!-- Route Configuration Form -->
-  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-    <div class="border-b border-slate-100 pb-3 mb-5 flex items-center justify-between">
-      <div>
-        <h3 class="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center">
-          <i class="fas fa-route text-indigo-600 mr-2"></i>
-          Configure Logistics Mission
-        </h3>
-        <p class="text-xs text-slate-500 mt-0.5">Select dispatch origin, destination settlement, and vehicle profile to evaluate road routes.</p>
-      </div>
-    </div>
-
-    <%= form_with url: calculate_routes_path, method: :post, local: true, class: "space-y-5" do |f| %>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <!-- Origin -->
-        <div>
-          <label for="origin_id" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block mr-1.5"></span>
-            Dispatch Origin
-          </label>
-          <%= select_tag :origin_id,
-                         options_from_collection_for_select(@locations, :id, :name, @origin&.id),
-                         prompt: "-- Select Origin Settlement --",
-                         required: true,
-                         class: "w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-xs font-medium text-slate-900 bg-slate-50/50 hover:bg-white transition-colors" %>
-        </div>
-
-        <!-- Destination -->
-        <div>
-          <label for="destination_id" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center">
-            <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block mr-1.5"></span>
-            Destination
-          </label>
-          <%= select_tag :destination_id,
-                         options_from_collection_for_select(@locations, :id, :name, @destination&.id),
-                         prompt: "-- Select Destination Settlement --",
-                         required: true,
-                         class: "w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-xs font-medium text-slate-900 bg-slate-50/50 hover:bg-white transition-colors" %>
-        </div>
-
-        <!-- Vehicle Profile -->
-        <div>
-          <label for="vehicle_type" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center">
-            <i class="fas fa-truck-moving text-indigo-600 mr-1.5"></i>
-            Vehicle Asset Profile
-          </label>
-          <%= select_tag :vehicle_type,
-                         options_for_select(@vehicle_types, @selected_vehicle),
-                         class: "w-full px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-xs font-medium text-slate-900 bg-slate-50/50 hover:bg-white transition-colors" %>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between pt-2">
-        <span class="text-[11px] text-slate-400 font-medium">OSRM Highway Routing &bull; ENMA AI Multi-Risk Evaluation</span>
-        <%= f.submit "Analyze & Recommend Routes",
-                     class: "px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition-all duration-150 cursor-pointer" %>
-      </div>
-    <% end %>
-  </div>
-
-  <% if @results.present? %>
-    <!-- Analysis Results Section -->
-    <div class="space-y-6"
-         data-controller="route-planner-map"
-         data-route-planner-map-origin-value="<%= @origin.to_json %>"
-         data-route-planner-map-destination-value="<%= @destination.to_json %>"
-         data-route-planner-map-routes-value="<%= @results[:routes].to_json %>"
-         data-route-planner-map-emergencies-value="<%= @results[:active_emergencies].to_json %>"
-         data-route-planner-map-active-route-value="<%= @results[:recommended_route_type] %>">
-
-      <!-- Route Alternatives Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <% @results[:routes].each do |type_key, rdata| %>
-          <% is_rec = rdata[:is_recommended] %>
-          <div data-route-planner-map-target="routeCard"
-               data-action="click->route-planner-map#highlightRoute"
-               data-route-type="<%= type_key %>"
-               class="p-5 rounded-2xl bg-white border <%= is_rec ? 'border-indigo-500 ring-2 ring-indigo-500/30 shadow-md' : 'border-slate-200 hover:border-slate-300 shadow-sm opacity-80' %> transition-all cursor-pointer flex flex-col justify-between space-y-4">
-            
-            <!-- Card Top Header -->
-            <div class="flex items-center justify-between">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border <%= rdata[:badge_class] %>">
-                <i class="fas <%= rdata[:icon] %> mr-1"></i>
-                <%= rdata[:title] %>
-              </span>
-
-              <% if is_rec %>
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 animate-pulse">
-                  ⭐ RECOMMENDED
-                </span>
-              <% end %>
-            </div>
-
-            <!-- Distance & ETA Big Metrics -->
-            <div class="grid grid-cols-2 gap-2 border-y border-slate-100 py-3 text-center">
-              <div>
-                <span class="text-[10px] text-slate-400 font-bold uppercase block">Distance</span>
-                <span class="text-xl font-black text-slate-900"><%= rdata[:distance_km] %> <span class="text-xs font-normal text-slate-500">km</span></span>
-              </div>
-              <div>
-                <span class="text-[10px] text-slate-400 font-bold uppercase block">Est. Time</span>
-                <span class="text-xl font-black text-slate-900"><%= rdata[:estimated_time_formatted] %></span>
-              </div>
-            </div>
-
-            <!-- Risk & Safety Score Bars -->
-            <div class="space-y-2 text-xs">
-              <div class="flex items-center justify-between">
-                <span class="text-slate-600 font-medium">Logistics Risk Score:</span>
-                <span class="font-bold <%= rdata[:risk_score] <= 25 ? 'text-emerald-600' : (rdata[:risk_score] <= 50 ? 'text-amber-600' : 'text-rose-600') %>">
-                  <%= rdata[:risk_score] %> / 100 (<%= rdata[:risk_level] %>)
-                </span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-slate-600 font-medium">Safety Rating:</span>
-                <span class="font-bold text-indigo-600"><%= rdata[:scores][:safety] %> / 100</span>
-              </div>
-            </div>
-
-            <button type="button" class="w-full py-2 bg-slate-50 hover:bg-indigo-50 text-indigo-600 font-bold text-xs rounded-xl border border-slate-200 transition-colors">
-              <span>View Route On Map &rarr;</span>
-            </button>
-          </div>
-        <% end %>
-      </div>
-
-      <!-- Explainable Recommendation Banner ("Why ENMA AI Recommends This Route") -->
-      <% rec = @results[:recommendation] %>
-      <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-xl border border-indigo-900 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-indigo-800 pb-3">
-          <div class="flex items-center space-x-2">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500 text-slate-950 shadow">
-              AI Decision Confidence: <%= rec[:confidence_percentage] %>%
-            </span>
-            <h3 class="text-base font-black text-white">Why ENMA AI Recommends This Route</h3>
-          </div>
-          <span class="text-xs text-indigo-300 font-mono"><%= rec[:vehicle_context] %></span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <!-- Bullet Reasons -->
-          <div class="space-y-2">
-            <span class="text-[10px] font-black uppercase text-indigo-400 tracking-wider block">Decision Factors</span>
-            <ul class="space-y-1.5">
-              <% rec[:reasons].each do |reason| %>
-                <li class="flex items-start space-x-2 text-slate-200">
-                  <i class="fas fa-check-circle text-emerald-400 mt-0.5 flex-shrink-0"></i>
-                  <span><%= reason %></span>
-                </li>
-              <% end %>
-            </ul>
-          </div>
-
-          <!-- Trade-off Analysis -->
-          <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-            <span class="text-[10px] font-black uppercase text-amber-300 tracking-wider block">Strategic Trade-off Analysis</span>
-            <p class="text-slate-300 leading-relaxed"><%= rec[:trade_off] %></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Navigation Map & Interactive HUD -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
-        <!-- Top Map Header -->
-        <div class="p-4 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div class="flex items-center space-x-2">
-            <i class="fas fa-map-marked-alt text-indigo-600"></i>
-            <h4 class="text-xs font-black uppercase text-slate-800 tracking-wider">
-              Interactive Highway Corridors: <%= @origin.name %> &rarr; <%= @destination.name %>
-            </h4>
-          </div>
-
-          <div class="flex items-center space-x-3">
+  <!-- Main Google Maps-Style Dual Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- LEFT COLUMN: Directions Search, Vehicle Mode, Route Options & Turn-by-Turn (lg:col-span-5 xl:col-span-4) -->
+    <div class="lg:col-span-5 xl:col-span-4 space-y-4">
+      
+      <!-- Directions Input Card -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+        
+        <!-- Transportation Mode Tabs -->
+        <div class="flex items-center justify-between bg-slate-100 p-1 rounded-xl text-xs font-bold">
+          <% [
+            ["Truck", "fa-truck-moving", "Truck"],
+            ["Ambulance", "fa-ambulance", "Ambulance"],
+            ["Emergency Vehicle", "fa-shield-alt", "Emergency"],
+            ["Supply Vehicle", "fa-box-open", "Supply"],
+            ["Personal Vehicle", "fa-car", "Personal"]
+          ].each do |v_type, v_icon, v_label| %>
+            <% active = (@selected_vehicle == v_type) %>
             <button type="button"
-                    data-action="click->route-planner-map#startNavigation"
-                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center cursor-pointer">
-              <i class="fas fa-location-arrow mr-1.5 text-xs"></i>
-              <span>Start Navigation Mode</span>
+                    data-action="click->route-planner-map#selectVehicle"
+                    data-vehicle-type="<%= v_type %>"
+                    title="<%= v_type %>"
+                    class="flex-1 py-1.5 px-1 rounded-lg text-center transition-all flex flex-col items-center justify-center space-y-0.5 <%= active ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60' %>">
+              <i class="fas <%= v_icon %> text-xs"></i>
+              <span class="text-[9px] font-black leading-tight"><%= v_label %></span>
             </button>
-          </div>
+          <% end %>
         </div>
 
-        <!-- Live Navigation HUD Overlay (Hidden until Start Navigation is clicked) -->
-        <div data-route-planner-map-target="navHud"
-             class="hidden absolute top-4 left-4 right-4 z-30 max-w-xl mx-auto bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-slate-700 space-y-3">
-          
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <div class="flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span class="text-[10px] font-black uppercase text-indigo-300 tracking-wider">Live Navigation HUD</span>
-            </div>
-            <span data-route-planner-map-target="navStepCounter" class="text-[10px] font-mono text-slate-400">Step 1 of 6</span>
+        <!-- Google Maps Style A & B Search Form -->
+        <%= form_with url: calculate_routes_path, method: :post, local: true, class: "space-y-3", data: { turbo: false } do |f| %>
+          <div class="flex items-center justify-between">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Vehicle Profile</label>
+            <%= select_tag :vehicle_type,
+                           options_for_select(@vehicle_types, @selected_vehicle),
+                           data: { route_planner_map_target: "vehicleInput" },
+                           class: "text-[11px] font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 focus:ring-1 focus:ring-indigo-500 focus:outline-none" %>
           </div>
 
-          <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-xl shadow-md flex-shrink-0">
-              <i data-route-planner-map-target="navManeuverIcon" class="fas fa-arrow-up text-white"></i>
-            </div>
-            <div class="flex-1 min-w-0">
-              <h5 data-route-planner-map-target="navInstruction" class="text-sm font-black text-white truncate">
-                Proceed toward corridor
-              </h5>
-              <div class="flex items-center space-x-3 text-xs text-slate-300 mt-0.5">
-                <span>Next turn in <strong data-route-planner-map-target="navDistance" class="text-emerald-400">1.2 km</strong></span>
+          <div class="relative flex items-center space-x-3">
+            <!-- Left Icon Track Line (Google Maps Style A -> B connector) -->
+            <div class="flex flex-col items-center py-2 self-stretch justify-between">
+              <div class="w-4 h-4 rounded-full border-2 border-emerald-500 bg-white flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+              </div>
+              <div class="w-0.5 flex-1 bg-slate-300 my-1 border-dashed"></div>
+              <div class="w-4 h-4 rounded-full border-2 border-rose-500 bg-white flex items-center justify-center">
+                <div class="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
               </div>
             </div>
-          </div>
 
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
-            <div class="flex items-center space-x-2">
-              <button type="button" data-action="click->route-planner-map#prevNavStep" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              <button type="button" data-action="click->route-planner-map#nextNavStep" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">
-                <i class="fas fa-chevron-right"></i>
-              </button>
+            <!-- Inputs Box -->
+            <div class="flex-1 space-y-2">
+              <!-- Point A -->
+              <div>
+                <%= select_tag :origin_id,
+                               options_from_collection_for_select(@locations, :id, :name, @origin&.id),
+                               prompt: "-- Choose Starting Point (A) --",
+                               required: true,
+                               data: { route_planner_map_target: "originSelect" },
+                               class: "w-full px-3 py-2 text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition-all" %>
+              </div>
+
+              <!-- Point B -->
+              <div>
+                <%= select_tag :destination_id,
+                               options_from_collection_for_select(@locations, :id, :name, @destination&.id),
+                               prompt: "-- Choose Destination (B) --",
+                               required: true,
+                               data: { route_planner_map_target: "destinationSelect" },
+                               class: "w-full px-3 py-2 text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition-all" %>
+              </div>
             </div>
 
-            <button type="button" data-action="click->route-planner-map#exitNavigation" class="px-3 py-1 bg-red-900/80 hover:bg-red-800 text-red-200 rounded-lg font-bold">
-              Exit Navigation
-            </button>
+            <!-- Swap Button (⇅) -->
+            <div>
+              <button type="button"
+                      data-action="click->route-planner-map#swapLocations"
+                      title="Swap Origin & Destination"
+                      class="p-2.5 rounded-full bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-500 border border-slate-200 transition-all hover:scale-110 shadow-sm">
+                <i class="fas fa-arrows-alt-v text-xs"></i>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <!-- The Leaflet Map Canvas -->
-        <div data-route-planner-map-target="container"
-             style="height: 600px; min-height: 500px; width: 100%; display: block;"
-             class="w-full z-10">
-        </div>
+          <!-- Submit Button -->
+          <%= f.submit "Get Directions & Analyze",
+                       class: "w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center space-x-1.5" %>
+        <% end %>
       </div>
 
-      <!-- Turn-by-Turn Instruction Drawer & Strategy Comparison Table Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Turn-by-Turn Steps List -->
-        <div class="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-            <h4 class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center">
-              <i class="fas fa-directions text-indigo-600 mr-2"></i>
-              Turn-by-Turn Guidance
-            </h4>
-            <span class="text-[10px] text-slate-400 font-semibold">Active Track</span>
+      <% if @results.present? %>
+        <!-- Google Maps Style Route Options List -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-[10px] font-black uppercase text-slate-500 tracking-wider">Available Routes</span>
+            <span class="text-[10px] text-slate-400 font-mono">Real-time OSRM &bull; Hazard Scored</span>
           </div>
 
-          <div data-route-planner-map-target="turnList" class="max-h-96 overflow-y-auto divide-y divide-slate-100">
-            <% current_rec_route = @results[:routes][@results[:recommended_route_type]] %>
-            <% if current_rec_route && current_rec_route[:steps].any? %>
-              <% current_rec_route[:steps].each do |st| %>
-                <div class="py-2.5 flex items-start space-x-2.5 text-xs">
+          <% @results[:routes].each do |type_key, rdata| %>
+            <% is_rec = rdata[:is_recommended] %>
+            <div data-route-planner-map-target="routeCard"
+                 data-action="click->route-planner-map#highlightRoute"
+                 data-route-type="<%= type_key %>"
+                 class="p-4 rounded-2xl bg-white border <%= is_rec ? 'border-indigo-600 ring-2 ring-indigo-500/30 shadow-md' : 'border-slate-200 hover:border-slate-300 shadow-sm opacity-80' %> transition-all cursor-pointer space-y-2.5">
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase border <%= rdata[:badge_class] %>">
+                    <i class="fas <%= rdata[:icon] %> mr-1"></i>
+                    <%= rdata[:title] %>
+                  </span>
+                  <span class="text-xs font-bold text-slate-700 truncate max-w-[140px]"><%= rdata[:summary] || rdata[:name] %></span>
+                </div>
+
+                <% if is_rec %>
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    ⭐ Best
+                  </span>
+                <% end %>
+              </div>
+
+              <!-- Time & Distance Primary Row -->
+              <div class="flex items-baseline justify-between">
+                <div class="flex items-baseline space-x-2">
+                  <span class="text-xl font-black text-slate-900"><%= rdata[:estimated_time_formatted] %></span>
+                  <span class="text-xs font-bold text-slate-500">(<%= rdata[:distance_km] %> km)</span>
+                </div>
+
+                <div class="text-right">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-md <%= rdata[:risk_score] <= 25 ? 'bg-emerald-50 text-emerald-700' : (rdata[:risk_score] <= 50 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700') %>">
+                    Risk: <%= rdata[:risk_score] %>/100
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-[11px] text-slate-500">
+                <span>Safety Rating: <strong class="text-indigo-600 font-bold"><%= rdata[:scores][:safety] %>/100</strong></span>
+                <span class="text-indigo-600 font-bold hover:underline">Select &rarr;</span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Explainable Recommendation Card -->
+        <% rec = @results[:recommendation] %>
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950 to-slate-900 text-white shadow-lg border border-indigo-800 space-y-3">
+          <div class="flex items-center justify-between border-b border-indigo-800/80 pb-2">
+            <h3 class="text-xs font-black uppercase text-emerald-400">
+              <i class="fas fa-brain mr-1"></i> Why ENMA AI Recommends This Route (<%= rec[:confidence_percentage] %>% Confidence)
+            </h3>
+            <span class="text-[10px] text-slate-400 font-mono"><%= rec[:vehicle_context] %></span>
+          </div>
+
+          <p class="text-xs text-slate-200 font-medium leading-relaxed"><%= rec[:trade_off] %></p>
+
+          <ul class="space-y-1 text-[11px] text-slate-300">
+            <% rec[:reasons].first(3).each do |reason| %>
+              <li class="flex items-start space-x-1.5">
+                <i class="fas fa-check-circle text-emerald-400 mt-0.5 text-[10px] flex-shrink-0"></i>
+                <span><%= reason %></span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+
+        <!-- Turn-by-Turn Instruction Accordion -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h4 class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center">
+              <i class="fas fa-list-ol text-indigo-600 mr-1.5"></i>
+              Turn-by-Turn Directions
+            </h4>
+            <span class="text-[10px] text-slate-400 font-semibold">Active Corridor</span>
+          </div>
+
+          <div data-route-planner-map-target="turnList" class="max-h-72 overflow-y-auto divide-y divide-slate-100">
+            <% current_rec = @results[:routes][@results[:recommended_route_type]] %>
+            <% if current_rec && current_rec[:steps].any? %>
+              <% current_rec[:steps].each do |st| %>
+                <div class="py-2 flex items-start space-x-2.5 text-xs">
                   <div class="w-5 h-5 rounded-full bg-indigo-50 text-indigo-700 font-bold flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">
                     <%= st[:step_number] %>
                   </div>
@@ -279,117 +213,119 @@
                 </div>
               <% end %>
             <% else %>
-              <p class="text-xs text-slate-500 p-3 text-center">Standard highway corridor route active.</p>
+              <p class="text-xs text-slate-500 p-3 text-center">Highway corridor active.</p>
             <% end %>
           </div>
         </div>
+      <% end %>
+    </div>
 
-        <!-- Strategy Benchmark Table -->
-        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="p-5 border-b border-slate-100 bg-slate-50">
-            <h4 class="text-xs font-black uppercase text-slate-900 tracking-wider">
-              Multi-Criteria Route Strategy Comparison
-            </h4>
-            <p class="text-xs text-slate-500 mt-0.5">Benchmark comparing transit time, safety index, and accessibility ratings.</p>
+    <!-- RIGHT COLUMN: Interactive Leaflet Map & Full-Screen Navigation HUD (lg:col-span-7 xl:col-span-8) -->
+    <div class="lg:col-span-7 xl:col-span-8 space-y-4">
+      
+      <!-- The Map Card with Floating Navigation HUD -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
+        
+        <!-- Map Top Bar Controls -->
+        <div class="p-3.5 border-b border-slate-200 bg-slate-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-map-marked-alt text-indigo-600"></i>
+            <span class="text-xs font-black uppercase text-slate-800 tracking-wider">
+              <% if @origin && @destination %>
+                <%= @origin.name %> &rarr; <%= @destination.name %> Corridor
+              <% else %>
+                North East Highway Corridor Navigation
+              <% end %>
+            </span>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
-              <thead class="bg-slate-50 font-bold text-slate-600 uppercase tracking-wider">
-                <tr>
-                  <th class="px-5 py-3">Metric Dimension</th>
-                  <th class="px-5 py-3 text-blue-600">⚡ Fastest Route</th>
-                  <th class="px-5 py-3 text-emerald-600">🛡 Safest Route</th>
-                  <th class="px-5 py-3 text-amber-600">⚖ Efficient Route</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200 bg-white font-medium text-slate-700">
-                <% f = @results[:routes][:fastest]; s = @results[:routes][:safest]; e = @results[:routes][:efficient] %>
-                <tr>
-                  <td class="px-5 py-3 font-bold text-slate-900">Total Distance</td>
-                  <td class="px-5 py-3 font-mono font-bold text-blue-600"><%= f[:distance_km] %> km</td>
-                  <td class="px-5 py-3 font-mono font-bold text-emerald-600"><%= s[:distance_km] %> km</td>
-                  <td class="px-5 py-3 font-mono font-bold text-amber-600"><%= e[:distance_km] %> km</td>
-                </tr>
-                <tr>
-                  <td class="px-5 py-3 font-bold text-slate-900">Estimated Duration</td>
-                  <td class="px-5 py-3 font-mono font-bold text-blue-600"><%= f[:estimated_time_formatted] %></td>
-                  <td class="px-5 py-3 font-mono font-bold text-emerald-600"><%= s[:estimated_time_formatted] %></td>
-                  <td class="px-5 py-3 font-mono font-bold text-amber-600"><%= e[:estimated_time_formatted] %></td>
-                </tr>
-                <tr>
-                  <td class="px-5 py-3 font-bold text-slate-900">Logistics Risk Score</td>
-                  <td class="px-5 py-3"><span class="px-2 py-0.5 rounded font-bold bg-blue-50 text-blue-800"><%= f[:risk_score] %> / 100</span></td>
-                  <td class="px-5 py-3"><span class="px-2 py-0.5 rounded font-bold bg-emerald-50 text-emerald-800"><%= s[:risk_score] %> / 100</span></td>
-                  <td class="px-5 py-3"><span class="px-2 py-0.5 rounded font-bold bg-amber-50 text-amber-800"><%= e[:risk_score] %> / 100</span></td>
-                </tr>
-                <tr>
-                  <td class="px-5 py-3 font-bold text-slate-900">Safety Rating</td>
-                  <td class="px-5 py-3 font-bold"><%= f[:scores][:safety] %> / 100</td>
-                  <td class="px-5 py-3 font-bold text-emerald-600"><%= s[:scores][:safety] %> / 100</td>
-                  <td class="px-5 py-3 font-bold"><%= e[:scores][:safety] %> / 100</td>
-                </tr>
-                <tr>
-                  <td class="px-5 py-3 font-bold text-slate-900">Overall Intelligence Score</td>
-                  <td class="px-5 py-3 font-black text-blue-700"><%= f[:scores][:overall_intelligence] %> / 100</td>
-                  <td class="px-5 py-3 font-black text-emerald-700"><%= s[:scores][:overall_intelligence] %> / 100</td>
-                  <td class="px-5 py-3 font-black text-amber-700"><%= e[:scores][:overall_intelligence] %> / 100</td>
-                </tr>
-              </tbody>
-            </table>
+          <% if @results.present? %>
+            <div class="flex items-center space-x-2">
+              <button type="button"
+                      data-action="click->route-planner-map#startNavigation"
+                      class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center cursor-pointer">
+                <i class="fas fa-location-arrow mr-1.5 text-xs"></i>
+                <span>Start Navigation</span>
+              </button>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Floating Google Maps-Style Navigation HUD (Active during "Start Navigation") -->
+        <div data-route-planner-map-target="navHud"
+             class="hidden absolute top-4 left-4 right-4 z-30 max-w-lg mx-auto bg-slate-900/95 backdrop-blur-md text-white p-4 rounded-2xl shadow-2xl border border-slate-700 space-y-3">
+          
+          <!-- Top Green Maneuver Bar -->
+          <div class="bg-emerald-600 text-white p-3.5 rounded-xl flex items-center space-x-3.5 shadow-md">
+            <div class="w-10 h-10 rounded-lg bg-emerald-700/80 flex items-center justify-center text-xl shadow flex-shrink-0">
+              <i data-route-planner-map-target="navManeuverIcon" class="fas fa-arrow-up text-white"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h5 data-route-planner-map-target="navInstruction" class="text-sm font-black truncate">
+                Proceed toward corridor
+              </h5>
+              <p class="text-xs text-emerald-100 mt-0.5">In <strong data-route-planner-map-target="navDistance">1.2 km</strong></p>
+            </div>
+            <button type="button" data-action="click->route-planner-map#toggleVoice" data-route-planner-map-target="voiceToggle" title="Toggle Voice Guidance" class="p-2 rounded-lg bg-emerald-700 text-white hover:bg-emerald-800 transition-colors">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+
+          <!-- Bottom Telemetry & Controls -->
+          <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-xs text-slate-300">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span data-route-planner-map-target="navStepCounter" class="font-mono text-[11px] text-slate-400">Step 1</span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <button type="button" data-action="click->route-planner-map#prevNavStep" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button type="button" data-action="click->route-planner-map#nextNavStep" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+            </div>
+
+            <button type="button" data-action="click->route-planner-map#exitNavigation" class="px-3 py-1 bg-red-900/80 hover:bg-red-800 text-red-200 rounded-lg font-bold">
+              Exit
+            </button>
           </div>
         </div>
-      </div>
-    </div>
-  <% end %>
 
-  <!-- Recent Route Analysis History Table -->
-  <% if @recent_routes.any? %>
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="p-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-        <h4 class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center">
-          <i class="fas fa-history text-indigo-600 mr-2"></i>
-          Recent Route Analyses &amp; Missions
-        </h4>
-        <span class="text-[11px] text-slate-500 font-medium">Logged Dispatches</span>
+        <!-- The Leaflet Map Canvas -->
+        <div data-route-planner-map-target="container"
+             style="height: 680px; min-height: 550px; width: 100%; display: block;"
+             class="w-full z-10">
+        </div>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
-          <thead class="bg-slate-50 font-bold text-slate-600 uppercase tracking-wider">
-            <tr>
-              <th class="px-5 py-3">Origin &rarr; Destination</th>
-              <th class="px-5 py-3">Vehicle Profile</th>
-              <th class="px-5 py-3">Strategy</th>
-              <th class="px-5 py-3">Distance / ETA</th>
-              <th class="px-5 py-3">Risk</th>
-              <th class="px-5 py-3 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-200 bg-white font-medium text-slate-700">
-            <% @recent_routes.each do |r| %>
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-5 py-3 font-bold text-slate-900">
-                  <%= r.origin&.name %> &rarr; <%= r.destination&.name %>
-                </td>
-                <td class="px-5 py-3"><%= r.vehicle_type %></td>
-                <td class="px-5 py-3">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase <%= r.recommended ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700' %>">
-                    <%= r.route_type.titleize %>
-                  </span>
-                </td>
-                <td class="px-5 py-3 font-mono"><%= r.distance %> km &bull; <%= (r.estimated_time.to_f).round(1) %> hrs</td>
-                <td class="px-5 py-3 font-bold <%= r.risk_score.to_f <= 30 ? 'text-emerald-600' : 'text-amber-600' %>"><%= r.risk_score %> / 100</td>
-                <td class="px-5 py-3 text-right">
-                  <%= link_to routes_path(origin_id: r.origin_id, destination_id: r.destination_id, vehicle_type: r.vehicle_type), class: "text-xs font-bold text-indigo-600 hover:text-indigo-800" do %>
-                    <span>Reopen &rarr;</span>
-                  <% end %>
-                </td>
-              </tr>
+      <!-- Recent Routes Bar -->
+      <% if @recent_routes.any? %>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+          <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2">
+            <span class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center">
+              <i class="fas fa-history text-indigo-600 mr-1.5"></i> Recent Dispatches
+            </span>
+            <span class="text-[10px] text-slate-400 font-medium">Quick Reload</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2.5">
+            <% @recent_routes.first(4).each do |r| %>
+              <%= link_to routes_path(origin_id: r.origin_id, destination_id: r.destination_id, vehicle_type: r.vehicle_type), class: "p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-100 hover:border-indigo-200 transition-all text-xs block group" do %>
+                <div class="flex items-center justify-between">
+                  <strong class="text-slate-900 group-hover:text-indigo-600 truncate"><%= r.origin&.name %> &rarr; <%= r.destination&.name %></strong>
+                  <span class="text-[10px] font-black uppercase <%= r.recommended ? 'text-emerald-600' : 'text-slate-400' %>"><%= r.route_type %></span>
+                </div>
+                <div class="flex items-center justify-between text-[10px] text-slate-500 mt-1">
+                  <span><%= r.vehicle_type %></span>
+                  <span><%= r.distance %> km</span>
+                </div>
+              <% end %>
             <% end %>
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

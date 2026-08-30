@@ -29,10 +29,14 @@ Rails.application.routes.draw do
   match "auth/:provider/callback", to: "omniauth_callbacks#callback", via: [:get, :post], as: :omniauth_callback
   get "auth/failure", to: "omniauth_callbacks#failure", as: :omniauth_failure
 
+  post "demo_sso_login", to: "sessions#demo_sso_login", as: :demo_sso_login
+
   # User Profile & Settings
   resource :profile, only: [:show, :update]
   resource :settings, only: [:show] do
     patch :update_password
+    post :connect_sso
+    delete :disconnect_sso
   end
 
   # Password Reset Routes

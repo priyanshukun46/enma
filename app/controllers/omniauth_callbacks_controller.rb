@@ -9,15 +9,27 @@ class OmniauthCallbacksController < ApplicationController
       return redirect_to login_path
     end
 
-    user = User.from_omniauth(auth)
-
-    if user.present?
-      login(user)
-      flash[:notice] = "Signed in successfully with #{user.provider_label}! Welcome, #{user.name}."
-      redirect_to(session.delete(:return_to) || root_path)
+    if current_user.present?
+      # User is already signed in and connecting their third-party account from Settings!
+      current_user.update(
+        provider: auth.provider,
+        uid: auth.uid,
+        avatar_url: current_user.avatar_url.presence || auth.dig("info", "image")
+      )
+      flash[:notice] = "#{auth.provider.titleize} account successfully connected to your ENMA AI profile!"
+      redirect_to settings_path
     else
-      flash[:alert] = "Unable to authenticate with #{auth.provider}. Please ensure your account has a verified email address."
-      redirect_to login_path
+      # Standard OAuth login or registration
+      user = User.from_omniauth(auth)
+
+      if user.present?
+        login(user)
+        flash[:notice] = "Signed in successfully with #{user.provider_label}! Welcome, #{user.name}."
+        redirect_to(session.delete(:return_to) || root_path)
+      else
+        flash[:alert] = "Unable to authenticate with #{auth.provider}. Please ensure your account has a verified email address."
+        redirect_to login_path
+      end
     end
   rescue StandardError => e
     Rails.logger.error("OAuth Authentication Error: #{e.message}\n#{e.backtrace.first(5).join("\n")}")

@@ -12,7 +12,11 @@ export default class extends Controller {
     "navEta",
     "navManeuverIcon",
     "navStepCounter",
-    "turnList"
+    "turnList",
+    "originSelect",
+    "destinationSelect",
+    "vehicleInput",
+    "voiceToggle"
   ]
 
   static values = {
@@ -20,14 +24,16 @@ export default class extends Controller {
     destination: Object,
     routes: Object,
     emergencies: Array,
+    allLocations: Array,
     activeRoute: { type: String, default: "safest" }
   }
 
   connect() {
-    if (!this.hasContainerTarget || !this.hasOriginValue || !this.hasDestinationValue) return
+    if (!this.hasContainerTarget) return
 
     this.currentNavStep = 0
     this.isNavigating = false
+    this.voiceEnabled = true
     this.watchId = null
     this.userLocationMarker = null
     this.userAccuracyCircle = null
@@ -35,7 +41,9 @@ export default class extends Controller {
     this.handleResize = () => { if (this.map) this.map.invalidateSize() }
 
     this.initializeMap()
-    this.renderMapElements()
+    if (this.hasOriginValue && this.hasDestinationValue && this.hasRoutesValue) {
+      this.renderMapElements()
+    }
 
     setTimeout(() => { if (this.map) this.map.invalidateSize() }, 150)
     window.addEventListener("resize", this.handleResize)
@@ -59,21 +67,32 @@ export default class extends Controller {
   }
 
   initializeMap() {
-    const orig = this.originValue
-    const dest = this.destinationValue
-
-    const midLat = (orig.latitude + dest.latitude) / 2.0
-    const midLon = (orig.longitude + dest.longitude) / 2.0
+    const defaultCenter = [26.0, 92.8] // North East India
+    const defaultZoom = 7
 
     this.map = L.map(this.containerTarget, {
       zoomControl: true,
       scrollWheelZoom: true
-    }).setView([midLat, midLon], 7)
+    }).setView(defaultCenter, defaultZoom)
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
+    // Standard OpenStreetMap base layer
+    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map)
+
+    // Topo Terrain layer
+    const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      maxZoom: 17,
+      attribution: '© OpenTopoMap contributors'
+    })
+
+    // Base Maps Layer Controller
+    const baseMaps = {
+      "Google OSM Style": osmLayer,
+      "Topographic Terrain": topoLayer
+    }
+    L.control.layers(baseMaps, null, { position: 'topright' }).addTo(this.map)
 
     this.polylines = {}
     this.routeMarkers = []
@@ -89,9 +108,16 @@ export default class extends Controller {
     const routes = this.routesValue
     const bounds = L.latLngBounds()
 
-    // 1. Origin Marker (Green Pin)
+    // 1. Origin Marker (Google Maps A Style)
     const originIcon = L.divIcon({
-      html: `<div class="flex items-center justify-center w-9 h-9 rounded-full bg-emerald-600 text-white shadow-xl border-2 border-white ring-4 ring-emerald-100 font-bold"><i class="fas fa-play text-xs"></i></div>`,
+      html: `
+        <div class="relative flex items-center justify-center">
+          <div class="w-9 h-9 rounded-full bg-emerald-600 text-white shadow-2xl border-2 border-white ring-4 ring-emerald-200 flex items-center justify-center font-black text-xs">
+            A
+          </div>
+          <span class="absolute -bottom-5 bg-slate-900 text-white text-[10px] font-bold px-1.5 py-0.2 rounded shadow whitespace-nowrap">${orig.name}</span>
+        </div>
+      `,
       className: 'custom-leaflet-icon',
       iconSize: [36, 36],
       iconAnchor: [18, 18],
@@ -101,7 +127,7 @@ export default class extends Controller {
     const origMarker = L.marker([orig.latitude, orig.longitude], { icon: originIcon })
       .bindPopup(`
         <div class="p-2 min-w-[180px]">
-          <span class="text-[10px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Dispatch Origin</span>
+          <span class="text-[10px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Point A (Origin)</span>
           <h4 class="font-black text-base text-gray-900 mt-1">${orig.name}</h4>
           <p class="text-xs text-gray-600">${orig.district}, ${orig.state}</p>
           <p class="text-xs text-gray-500 mt-1">Accessibility: <strong>${orig.accessibility_score}/100</strong></p>
@@ -112,9 +138,16 @@ export default class extends Controller {
     bounds.extend([orig.latitude, orig.longitude])
     this.routeMarkers.push(origMarker)
 
-    // 2. Destination Marker (Flag Pin)
+    // 2. Destination Marker (Google Maps B Style)
     const destIcon = L.divIcon({
-      html: `<div class="flex items-center justify-center w-9 h-9 rounded-full bg-rose-600 text-white shadow-xl border-2 border-white ring-4 ring-rose-100 font-bold"><i class="fas fa-flag-checkered text-xs"></i></div>`,
+      html: `
+        <div class="relative flex items-center justify-center">
+          <div class="w-9 h-9 rounded-full bg-rose-600 text-white shadow-2xl border-2 border-white ring-4 ring-rose-200 flex items-center justify-center font-black text-xs">
+            B
+          </div>
+          <span class="absolute -bottom-5 bg-slate-900 text-white text-[10px] font-bold px-1.5 py-0.2 rounded shadow whitespace-nowrap">${dest.name}</span>
+        </div>
+      `,
       className: 'custom-leaflet-icon',
       iconSize: [36, 36],
       iconAnchor: [18, 18],
@@ -124,7 +157,7 @@ export default class extends Controller {
     const destMarker = L.marker([dest.latitude, dest.longitude], { icon: destIcon })
       .bindPopup(`
         <div class="p-2 min-w-[180px]">
-          <span class="text-[10px] font-black uppercase text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Destination</span>
+          <span class="text-[10px] font-black uppercase text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Point B (Destination)</span>
           <h4 class="font-black text-base text-gray-900 mt-1">${dest.name}</h4>
           <p class="text-xs text-gray-600">${dest.district}, ${dest.state}</p>
           <p class="text-xs text-gray-500 mt-1">Accessibility: <strong>${dest.accessibility_score}/100</strong></p>
@@ -140,7 +173,6 @@ export default class extends Controller {
       this.emergenciesValue.forEach(em => {
         const radiusMeters = (em.affected_radius || 30.0) * 1000.0
 
-        // Hazard circle buffer
         const buffer = L.circle([em.latitude, em.longitude], {
           radius: radiusMeters,
           color: '#ef4444',
@@ -151,7 +183,6 @@ export default class extends Controller {
         }).bindPopup(`<strong>Hazard Buffer:</strong> ${em.title} (${em.affected_radius} km)`)
         this.layerGroups.hazardBuffers.addLayer(buffer)
 
-        // Hazard Pin
         const hazardIcon = L.divIcon({
           html: `<div class="flex items-center justify-center w-7 h-7 rounded-full bg-red-600 text-white shadow-lg border border-white text-xs animate-bounce"><i class="fas fa-exclamation-triangle text-[10px]"></i></div>`,
           className: 'custom-leaflet-icon',
@@ -169,7 +200,7 @@ export default class extends Controller {
     if (routes) {
       const config = {
         fastest:   { color: '#2563eb', weight: 6, zIndex: 400, label: 'Fastest' },
-        safest:    { color: '#059669', weight: 7, zIndex: 450, label: 'Safest' },
+        safest:    { color: '#059669', weight: 8, zIndex: 500, label: 'Safest' },
         efficient: { color: '#d97706', weight: 6, zIndex: 400, label: 'Efficient' }
       }
 
@@ -184,8 +215,8 @@ export default class extends Controller {
 
           const polyline = L.polyline(coords, {
             color: cfg.color,
-            weight: isActive ? 7 : 4,
-            opacity: isActive ? 0.95 : 0.40,
+            weight: isActive ? 8 : 4,
+            opacity: isActive ? 0.95 : 0.35,
             dashArray: isActive ? null : '6, 6',
             smoothFactor: 1.2
           }).bindPopup(`
@@ -196,12 +227,11 @@ export default class extends Controller {
                 <p><strong>Distance:</strong> ${rData.distance_km} km</p>
                 <p><strong>Est. Time:</strong> ${rData.estimated_time_formatted}</p>
                 <p><strong>Risk Score:</strong> ${rData.risk_score}/100 (${rData.risk_level})</p>
-                <p><strong>Safety Rating:</strong> ${rData.scores?.safety || 85}/100</p>
+                <p><strong>Safety Score:</strong> ${rData.scores?.safety || 85}/100</p>
               </div>
             </div>
           `).addTo(this.map)
 
-          // Clicking route selects it
           polyline.on('click', () => {
             this.selectRoute(typeKey)
           })
@@ -211,41 +241,59 @@ export default class extends Controller {
       })
     }
 
-    // Zoom and pan to fit all elements
-    this.map.fitBounds(bounds, { padding: [40, 40] })
+    this.map.fitBounds(bounds, { padding: [50, 50] })
   }
 
-  // Handle switching active route (from card click or polyline click)
+  // Swap Point A and Point B
+  swapLocations() {
+    if (!this.hasOriginSelectTarget || !this.hasDestinationSelectTarget) return
+    const origVal = this.originSelectTarget.value
+    const destVal = this.destinationSelectTarget.value
+
+    this.originSelectTarget.value = destVal
+    this.destinationSelectTarget.value = origVal
+
+    // Automatically submit form
+    this.originSelectTarget.form.submit()
+  }
+
+  // Switch Vehicle Mode Tab
+  selectVehicle(event) {
+    const vtype = event.currentTarget.dataset.vehicleType
+    if (this.hasVehicleInputTarget) {
+      this.vehicleInputTarget.value = vtype
+      this.vehicleInputTarget.form.submit()
+    }
+  }
+
+  // Switch Active Route
   selectRoute(typeKey) {
     if (!this.polylines || !this.polylines[typeKey]) return
 
     this.activeRouteValue = typeKey
 
-    // Update polylines styling
     Object.entries(this.polylines).forEach(([key, poly]) => {
       if (key === typeKey) {
-        poly.setStyle({ weight: 8, opacity: 1.0, dashArray: null })
+        poly.setStyle({ weight: 9, opacity: 1.0, dashArray: null })
         poly.bringToFront()
       } else {
-        poly.setStyle({ weight: 4, opacity: 0.35, dashArray: '6, 6' })
+        poly.setStyle({ weight: 4, opacity: 0.30, dashArray: '6, 6' })
       }
     })
 
-    // Update UI Route Cards
     if (this.hasRouteCardTargets) {
       this.routeCardTargets.forEach(card => {
         const isMatch = card.dataset.routeType === typeKey
         if (isMatch) {
-          card.classList.add("ring-2", "ring-indigo-600", "bg-indigo-50/40", "shadow-md")
+          card.classList.add("ring-2", "ring-indigo-600", "bg-indigo-50/50", "shadow-md")
           card.classList.remove("opacity-70")
         } else {
-          card.classList.remove("ring-2", "ring-indigo-600", "bg-indigo-50/40", "shadow-md")
+          card.classList.remove("ring-2", "ring-indigo-600", "bg-indigo-50/50", "shadow-md")
           card.classList.add("opacity-70")
         }
       })
     }
 
-    // Refresh Turn-by-Turn step list if present
     this.renderTurnListFor(typeKey)
   }
 
@@ -255,7 +303,7 @@ export default class extends Controller {
   }
 
   // =========================================================================
-  // Turn-by-Turn Navigation Mode
+  // Google Maps Style Turn-by-Turn Navigation Mode
   // =========================================================================
   startNavigation() {
     this.isNavigating = true
@@ -265,10 +313,7 @@ export default class extends Controller {
       this.navHudTarget.classList.remove("hidden")
     }
 
-    // Render active route steps
     this.renderCurrentNavStep()
-
-    // Request browser geolocation
     this.startGeolocation()
   }
 
@@ -280,9 +325,8 @@ export default class extends Controller {
       this.navHudTarget.classList.add("hidden")
     }
 
-    // Reset view to entire route bounds
     if (this.polylines[this.activeRouteValue]) {
-      this.map.fitBounds(this.polylines[this.activeRouteValue].getBounds(), { padding: [40, 40] })
+      this.map.fitBounds(this.polylines[this.activeRouteValue].getBounds(), { padding: [50, 50] })
     }
   }
 
@@ -308,7 +352,7 @@ export default class extends Controller {
     
     if (steps.length === 0) {
       if (this.hasNavInstructionTarget) {
-        this.navInstructionTarget.textContent = "Follow the highlighted corridor toward your destination."
+        this.navInstructionTarget.textContent = "Proceed along the highlighted corridor."
       }
       return
     }
@@ -331,9 +375,23 @@ export default class extends Controller {
       this.navManeuverIconTarget.className = this.getManeuverIconClass(step.maneuver_type, step.modifier)
     }
 
-    // Pan map to step location
+    // Voice announcement (Text to Speech if supported)
+    if (this.voiceEnabled && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel()
+      const utterance = new SpeechSynthesisUtterance(step.instruction)
+      utterance.rate = 1.0
+      window.speechSynthesis.speak(utterance)
+    }
+
     if (step.location && this.map) {
       this.map.setView(step.location, 14, { animate: true })
+    }
+  }
+
+  toggleVoice() {
+    this.voiceEnabled = !this.voiceEnabled
+    if (this.hasVoiceToggleTarget) {
+      this.voiceToggleTarget.innerHTML = this.voiceEnabled ? `<i class="fas fa-volume-up"></i>` : `<i class="fas fa-volume-mute"></i>`
     }
   }
 
@@ -343,7 +401,7 @@ export default class extends Controller {
     const steps = route?.steps || []
 
     if (steps.length === 0) {
-      this.turnListTarget.innerHTML = `<p class="text-xs text-gray-500 p-4 text-center">Standard arterial route instructions active.</p>`
+      this.turnListTarget.innerHTML = `<p class="text-xs text-gray-500 p-4 text-center">Standard highway corridor route active.</p>`
       return
     }
 
@@ -363,27 +421,24 @@ export default class extends Controller {
   }
 
   getManeuverIconClass(type, modifier) {
-    if (type === "arrive") return "fas fa-flag-checkered text-rose-600"
-    if (type === "depart") return "fas fa-play text-emerald-600"
-    if (modifier && modifier.includes("left")) return "fas fa-arrow-left text-indigo-600"
-    if (modifier && modifier.includes("right")) return "fas fa-arrow-right text-indigo-600"
-    if (modifier && modifier.includes("slight left")) return "fas fa-arrow-up-left text-indigo-600"
-    if (modifier && modifier.includes("slight right")) return "fas fa-arrow-up-right text-indigo-600"
-    return "fas fa-arrow-up text-indigo-600"
+    if (type === "arrive") return "fas fa-flag-checkered text-rose-500"
+    if (type === "depart") return "fas fa-play text-emerald-400"
+    if (modifier && modifier.includes("left")) return "fas fa-arrow-left text-white"
+    if (modifier && modifier.includes("right")) return "fas fa-arrow-right text-white"
+    if (modifier && modifier.includes("slight left")) return "fas fa-arrow-up-left text-white"
+    if (modifier && modifier.includes("slight right")) return "fas fa-arrow-up-right text-white"
+    return "fas fa-arrow-up text-white"
   }
 
   // =========================================================================
   // Geolocation Follow Marker
   // =========================================================================
   startGeolocation() {
-    if (!("geolocation" in navigator)) {
-      console.log("Geolocation not supported by this browser.")
-      return
-    }
+    if (!("geolocation" in navigator)) return
 
     const options = {
       enableHighAccuracy: true,
-      maximumAge: 5000,
+      maximumAge: 4000,
       timeout: 10000
     }
 
@@ -396,7 +451,7 @@ export default class extends Controller {
         this.updateUserLocationOnMap(lat, lon, accuracy)
       },
       (error) => {
-        console.log("Geolocation access notice:", error.message)
+        console.log("Geolocation info:", error.message)
       },
       options
     )
@@ -426,7 +481,6 @@ export default class extends Controller {
       this.userAccuracyCircle.setLatLng([lat, lon]).setRadius(accuracy)
     }
 
-    // In navigation mode, center gently on user
     if (this.isNavigating) {
       this.map.panTo([lat, lon], { animate: true })
     }
