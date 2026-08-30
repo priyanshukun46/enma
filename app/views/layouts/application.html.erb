@@ -10,86 +10,248 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
+    <style>
+      .leaflet-container {
+        font-family: inherit !important;
+      }
+      .custom-leaflet-icon {
+        background: transparent !important;
+        border: none !important;
+      }
+    </style>
   </head>
 
-  <body class="flex h-screen bg-gray-100 font-sans">
-    <!-- Left Sidebar Navigation -->
-    <aside class="w-64 bg-gray-800 text-white flex flex-col">
-      <div class="p-4 border-b border-gray-700">
-        <div class="flex items-center space-x-2">
-          <span class="text-2xl">⚡</span>
-          <h1 class="text-2xl font-bold tracking-tight text-white">ENMA AI</h1>
-        </div>
-        <p class="text-xs text-gray-400 mt-1">Smart Logistics &amp; Accessibility Intelligence</p>
+  <body class="flex h-screen bg-slate-100 font-sans text-slate-900 antialiased selection:bg-indigo-500 selection:text-white overflow-hidden"
+        data-controller="sidebar">
+
+    <!-- Mobile Drawer Backdrop Overlay -->
+    <div data-sidebar-target="backdrop"
+         data-action="click->sidebar#close"
+         class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- Left Sidebar Navigation (Desktop Static / Mobile Slide-Over Drawer) -->
+    <aside data-sidebar-target="sidebar"
+           class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col flex-shrink-0 border-r border-slate-800 shadow-2xl transform -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out">
+      
+      <!-- Brand Header -->
+      <div class="p-5 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
+        <%= link_to root_path, class: "flex items-center space-x-2.5 group" do %>
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+            <span class="text-xl">⚡</span>
+          </div>
+          <div>
+            <h1 class="text-lg font-black tracking-tight text-white group-hover:text-indigo-300 transition-colors">ENMA AI</h1>
+            <p class="text-[10px] text-slate-400 font-medium">Logistics Intelligence</p>
+          </div>
+        <% end %>
+
+        <!-- Close Button (Mobile Only) -->
+        <button type="button"
+                data-action="click->sidebar#close"
+                class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+          <i class="fas fa-times text-base"></i>
+        </button>
       </div>
-      <nav class="flex-1 p-4 space-y-1.5">
-        <%= link_to root_path, class: "flex items-center space-x-2.5 py-2.5 px-4 rounded-lg #{current_page?(root_path) ? 'bg-blue-600 text-white font-medium shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} transition-colors duration-150" do %>
-          <span>🏠</span>
+      
+      <!-- Nav Links -->
+      <nav class="flex-1 p-3.5 space-y-1 overflow-y-auto">
+        <div class="pb-1 px-3">
+          <span class="text-[10px] font-black uppercase text-slate-500 tracking-wider">Operational Core</span>
+        </div>
+
+        <%= link_to root_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(root_path) ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">🏠</span>
           <span>Dashboard</span>
         <% end %>
 
-        <%= link_to locations_path, class: "flex items-center space-x-2.5 py-2.5 px-4 rounded-lg #{current_page?(locations_path) ? 'bg-blue-600 text-white font-medium shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} transition-colors duration-150" do %>
-          <span>📍</span>
+        <%= link_to locations_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(locations_path) ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">📍</span>
           <span>Locations</span>
         <% end %>
 
-        <%= link_to map_path, class: "flex items-center space-x-2.5 py-2.5 px-4 rounded-lg #{current_page?(map_path) ? 'bg-blue-600 text-white font-medium shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} transition-colors duration-150" do %>
-          <span>🗺</span>
+        <%= link_to map_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(map_path) ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">🗺</span>
           <span>GIS Map</span>
         <% end %>
 
-        <%= link_to accessibility_path, class: "flex items-center space-x-2.5 py-2.5 px-4 rounded-lg #{request.path.start_with?('/accessibility') ? 'bg-blue-600 text-white font-medium shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} transition-colors duration-150" do %>
-          <span>⚡</span>
+        <%= link_to accessibility_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{request.path.start_with?('/accessibility') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">⚡</span>
           <span>Accessibility Engine</span>
         <% end %>
 
-        <%= link_to routes_path, class: "flex items-center space-x-2.5 py-2.5 px-4 rounded-lg #{request.path.start_with?('/routes') ? 'bg-blue-600 text-white font-medium shadow-sm' : 'text-gray-300 hover:bg-gray-700 hover:text-white'} transition-colors duration-150" do %>
-          <span>🚚</span>
+        <%= link_to routes_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{request.path.start_with?('/routes') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">🚚</span>
           <span>Smart Route Planner</span>
         <% end %>
 
-        <button type="button" disabled class="w-full flex items-center space-x-2.5 py-2.5 px-4 rounded-lg text-gray-500 cursor-not-allowed">
-          <span>🚨</span>
-          <span>Emergencies (Coming Soon)</span>
-        </button>
+        <%= link_to emergencies_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{request.path.start_with?('/emergencies') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">🚨</span>
+          <span>Disaster Response</span>
+        <% end %>
 
-        <button type="button" disabled class="w-full flex items-center space-x-2.5 py-2.5 px-4 rounded-lg text-gray-500 cursor-not-allowed">
-          <span>📊</span>
-          <span>Analytics (Coming Soon)</span>
-        </button>
+        <%= link_to analytics_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{request.path.start_with?('/analytics') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">📊</span>
+          <span>Analytics Center</span>
+        <% end %>
+
+        <!-- SIH Showcase Group -->
+        <div class="pt-3 pb-1 px-3">
+          <span class="text-[10px] font-black uppercase text-slate-500 tracking-wider">SIH 2026 Presentation</span>
+        </div>
+
+        <%= link_to landing_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(landing_path) ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">🌐</span>
+          <span>Landing Page</span>
+        <% end %>
+
+        <%= link_to demo_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(demo_path) ? 'bg-amber-500 text-slate-950 font-black shadow-md' : 'text-amber-400 hover:bg-slate-800 hover:text-amber-300'} transition-all" do %>
+          <span class="text-sm">⚡</span>
+          <span>Interactive Demo</span>
+        <% end %>
+
+        <%= link_to overview_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(overview_path) ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">⏱</span>
+          <span>2-Min Overview</span>
+        <% end %>
+
+        <%= link_to architecture_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(architecture_path) ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">📐</span>
+          <span>Architecture</span>
+        <% end %>
+
+        <%= link_to about_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{current_page?(about_path) ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'} transition-all" do %>
+          <span class="text-sm">ℹ️</span>
+          <span>About</span>
+        <% end %>
+
+        <% if authenticated? && current_user.admin? %>
+          <div class="pt-3 pb-1 px-3">
+            <span class="text-[10px] font-black uppercase text-purple-400 tracking-wider">Administration</span>
+          </div>
+
+          <%= link_to admin_users_path, class: "flex items-center space-x-2.5 py-2 px-3 rounded-xl text-xs font-bold #{request.path.start_with?('/admin') ? 'bg-purple-600 text-white shadow-md' : 'text-purple-300 hover:bg-slate-800 hover:text-purple-200'} transition-all" do %>
+            <span class="text-sm">👥</span>
+            <span>User Admin</span>
+          <% end %>
+        <% end %>
       </nav>
-      <div class="p-4 border-t border-gray-700 text-xs text-gray-400 text-center">
-        Smart India Hackathon 2026
+
+      <!-- Sidebar Footer User Card -->
+      <div class="p-3.5 border-t border-slate-800 bg-slate-950/70">
+        <% if authenticated? %>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5 min-w-0">
+              <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold flex items-center justify-center text-xs flex-shrink-0 shadow">
+                <% if current_user.avatar_url.present? %>
+                  <img src="<%= current_user.avatar_url %>" alt="" class="w-full h-full object-cover rounded-lg">
+                <% else %>
+                  <span><%= current_user.initials %></span>
+                <% end %>
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-white truncate"><%= current_user.name %></p>
+                <span class="text-[9px] font-black uppercase px-1.5 py-0.2 rounded <%= current_user.admin? ? 'bg-purple-900/80 text-purple-200 border border-purple-700/50' : 'bg-blue-900/80 text-blue-200 border border-blue-700/50' %>">
+                  <%= current_user.role %>
+                </span>
+              </div>
+            </div>
+            <%= link_to profile_path, title: "Profile", class: "text-slate-400 hover:text-white p-1 rounded hover:bg-slate-800 transition-colors" do %>
+              <i class="fas fa-user-circle text-sm"></i>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center">
+            <span class="text-[11px] text-slate-400 block mb-1.5">Guest Observer</span>
+            <%= link_to "Sign In", login_path, class: "inline-block w-full py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-lg shadow transition-colors" %>
+          </div>
+        <% end %>
       </div>
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
       <!-- Top Navigation Bar -->
-      <header class="flex justify-between items-center p-4 bg-white border-b border-gray-200 shadow-sm">
-        <div class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
-          <span>ENMA AI • North East Logistics Intelligence</span>
-          <span class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-semibold uppercase tracking-wide">Phase 5 Active</span>
+      <header class="flex justify-between items-center px-4 sm:px-6 py-3 bg-white border-b border-slate-200 shadow-sm z-20">
+        <!-- Left: Hamburger (Mobile) + Global Search -->
+        <div class="flex items-center space-x-3 max-w-md w-full">
+          <!-- Mobile Hamburger Toggle -->
+          <button type="button"
+                  data-action="click->sidebar#toggle"
+                  class="md:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors focus:outline-none">
+            <i class="fas fa-bars text-base"></i>
+          </button>
+
+          <!-- Search Form -->
+          <%= form_with url: search_path, method: :get, local: true, class: "relative w-full" do |f| %>
+            <i class="fas fa-search absolute left-3 top-2.5 text-slate-400 text-xs pointer-events-none"></i>
+            <%= f.text_field :q,
+                             placeholder: "Search settlements, relief depots, hazards...",
+                             class: "w-full pl-8 pr-3 py-1.5 text-xs bg-slate-100/80 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none transition-all placeholder:text-slate-400" %>
+          <% end %>
         </div>
-        <div class="flex items-center space-x-3 text-sm text-gray-600">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-          <span>Good Morning, Administrator</span>
+
+        <!-- Right Side: Controls & User Profile -->
+        <div class="flex items-center space-x-3 pl-3">
+          <% if authenticated? %>
+            <!-- User Status Pill -->
+            <div class="flex items-center space-x-2">
+              <span class="hidden sm:inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              
+              <%= link_to profile_path, class: "flex items-center space-x-2 text-xs font-bold text-slate-700 hover:text-indigo-600 transition-colors" do %>
+                <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-sm">
+                  <% if current_user.avatar_url.present? %>
+                    <img src="<%= current_user.avatar_url %>" alt="" class="w-full h-full object-cover rounded-lg">
+                  <% else %>
+                    <span><%= current_user.initials %></span>
+                  <% end %>
+                </div>
+                <span class="hidden sm:inline"><%= current_user.name %></span>
+              <% end %>
+
+              <span class="hidden sm:inline px-2 py-0.5 text-[9px] font-black uppercase rounded-full border <%= current_user.role_badge_class %>">
+                <%= current_user.role %>
+              </span>
+
+              <%= link_to settings_path, title: "Settings", class: "text-slate-400 hover:text-slate-800 p-1.5 rounded-lg hover:bg-slate-100 text-sm transition-colors" do %>
+                <i class="fas fa-cog"></i>
+              <% end %>
+
+              <!-- Clearly Visible DELETE Logout Action -->
+              <%= button_to logout_path, method: :delete, class: "inline-flex items-center px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs border border-red-200 transition-colors cursor-pointer" do %>
+                <i class="fas fa-sign-out-alt mr-1.5 text-xs"></i>
+                <span class="hidden sm:inline">Logout</span>
+              <% end %>
+            </div>
+          <% else %>
+            <!-- Visible Login and Get Started Buttons for Unauthenticated Visitors -->
+            <div class="flex items-center space-x-2">
+              <%= link_to login_path, class: "inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:text-indigo-600 hover:bg-slate-100 transition-colors" do %>
+                <i class="fas fa-sign-in-alt mr-1.5"></i>
+                <span>Sign In</span>
+              <% end %>
+
+              <%= link_to sign_up_path, class: "inline-flex items-center px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow-sm hover:shadow transition-all" do %>
+                <i class="fas fa-user-plus mr-1.5"></i>
+                <span class="hidden sm:inline">Get Started</span>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </header>
 
-      <!-- Page Content -->
-      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
+      <!-- Page Content Area -->
+      <main class="flex-1 overflow-x-hidden overflow-y-auto p-4 sm:p-6 lg:p-8">
         <% if flash[:notice] %>
-          <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl flex items-center shadow-sm">
-            <i class="fas fa-check-circle text-green-600 mr-3 text-lg"></i>
-            <span class="text-sm font-medium"><%= flash[:notice] %></span>
+          <div class="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-3 rounded-2xl flex items-center shadow-sm">
+            <i class="fas fa-check-circle text-emerald-600 mr-3 text-lg"></i>
+            <span class="text-xs font-bold"><%= flash[:notice] %></span>
           </div>
         <% end %>
 
         <% if flash[:alert] %>
-          <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl flex items-center shadow-sm">
+          <div class="mb-6 bg-red-50 border border-red-200 text-red-900 px-4 py-3 rounded-2xl flex items-center shadow-sm">
             <i class="fas fa-exclamation-circle text-red-600 mr-3 text-lg"></i>
-            <span class="text-sm font-medium"><%= flash[:alert] %></span>
+            <span class="text-xs font-bold"><%= flash[:alert] %></span>
           </div>
         <% end %>
 

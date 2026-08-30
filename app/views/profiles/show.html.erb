@@ -1,0 +1,79 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <!-- Header -->
+  <div class="pb-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    <div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight">Operator Profile</h2>
+      <p class="text-xs text-gray-600 mt-0.5">Your official ENMA AI platform identity and security credentials.</p>
+    </div>
+
+    <%= link_to settings_path, class: "inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-3.5 py-2 rounded-xl border border-indigo-200" do %>
+      <i class="fas fa-cog mr-1.5"></i>
+      <span>Security &amp; Account Settings</span>
+    <% end %>
+  </div>
+
+  <!-- Profile Card -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 pb-6 border-b border-gray-100">
+      <!-- Avatar with initials or image -->
+      <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-700 text-white flex items-center justify-center text-3xl font-black shadow-lg flex-shrink-0 overflow-hidden ring-4 ring-indigo-50">
+        <% if @user.avatar_url.present? %>
+          <img src="<%= @user.avatar_url %>" alt="<%= @user.name %>" class="w-full h-full object-cover">
+        <% else %>
+          <span><%= @user.initials %></span>
+        <% end %>
+      </div>
+
+      <div class="space-y-2 flex-1 text-center sm:text-left">
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+          <h3 class="text-2xl font-black text-gray-900"><%= @user.name %></h3>
+          <span class="px-3 py-0.5 rounded-full text-xs font-black uppercase tracking-wider border <%= @user.role_badge_class %>">
+            <%= @user.role.upcase %>
+          </span>
+        </div>
+
+        <p class="text-sm text-gray-600 font-mono"><%= @user.email_address %></p>
+
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs text-gray-500 pt-1">
+          <span><i class="<%= @user.provider_icon %> mr-1.5"></i> Signed in via <%= @user.provider_label %></span>
+          <span>•</span>
+          <span><i class="fas fa-calendar-alt mr-1.5"></i> Member since <%= @user.created_at.strftime("%B %Y") %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="pt-6">
+      <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Edit Profile Details</h4>
+
+      <%= form_with model: @user, url: profile_path, method: :patch, local: true, class: "space-y-4 max-w-xl" do |f| %>
+        <div>
+          <%= f.label :name, "Display Name", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" %>
+          <%= f.text_field :name,
+                           required: true,
+                           class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 bg-gray-50/50 hover:bg-white transition-colors" %>
+        </div>
+
+        <div>
+          <%= f.label :avatar_url, "Avatar Image URL (Optional)", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" %>
+          <%= f.url_field :avatar_url,
+                          placeholder: "https://example.com/avatar.jpg",
+                          class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 bg-gray-50/50 hover:bg-white transition-colors" %>
+        </div>
+
+        <div>
+          <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Assigned Operational Role</span>
+          <div class="px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 flex items-center justify-between">
+            <span><%= @user.role.titleize %></span>
+            <span class="text-xs text-gray-400 font-normal">Managed by System Administrators</span>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <%= f.submit "Save Changes",
+                       class: "px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

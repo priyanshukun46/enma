@@ -1,74 +1,156 @@
-<div class="space-y-6">
-  <h2 class="text-2xl font-bold text-gray-800">Good Morning, Administrator</h2>
-  <p class="text-gray-600">North East India Logistics & Accessibility Intelligence</p>
+<div class="space-y-8 max-w-7xl mx-auto pb-12">
+  <!-- Executive Greeting & Status Banner -->
+  <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+    <div class="space-y-2">
+      <div class="flex items-center space-x-2.5">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="text-xs font-black uppercase tracking-wider text-indigo-300">Live Logistics Intelligence • SIH 2026</span>
+      </div>
+      <h2 class="text-3xl font-black tracking-tight text-white">
+        Good Morning, <%= authenticated? ? current_user.name : "Administrator" %>
+      </h2>
+      <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
+        Monitoring 20 key settlements across the 8 North Eastern states with real-time accessibility scoring, multi-route risk optimization, and automated disaster staging.
+      </p>
+    </div>
 
-  <!-- Statistics Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <%= render 'shared/statistic_card', title: "Total Monitored Locations", value: @total_locations, description: "Locations currently under monitoring", icon: "<i class='fas fa-map-marker-alt'></i>" %>
-    <%= render 'shared/statistic_card', title: "Critical Accessibility Zones", value: @critical_accessibility_zones, description: "Locations with accessibility score below 40", icon: "<i class='fas fa-exclamation-triangle'></i>", color: "text-red-500" %>
-    <%= render 'shared/statistic_card', title: "Active Emergencies", value: @active_emergencies, description: "Ongoing emergency situations", icon: "<i class='fas fa-bell'></i>", color: "text-yellow-500" %>
-    <%= render 'shared/statistic_card', title: "Total Warehouses", value: @total_warehouses, description: "Available storage and distribution centers", icon: "<i class='fas fa-warehouse'></i>" %>
+    <!-- SIH Showcase Actions -->
+    <div class="flex flex-wrap items-center gap-3">
+      <%= link_to demo_path, class: "inline-flex items-center px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all duration-150 transform hover:-translate-y-0.5" do %>
+        <i class="fas fa-bolt mr-2"></i>
+        <span>Launch SIH Demo</span>
+      <% end %>
+
+      <%= link_to overview_path, class: "inline-flex items-center px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 backdrop-blur-md transition-colors" do %>
+        <i class="fas fa-info-circle mr-1.5 text-indigo-300"></i>
+        <span>Judge Overview</span>
+      <% end %>
+    </div>
   </div>
 
-  <!-- Critical Accessibility Zones Section -->
-  <div class="bg-white shadow rounded-lg p-6">
+  <!-- Prominent Quick Action Center (Part 5) -->
+  <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+      <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center">
+        <i class="fas fa-bolt text-indigo-600 mr-2"></i>
+        Operational Quick Actions
+      </h3>
+      <span class="text-xs font-bold text-gray-500">Autonomous Command Shortcuts</span>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <!-- Action 1: Simulate Emergency -->
+      <%= link_to new_emergency_path, class: "p-4 rounded-xl bg-gradient-to-br from-red-50 to-rose-100/60 border border-red-200 hover:border-red-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3" do %>
+        <div class="w-10 h-10 rounded-lg bg-red-600 text-white flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
+          <i class="fas fa-radiation"></i>
+        </div>
+        <div>
+          <span class="font-black text-xs text-red-950 block">Simulate Emergency</span>
+          <span class="text-[10px] text-red-700 block mt-0.5">Model disaster radii</span>
+        </div>
+      <% end %>
+
+      <!-- Action 2: Plan Smart Route -->
+      <%= link_to routes_path, class: "p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100/60 border border-blue-200 hover:border-blue-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3" do %>
+        <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
+          <i class="fas fa-route"></i>
+        </div>
+        <div>
+          <span class="font-black text-xs text-blue-950 block">Plan Smart Route</span>
+          <span class="text-[10px] text-blue-700 block mt-0.5">Fastest vs Safest bypass</span>
+        </div>
+      <% end %>
+
+      <!-- Action 3: Recalculate Intelligence -->
+      <%= form_with url: recalculate_accessibility_path, method: :post, local: true, class: "w-full" do |f| %>
+        <%= f.button class: "w-full text-left p-4 rounded-xl bg-gradient-to-br from-amber-50 to-yellow-100/60 border border-amber-200 hover:border-amber-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3 cursor-pointer" do %>
+          <div class="w-10 h-10 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <div>
+            <span class="font-black text-xs text-amber-950 block">Recalculate Scores</span>
+            <span class="text-[10px] text-amber-800 block mt-0.5">6-factor live sync</span>
+          </div>
+        <% end %>
+      <% end %>
+
+      <!-- Action 4: Intelligence Analytics -->
+      <%= link_to analytics_path, class: "p-4 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-100/60 border border-purple-200 hover:border-purple-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3" do %>
+        <div class="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
+          <i class="fas fa-chart-pie"></i>
+        </div>
+        <div>
+          <span class="font-black text-xs text-purple-950 block">Intelligence Analytics</span>
+          <span class="text-[10px] text-purple-700 block mt-0.5">Readiness &amp; reports</span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Key KPI Statistics Cards Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <%= render 'shared/statistic_card', title: "Monitored Settlements", value: @total_locations, description: "Active telemetry sensor grid", icon: "<i class='fas fa-map-marker-alt'></i>" %>
+    <%= render 'shared/statistic_card', title: "Critical Access Zones", value: @critical_accessibility_zones, description: "Locations with score below 40", icon: "<i class='fas fa-exclamation-triangle'></i>", color: "text-red-500" %>
+    <%= render 'shared/statistic_card', title: "Active Emergencies", value: @active_emergencies, description: "Disaster responses in progress", icon: "<i class='fas fa-bell'></i>", color: "text-rose-600" %>
+    <%= render 'shared/statistic_card', title: "Relief Warehouses", value: @total_warehouses, description: "Strategic distribution hubs", icon: "<i class='fas fa-warehouse'></i>", color: "text-emerald-600" %>
+  </div>
+
+  <!-- Active Emergency Alerts Section -->
+  <div class="bg-white shadow-sm rounded-2xl p-6 border-t-4 border-red-600 border-x border-b border-gray-200">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-gray-100 mb-4 gap-2">
       <div>
-        <h3 class="text-xl font-semibold text-gray-800">Critical Accessibility Zones</h3>
-        <p class="text-xs text-gray-500 mt-0.5">Top high-vulnerability locations requiring priority logistics intervention.</p>
+        <h3 class="text-lg font-bold text-gray-900 flex items-center">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-600 animate-ping mr-2"></span>
+          Active Emergency Alerts &amp; Spatial Impact
+        </h3>
+        <p class="text-xs text-gray-500 mt-0.5">Real-time disaster telemetry and active multi-agency response missions.</p>
       </div>
-      <%= link_to accessibility_path, class: "inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors" do %>
-        <span>View Full Intelligence Report</span>
-        <i class="fas fa-arrow-right ml-1.5 text-xs"></i>
+      <%= link_to emergencies_path, class: "inline-flex items-center text-xs font-bold text-red-600 hover:text-red-800 transition-colors" do %>
+        <span>View Disaster Response Center</span>
+        <i class="fas fa-arrow-right ml-1.5"></i>
       <% end %>
     </div>
 
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-gray-200 text-left text-xs">
+        <thead class="bg-gray-50 font-bold text-gray-600 uppercase tracking-wider">
           <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location Name</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State / District</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Population</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accessibility Score</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Level</th>
-            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            <th scope="col" class="px-6 py-3.5">Emergency Incident</th>
+            <th scope="col" class="px-6 py-3.5">Hazard Type</th>
+            <th scope="col" class="px-6 py-3.5">Severity</th>
+            <th scope="col" class="px-6 py-3.5">Impact Buffer</th>
+            <th scope="col" class="px-6 py-3.5">Status</th>
+            <th scope="col" class="px-6 py-3.5 text-right">Action</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <% @critical_locations.each do |location| %>
-            <%
-              score = location.accessibility_score.to_f
-              if score < 40.0
-                status_class = "bg-red-100 text-red-800 border border-red-200"
-                status_text = "CRITICAL"
-                score_color = "text-red-600 font-extrabold"
-              elsif score < 60.0
-                status_class = "bg-orange-100 text-orange-800 border border-orange-200"
-                status_text = "HIGH RISK"
-                score_color = "text-orange-600 font-bold"
-              elsif score < 80.0
-                status_class = "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                status_text = "MODERATE"
-                score_color = "text-yellow-600 font-semibold"
-              else
-                status_class = "bg-green-100 text-green-800 border border-green-200"
-                status_text = "LOW RISK"
-                score_color = "text-green-600 font-semibold"
-              end
-            %>
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= location.name %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= location.district %>, <%= location.state %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= number_with_delimiter(location.population) %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm <%= score_color %>"><%= location.accessibility_score %> / 100</td>
+        <tbody class="divide-y divide-gray-200 bg-white font-medium text-gray-700">
+          <% @active_emergency_records.each do |emergency| %>
+            <tr class="hover:bg-red-50/20 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"><%= emergency.title %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-gray-700">
+                <span class="inline-flex items-center font-bold">
+                  <i class="fas fa-exclamation-triangle text-amber-500 mr-1.5"></i>
+                  <%= emergency.emergency_type %>
+                </span>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_class %>">
-                  <%= status_text %>
+                <span class="px-2.5 py-0.5 inline-flex text-[10px] leading-4 font-black rounded-full border <%= emergency.severity_badge_class %> uppercase">
+                  <%= emergency.severity %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-700">
+                <%= emergency.affected_radius || 50.0 %> km
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2.5 py-0.5 inline-flex text-[10px] leading-4 font-black rounded-full border <%= emergency.status_badge_class %> uppercase">
+                  <%= emergency.status %>
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                <%= link_to "Analysis", accessibility_location_path(location), class: "text-xs font-semibold text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2.5 py-1 rounded" %>
+                <%= link_to emergency_path(emergency), class: "text-xs font-bold text-red-700 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition-colors inline-flex items-center" do %>
+                  <span>Command Center</span>
+                  <i class="fas fa-chevron-right ml-1 text-[9px]"></i>
+                <% end %>
               </td>
             </tr>
           <% end %>
@@ -77,49 +159,65 @@
     </div>
   </div>
 
-  <!-- Recent Emergencies Section -->
-  <div class="bg-white shadow rounded-lg p-6">
-    <h3 class="text-xl font-semibold text-gray-800 mb-4">Recent Emergencies</h3>
+  <!-- Critical Accessibility Zones Section -->
+  <div class="bg-white shadow-sm rounded-2xl p-6 border border-gray-200">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-gray-100 mb-4 gap-2">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900">Critical Accessibility Zones</h3>
+        <p class="text-xs text-gray-500 mt-0.5">Top high-vulnerability locations requiring priority logistics intervention.</p>
+      </div>
+      <%= link_to accessibility_path, class: "inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors" do %>
+        <span>View Full Intelligence Engine</span>
+        <i class="fas fa-arrow-right ml-1.5"></i>
+      <% end %>
+    </div>
+
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-gray-200 text-left text-xs">
+        <thead class="bg-gray-50 font-bold text-gray-600 uppercase tracking-wider">
           <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emergency Title</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Severity</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" class="px-6 py-3.5">Settlement</th>
+            <th scope="col" class="px-6 py-3.5">State / District</th>
+            <th scope="col" class="px-6 py-3.5">Population</th>
+            <th scope="col" class="px-6 py-3.5">Accessibility Score</th>
+            <th scope="col" class="px-6 py-3.5">Risk Status</th>
+            <th scope="col" class="px-6 py-3.5 text-right">Action</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <% @recent_emergencies = Emergency.order(created_at: :desc).limit(5) %>
-          <% @recent_emergencies.each do |emergency| %>
-            <tr>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= emergency.title %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= emergency.emergency_type %></td>
+        <tbody class="bg-white divide-y divide-gray-200 font-medium text-gray-700">
+          <% @critical_locations.each do |location| %>
+            <%
+              score = location.accessibility_score.to_f
+              if score < 40.0
+                status_class = "bg-red-100 text-red-800 border-red-300 font-black"
+                status_text = "CRITICAL"
+                score_color = "text-red-600 font-black"
+              elsif score < 60.0
+                status_class = "bg-orange-100 text-orange-800 border-orange-300 font-bold"
+                status_text = "HIGH RISK"
+                score_color = "text-orange-600 font-bold"
+              elsif score < 80.0
+                status_class = "bg-yellow-100 text-yellow-800 border-yellow-300 font-medium"
+                status_text = "MODERATE"
+                score_color = "text-yellow-600 font-semibold"
+              else
+                status_class = "bg-green-100 text-green-800 border-green-300 font-medium"
+                status_text = "LOW RISK"
+                score_color = "text-green-600 font-semibold"
+              end
+            %>
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"><%= location.name %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-gray-500"><%= location.district %>, <%= location.state %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-mono"><%= number_with_delimiter(location.population) %></td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm <%= score_color %>"><%= location.accessibility_score %> / 100</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <% severity_class = case emergency.severity
-                                   when "Critical" then "bg-red-100 text-red-800"
-                                   when "High" then "bg-orange-100 text-orange-800"
-                                   when "Medium" then "bg-yellow-100 text-yellow-800"
-                                   when "Low" then "bg-green-100 text-green-800"
-                                   else "bg-gray-100 text-gray-800"
-                                   end
-                %>
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= severity_class %>">
-                  <%= emergency.severity %>
+                <span class="px-2.5 py-0.5 inline-flex text-[10px] leading-4 rounded-full border <%= status_class %> uppercase">
+                  <%= status_text %>
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <% status_class = case emergency.status
-                                   when "Active" then "bg-red-100 text-red-800"
-                                   when "Monitoring" then "bg-yellow-100 text-yellow-800"
-                                   when "Resolved" then "bg-green-100 text-green-800"
-                                   else "bg-gray-100 text-gray-800"
-                                   end
-                %>
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= status_class %>">
-                  <%= emergency.status %>
-                </span>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                <%= link_to "Analysis", accessibility_location_path(location), class: "text-xs font-bold text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-200 transition-colors" %>
               </td>
             </tr>
           <% end %>

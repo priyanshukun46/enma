@@ -1,0 +1,34 @@
+<div class="min-h-[80vh] flex flex-col justify-center items-center py-6 px-4">
+  <div class="max-w-md w-full space-y-6">
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white shadow-xl mb-3">
+        <span class="text-3xl">🔐</span>
+      </div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight">Reset Password</h2>
+      <p class="text-xs text-gray-500 font-semibold mt-1">ENMA AI Security Recovery</p>
+      <p class="text-sm font-medium text-gray-600 mt-2">Enter your registered email address to receive reset instructions.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-7 md:p-8 space-y-5">
+      <%= form_with url: passwords_path, local: true, class: "space-y-4" do |f| %>
+        <div>
+          <%= f.label :email_address, "Email Address", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" %>
+          <%= f.email_field :email_address,
+                            required: true,
+                            autofocus: true,
+                            placeholder: "your.email@enma.ai",
+                            class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 bg-gray-50/50 hover:bg-white transition-colors" %>
+        </div>
+
+        <div>
+          <%= f.submit "Generate Reset Instructions",
+                       class: "w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-150 cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div class="text-center pt-2 border-t border-gray-100">
+        <%= link_to "Back to Sign In", login_path, class: "text-xs font-bold text-indigo-600 hover:text-indigo-800" %>
+      </div>
+    </div>
+  </div>
+</div>

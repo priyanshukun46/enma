@@ -1,0 +1,100 @@
+<div class="space-y-6 max-w-6xl mx-auto">
+  <!-- Header -->
+  <div class="pb-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <div class="flex items-center space-x-2.5">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200">
+          Admin Command
+        </span>
+        <h2 class="text-3xl font-black text-gray-900 tracking-tight">User Administration</h2>
+      </div>
+      <p class="text-xs text-gray-600 mt-1">Manage platform credentials, role-based permissions, and operator provisioning.</p>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+      <span class="text-xs font-bold text-gray-500 uppercase tracking-wider block">Total Registered Users</span>
+      <span class="text-3xl font-black text-gray-900 mt-1 block"><%= @users.size %></span>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border-l-4 border-purple-600 border-t border-r border-b border-gray-200 p-5">
+      <span class="text-xs font-bold text-purple-600 uppercase tracking-wider block">Administrators</span>
+      <span class="text-3xl font-black text-gray-900 mt-1 block"><%= @admin_count %></span>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border-l-4 border-blue-500 border-t border-r border-b border-gray-200 p-5">
+      <span class="text-xs font-bold text-blue-600 uppercase tracking-wider block">Field Operators</span>
+      <span class="text-3xl font-black text-gray-900 mt-1 block"><%= @operator_count %></span>
+    </div>
+  </div>
+
+  <!-- Users Table -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="p-5 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+      <h3 class="text-base font-bold text-gray-900 flex items-center">
+        <i class="fas fa-users-cog text-purple-600 mr-2"></i>
+        Platform Operator Directory
+      </h3>
+      <span class="text-xs font-bold text-gray-500">Security Scoped</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-left text-xs">
+        <thead class="bg-gray-50 font-bold text-gray-600 uppercase tracking-wider">
+          <tr>
+            <th scope="col" class="px-6 py-3.5">Operator</th>
+            <th scope="col" class="px-6 py-3.5">Email Address</th>
+            <th scope="col" class="px-6 py-3.5">Role</th>
+            <th scope="col" class="px-6 py-3.5">Auth Provider</th>
+            <th scope="col" class="px-6 py-3.5">Joined Date</th>
+            <th scope="col" class="px-6 py-3.5 text-right">Role Management</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white font-medium text-gray-700">
+          <% @users.each do |user| %>
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs overflow-hidden">
+                  <% if user.avatar_url.present? %>
+                    <img src="<%= user.avatar_url %>" alt="" class="w-full h-full object-cover">
+                  <% else %>
+                    <span><%= user.initials %></span>
+                  <% end %>
+                </div>
+                <span class="font-bold text-gray-900 text-sm"><%= user.name %></span>
+              </td>
+              <td class="px-6 py-4 font-mono text-gray-600"><%= user.email_address %></td>
+              <td class="px-6 py-4">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] uppercase border <%= user.role_badge_class %>">
+                  <%= user.role %>
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center text-gray-800">
+                  <i class="<%= user.provider_icon %> mr-1.5 text-sm"></i>
+                  <%= user.provider_label %>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-gray-500"><%= user.created_at.strftime("%b %d, %Y") %></td>
+              <td class="px-6 py-4 text-right">
+                <% if user.operator? %>
+                  <%= button_to update_role_admin_user_path(user, role: :admin), method: :patch, class: "inline-flex items-center px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-800 font-bold text-xs rounded-lg border border-purple-200 cursor-pointer transition-colors" do %>
+                    <i class="fas fa-user-shield mr-1"></i>
+                    <span>Promote to Admin</span>
+                  <% end %>
+                <% else %>
+                  <%= button_to update_role_admin_user_path(user, role: :operator), method: :patch, class: "inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-lg border border-gray-300 cursor-pointer transition-colors" do %>
+                    <i class="fas fa-user mr-1"></i>
+                    <span>Demote to Operator</span>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

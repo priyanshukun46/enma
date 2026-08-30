@@ -1,0 +1,224 @@
+<div class="max-w-5xl mx-auto space-y-8 pb-16 bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-200 print:border-none print:shadow-none print:p-0">
+  <!-- Report Header with Print Action -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b-2 border-gray-900 gap-4">
+    <div>
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl font-black text-indigo-600">⚡ ENMA AI</span>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-800 font-bold uppercase tracking-wider">Official Intelligence Briefing</span>
+      </div>
+      <h1 class="text-3xl font-black text-gray-900 mt-2">Executive Logistics &amp; Disaster Readiness Report</h1>
+      <p class="text-xs text-gray-600 mt-1 font-mono">
+        Generated: <%= Time.current.strftime("%B %d, %Y - %H:%M UTC") %> • North Eastern Regional Operational Command
+      </p>
+    </div>
+
+    <!-- Print Action (hidden during print) -->
+    <div class="print:hidden flex items-center space-x-3">
+      <%= link_to analytics_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors" do %>
+        <i class="fas fa-arrow-left mr-1.5"></i>
+        <span>Back to Analytics</span>
+      <% end %>
+
+      <button type="button" onclick="window.print()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center">
+        <i class="fas fa-print mr-2"></i>
+        <span>Print Report</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. Executive Summary & Readiness Score -->
+  <div class="space-y-4">
+    <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
+      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      1. Executive Summary &amp; Regional Readiness Score
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+        <span class="text-[10px] font-bold text-gray-500 uppercase block">Logistics Readiness</span>
+        <span class="text-3xl font-black text-indigo-600 mt-1 block"><%= @readiness_score %> <span class="text-xs text-gray-500 font-normal">/ 100</span></span>
+        <span class="text-xs font-black uppercase text-indigo-900 mt-1 block"><%= @readiness_category %></span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+        <span class="text-[10px] font-bold text-gray-500 uppercase block">Monitored Communities</span>
+        <span class="text-3xl font-black text-gray-900 mt-1 block"><%= @total_communities_count %></span>
+        <span class="text-xs text-gray-600 mt-1 block">8 NE States</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+        <span class="text-[10px] font-bold text-gray-500 uppercase block">High Risk Zones</span>
+        <span class="text-3xl font-black text-orange-600 mt-1 block"><%= @high_risk_zones_count %></span>
+        <span class="text-xs text-gray-600 mt-1 block">Score &lt; 60</span>
+      </div>
+
+      <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+        <span class="text-[10px] font-bold text-gray-500 uppercase block">Active Emergencies</span>
+        <span class="text-3xl font-black text-red-600 mt-1 block"><%= @active_emergencies_count %></span>
+        <span class="text-xs text-gray-600 mt-1 block">Under Response</span>
+      </div>
+    </div>
+
+    <div class="p-4 rounded-xl bg-gray-50 border border-gray-200 text-xs text-gray-700 leading-relaxed">
+      <strong>Situation Assessment:</strong> <%= @readiness[:explanation] %>
+    </div>
+  </div>
+
+  <!-- 2. Readiness Breakdown Components -->
+  <div class="space-y-4">
+    <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
+      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      2. Logistics Readiness Formula Breakdown
+    </h2>
+
+    <table class="min-w-full divide-y divide-gray-200 text-xs text-left">
+      <thead class="bg-gray-50 font-bold text-gray-700 uppercase">
+        <tr>
+          <th class="px-4 py-2.5">Evaluation Pillar</th>
+          <th class="px-4 py-2.5">Formula Weight</th>
+          <th class="px-4 py-2.5">Evaluated Percentage</th>
+          <th class="px-4 py-2.5">Weighted Contribution</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 font-medium">
+        <tr>
+          <td class="px-4 py-2.5 font-bold text-gray-900">Regional Average Accessibility</td>
+          <td class="px-4 py-2.5">30%</td>
+          <td class="px-4 py-2.5"><%= @readiness[:breakdown][:accessibility_percentage] %>%</td>
+          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:accessibility_percentage] * 0.30).round(1) %> pts</td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2.5 font-bold text-gray-900">Strategic Warehouse Coverage</td>
+          <td class="px-4 py-2.5">25%</td>
+          <td class="px-4 py-2.5"><%= @readiness[:breakdown][:warehouse_coverage_percentage] %>%</td>
+          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:warehouse_coverage_percentage] * 0.25).round(1) %> pts</td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2.5 font-bold text-gray-900">Emergency Response Containment</td>
+          <td class="px-4 py-2.5">20%</td>
+          <td class="px-4 py-2.5"><%= @readiness[:breakdown][:emergency_preparedness_percentage] %>%</td>
+          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:emergency_preparedness_percentage] * 0.20).round(1) %> pts</td>
+        </tr>
+        <tr>
+          <td class="px-4 py-2.5 font-bold text-gray-900">Terrain Risk Resilience (Inverse)</td>
+          <td class="px-4 py-2.5">25%</td>
+          <td class="px-4 py-2.5"><%= @readiness[:breakdown][:risk_resilience_percentage] %>%</td>
+          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:risk_resilience_percentage] * 0.25).round(1) %> pts</td>
+        </tr>
+        <tr class="bg-indigo-50 font-black text-indigo-900">
+          <td class="px-4 py-3" colspan="3">Total Aggregated Readiness Index</td>
+          <td class="px-4 py-3 text-sm"><%= @readiness_score %> / 100</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. Risk & Accessibility Distributions -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="space-y-3">
+      <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider border-b pb-1">
+        3.1. Risk Distribution
+      </h2>
+      <ul class="space-y-2 text-xs">
+        <li class="flex justify-between p-2 rounded bg-red-50 text-red-900 font-medium">
+          <span>Critical Risk (&ge;75):</span>
+          <strong><%= @risk_distribution[:critical][:count] %> settlements (<%= @risk_distribution[:critical][:percentage] %>%)</strong>
+        </li>
+        <li class="flex justify-between p-2 rounded bg-orange-50 text-orange-900 font-medium">
+          <span>High Risk (50-74):</span>
+          <strong><%= @risk_distribution[:high][:count] %> settlements (<%= @risk_distribution[:high][:percentage] %>%)</strong>
+        </li>
+        <li class="flex justify-between p-2 rounded bg-yellow-50 text-yellow-900 font-medium">
+          <span>Moderate Risk (25-49):</span>
+          <strong><%= @risk_distribution[:moderate][:count] %> settlements (<%= @risk_distribution[:moderate][:percentage] %>%)</strong>
+        </li>
+        <li class="flex justify-between p-2 rounded bg-green-50 text-green-900 font-medium">
+          <span>Low Risk (&lt;25):</span>
+          <strong><%= @risk_distribution[:low][:count] %> settlements (<%= @risk_distribution[:low][:percentage] %>%)</strong>
+        </li>
+      </ul>
+    </div>
+
+    <div class="space-y-3">
+      <h2 class="text-sm font-black text-gray-900 uppercase tracking-wider border-b pb-1">
+        3.2. Accessibility Distribution
+      </h2>
+      <ul class="space-y-2 text-xs">
+        <li class="flex justify-between p-2 rounded bg-green-50 text-green-900 font-medium">
+          <span>Highly Accessible (&ge;80):</span>
+          <strong><%= @accessibility_distribution[:highly_accessible][:count] %> settlements (<%= @accessibility_distribution[:highly_accessible][:percentage] %>%)</strong>
+        </li>
+        <li class="flex justify-between p-2 rounded bg-yellow-50 text-yellow-900 font-medium">
+          <span>Moderately Accessible (60-79):</span>
+          <strong><%= @accessibility_distribution[:moderately_accessible][:count] %> settlements (<%= @accessibility_distribution[:moderately_accessible][:percentage] %>%)</strong>
+        </li>
+        <li class="flex justify-between p-2 rounded bg-orange-50 text-orange-900 font-medium">
+          <span>Difficult Access (40-59):</span>
+          <strong><%= @accessibility_distribution[:difficult_access][:count] %> settlements (<%= @accessibility_distribution[:difficult_access][:percentage] %>%)</strong>
+        </li>
+        <li class="flex justify-between p-2 rounded bg-red-50 text-red-900 font-medium">
+          <span>Critical Accessibility (&lt;40):</span>
+          <strong><%= @accessibility_distribution[:critical_accessibility][:count] %> settlements (<%= @accessibility_distribution[:critical_accessibility][:percentage] %>%)</strong>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. Critical Intelligence Watchlist -->
+  <div class="space-y-4">
+    <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
+      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      4. Critical Watchlist Locations (Top Priority Interventions)
+    </h2>
+
+    <table class="min-w-full divide-y divide-gray-200 text-xs text-left">
+      <thead class="bg-gray-50 font-bold text-gray-700 uppercase">
+        <tr>
+          <th class="px-4 py-2.5">Rank</th>
+          <th class="px-4 py-2.5">Location</th>
+          <th class="px-4 py-2.5">State / District</th>
+          <th class="px-4 py-2.5">Risk Score</th>
+          <th class="px-4 py-2.5">Accessibility</th>
+          <th class="px-4 py-2.5">Primary Threat Factor</th>
+          <th class="px-4 py-2.5">Vulnerability Status</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 font-medium">
+        <% @watchlist_locations.each_with_index do |item, idx| %>
+          <tr>
+            <td class="px-4 py-2 font-black text-gray-900">#<%= idx + 1 %></td>
+            <td class="px-4 py-2 font-bold text-gray-900"><%= item[:name] %></td>
+            <td class="px-4 py-2 text-gray-600"><%= item[:district] %>, <%= item[:state] %></td>
+            <td class="px-4 py-2 font-black text-red-600"><%= item[:risk_score] %>/100</td>
+            <td class="px-4 py-2 font-bold text-gray-800"><%= item[:accessibility_score] %>/100</td>
+            <td class="px-4 py-2 text-gray-700"><%= item[:primary_threat] %></td>
+            <td class="px-4 py-2 font-bold text-red-700"><%= item[:status_text] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. Key Strategic Directives -->
+  <div class="space-y-4">
+    <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
+      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      5. ENMA AI Strategic Logistics Directives
+    </h2>
+
+    <div class="space-y-3">
+      <% @insights.each do |ins| %>
+        <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-xs">
+          <span class="font-black text-indigo-900 uppercase">[<%= ins[:badge] %>]</span>
+          <strong class="text-gray-900 block mt-0.5"><%= ins[:title] %></strong>
+          <p class="text-gray-600 mt-1 leading-relaxed"><%= ins[:detail] %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Report Footer -->
+  <div class="pt-6 border-t-2 border-gray-200 text-center text-xs text-gray-500 font-mono">
+    Smart India Hackathon 2026 • ENMA AI Autonomous Logistics &amp; Accessibility Intelligence System
+  </div>
+</div>

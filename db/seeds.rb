@@ -1,4 +1,4 @@
-# This file seeds the AccessAI database with realistic North East India logistics,
+# This file seeds the ENMA AI database with realistic North East India logistics,
 # terrain factors, strategic warehouses, and active emergency records.
 
 puts "Seeding North East India data for Phase 4..."
@@ -351,13 +351,63 @@ warehouses_data.each do |data|
 end
 puts "Configured #{Warehouse.count} warehouses."
 
-# --- Emergency Records ---
+# --- Emergency Records (Phase 6) ---
 emergencies_data = [
-  { title: "Heavy Landslide Blocks NH-6", emergency_type: "Landslide", severity: "Critical", latitude: 25.1764, longitude: 93.0177, status: "Active" },
-  { title: "Massive Flood in Dhemaji District", emergency_type: "Flood", severity: "High", latitude: 27.4800, longitude: 94.5800, status: "Active" },
-  { title: "Heavy Rainfall Warning for East Khasi Hills", emergency_type: "Heavy Rainfall", severity: "Medium", latitude: 25.5000, longitude: 91.8000, status: "Monitoring" },
-  { title: "Road Blockage to Tawang Due to Snowfall", emergency_type: "Road Blockage", severity: "High", latitude: 27.5000, longitude: 91.8000, status: "Active" },
-  { title: "Minor Landslide Near Ukhrul", emergency_type: "Landslide", severity: "Low", latitude: 25.1000, longitude: 94.3000, status: "Resolved" }
+  {
+    title: "Heavy Landslide Blocks NH-6 near Haflong",
+    emergency_type: "Landslide",
+    severity: "Critical",
+    latitude: 25.1764,
+    longitude: 93.0177,
+    affected_radius: 50.0,
+    status: "Active",
+    simulated_at: 2.hours.ago,
+    description: "Major slope failure on NH-6 has cut off Dima Hasao district arterial access. Heavy rock debris blocking multi-axle freight traffic."
+  },
+  {
+    title: "Massive Flash Flood & Inundation in Cachar Valley",
+    emergency_type: "Flood",
+    severity: "High",
+    latitude: 24.8210,
+    longitude: 92.8020,
+    affected_radius: 40.0,
+    status: "Responding",
+    simulated_at: 5.hours.ago,
+    description: "Barak river overflow submerging low-elevation transport arteries and isolation of riverside rural settlements."
+  },
+  {
+    title: "Heavy Rainfall Alert for East Khasi Hills",
+    emergency_type: "Heavy Rainfall",
+    severity: "Medium",
+    latitude: 25.5000,
+    longitude: 91.8000,
+    affected_radius: 35.0,
+    status: "Monitoring",
+    simulated_at: 12.hours.ago,
+    description: "Meteorological warning for torrential cloudburst. Potential flash flood and road drainage overflow in Shillong-Cherrapunjee corridor."
+  },
+  {
+    title: "Road Blockage to Tawang Due to Snowfall & Sela Mudslide",
+    emergency_type: "Road Blockage",
+    severity: "Critical",
+    latitude: 27.5855,
+    longitude: 91.8679,
+    affected_radius: 60.0,
+    status: "Active",
+    simulated_at: 1.hour.ago,
+    description: "Heavy snow accumulation and sub-zero mudslide blocking high-altitude Sela Pass access to Tawang monastery community."
+  },
+  {
+    title: "Minor Landslide Cleared Near Ukhrul Border",
+    emergency_type: "Landslide",
+    severity: "Low",
+    latitude: 25.1000,
+    longitude: 94.3000,
+    affected_radius: 20.0,
+    status: "Resolved",
+    simulated_at: 1.day.ago,
+    description: "Debris cleared by local Border Roads Organisation teams; two-way commercial traffic restored."
+  }
 ]
 
 emergencies_data.each do |data|
@@ -367,4 +417,61 @@ emergencies_data.each do |data|
 end
 puts "Configured #{Emergency.count} emergencies."
 
-puts "Seeding complete for Phase 4."
+# --- Logistics Route Analysis Seeds (Phase 5) ---
+puts "Seeding sample route calculations for Phase 5..."
+sample_missions = [
+  { orig: "Guwahati", dest: "Tawang", vehicle: "Ambulance" },
+  { orig: "Guwahati", dest: "Shillong", vehicle: "Truck" },
+  { orig: "Itanagar", dest: "Bomdila", vehicle: "Supply Vehicle" }
+]
+
+sample_missions.each do |mission|
+  orig_loc = Location.find_by(name: mission[:orig])
+  dest_loc = Location.find_by(name: mission[:dest])
+  next unless orig_loc && dest_loc
+
+  service = RouteOptimizationService.new(origin: orig_loc, destination: dest_loc, vehicle_type: mission[:vehicle])
+  result = service.calculate
+
+  result[:routes].each do |type_key, rdata|
+    LogisticsRoute.create!(
+      origin: orig_loc,
+      destination: dest_loc,
+      vehicle_type: mission[:vehicle],
+      distance: rdata[:distance_km],
+      estimated_time: rdata[:estimated_hours],
+      risk_score: rdata[:risk_score],
+      route_type: type_key.to_s,
+      status: "analyzed",
+      recommended: rdata[:is_recommended] || false,
+      waypoints_json: rdata[:waypoints].to_json,
+      summary: rdata[:description]
+    )
+  end
+end
+puts "Configured #{LogisticsRoute.count} initial logistics routes."
+
+# --- User Accounts (Authentication & Roles) ---
+puts "Seeding default authentication accounts for ENMA AI..."
+admin_email = ENV["ADMIN_EMAIL"].presence || "admin@enma.ai"
+admin_pass  = ENV["ADMIN_PASSWORD"].presence || "password123"
+operator_email = ENV["OPERATOR_EMAIL"].presence || "operator@enma.ai"
+operator_pass  = ENV["OPERATOR_PASSWORD"].presence || "password123"
+
+admin_user = User.find_or_initialize_by(email_address: admin_email.downcase)
+admin_user.name = "Priyanshu Kumar (Administrator)"
+admin_user.password = admin_pass
+admin_user.password_confirmation = admin_pass
+admin_user.role = :admin
+admin_user.save!
+
+operator_user = User.find_or_initialize_by(email_address: operator_email.downcase)
+operator_user.name = "Field Logistics Officer"
+operator_user.password = operator_pass
+operator_user.password_confirmation = operator_pass
+operator_user.role = :operator
+operator_user.save!
+
+puts "Configured #{User.count} users (Admin: #{admin_email}, Operator: #{operator_email})."
+puts "Seeding complete for ENMA AI Authentication & Platform Modules."
+

@@ -1,0 +1,165 @@
+<div class="space-y-8 max-w-7xl mx-auto">
+  <!-- Header with Simulation and Demo Actions -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between pb-4 border-b border-gray-200 gap-4">
+    <div>
+      <div class="flex items-center space-x-3">
+        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Emergency Response Center</h2>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-red-100 text-red-800 uppercase tracking-wide">
+          <i class="fas fa-satellite mr-1.5 text-xs text-red-600"></i> Disaster Telemetry
+        </span>
+      </div>
+      <p class="text-sm text-gray-600 mt-1">Simulate disasters and generate intelligent logistics response strategies across the North East.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <%= button_to demo_scenario_emergencies_path, method: :post, class: "inline-flex items-center px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-gray-900 font-extrabold text-xs rounded-xl shadow-sm transition-all duration-150 cursor-pointer" do %>
+        <i class="fas fa-bolt mr-2 text-amber-950"></i>
+        <span>Launch SIH Demo Scenario</span>
+      <% end %>
+
+      <%= link_to new_emergency_path, class: "inline-flex items-center px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all duration-150" do %>
+        <i class="fas fa-plus mr-2 text-xs"></i>
+        <span>Simulate Emergency</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Summary Metric Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="bg-white rounded-2xl shadow-sm border-l-4 border-red-600 border-t border-r border-b border-gray-200 p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-red-600 uppercase tracking-wider">Active Incidents</p>
+          <p class="text-3xl font-black text-gray-900 mt-1"><%= @active_count %></p>
+          <p class="text-xs text-gray-500 mt-0.5">Requiring immediate response</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-red-600 text-xl shadow-inner">
+          <i class="fas fa-fire-alt"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border-l-4 border-orange-500 border-t border-r border-b border-gray-200 p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-orange-600 uppercase tracking-wider">Critical Severity</p>
+          <p class="text-3xl font-black text-gray-900 mt-1"><%= @critical_count %></p>
+          <p class="text-xs text-gray-500 mt-0.5">High civilian cutoff hazard</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 text-xl shadow-inner">
+          <i class="fas fa-radiation"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border-l-4 border-amber-500 border-t border-r border-b border-gray-200 p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-amber-600 uppercase tracking-wider">Monitored Zones</p>
+          <p class="text-3xl font-black text-gray-900 mt-1"><%= Emergency.monitoring.count %></p>
+          <p class="text-xs text-gray-500 mt-0.5">Weather &amp; slope watch</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 text-xl shadow-inner">
+          <i class="fas fa-eye"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border-l-4 border-emerald-500 border-t border-r border-b border-gray-200 p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Resolved Disasters</p>
+          <p class="text-3xl font-black text-gray-900 mt-1"><%= @resolved_count %></p>
+          <p class="text-xs text-gray-500 mt-0.5">Historical response log</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-xl shadow-inner">
+          <i class="fas fa-check-double"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emergency Records Table -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <!-- Filter Tabs Header -->
+    <div class="p-5 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-bold text-gray-900 flex items-center">
+          <i class="fas fa-list-alt text-red-600 mr-2"></i>
+          Regional Disaster Registry &amp; Simulations
+        </h3>
+        <p class="text-xs text-gray-500 mt-0.5">All monitored incidents and active response operations.</p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="flex items-center space-x-1.5 bg-gray-200/80 p-1 rounded-xl text-xs font-bold">
+        <%= link_to "All (#{@total_emergencies})", emergencies_path(status: "all"), class: "px-3 py-1.5 rounded-lg transition-colors #{@status_filter == 'all' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-600 hover:text-gray-900'}" %>
+        <%= link_to "Active", emergencies_path(status: "active"), class: "px-3 py-1.5 rounded-lg transition-colors #{@status_filter == 'active' ? 'bg-white text-red-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'}" %>
+        <%= link_to "Responding", emergencies_path(status: "responding"), class: "px-3 py-1.5 rounded-lg transition-colors #{@status_filter == 'responding' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'}" %>
+        <%= link_to "Monitoring", emergencies_path(status: "monitoring"), class: "px-3 py-1.5 rounded-lg transition-colors #{@status_filter == 'monitoring' ? 'bg-white text-amber-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'}" %>
+        <%= link_to "Resolved", emergencies_path(status: "resolved"), class: "px-3 py-1.5 rounded-lg transition-colors #{@status_filter == 'resolved' ? 'bg-white text-emerald-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'}" %>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 text-left text-xs">
+        <thead class="bg-gray-50 font-bold text-gray-600 uppercase tracking-wider">
+          <tr>
+            <th scope="col" class="px-6 py-3.5">Emergency Title</th>
+            <th scope="col" class="px-6 py-3.5">Hazard Type</th>
+            <th scope="col" class="px-6 py-3.5">Severity</th>
+            <th scope="col" class="px-6 py-3.5">Epicenter Location</th>
+            <th scope="col" class="px-6 py-3.5">Affected Radius</th>
+            <th scope="col" class="px-6 py-3.5">Status</th>
+            <th scope="col" class="px-6 py-3.5 text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white font-medium text-gray-700">
+          <% @emergencies.each do |em| %>
+            <tr class="hover:bg-red-50/20 transition-colors">
+              <td class="px-6 py-4">
+                <div class="font-black text-sm text-gray-900"><%= em.title %></div>
+                <% if em.description.present? %>
+                  <div class="text-[11px] text-gray-500 line-clamp-1 mt-0.5"><%= em.description %></div>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 font-bold text-gray-800">
+                <span class="inline-flex items-center">
+                  <i class="fas fa-exclamation-triangle text-amber-500 mr-1.5"></i>
+                  <%= em.emergency_type %>
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span class="px-2.5 py-1 inline-flex text-[11px] leading-4 rounded-full border <%= em.severity_badge_class %> uppercase">
+                  <%= em.severity %>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-gray-600">
+                <% if em.location %>
+                  <span class="font-bold text-gray-900"><%= em.location.name %></span>
+                  <span class="block text-[11px] text-gray-500"><%= em.location.state %></span>
+                <% else %>
+                  <span class="font-mono text-xs"><%= em.latitude.round(3) %>°N, <%= em.longitude.round(3) %>°E</span>
+                <% end %>
+              </td>
+              <td class="px-6 py-4 font-bold text-gray-800">
+                <%= em.affected_radius || 50.0 %> km
+              </td>
+              <td class="px-6 py-4">
+                <span class="px-2.5 py-1 inline-flex text-[11px] leading-4 rounded-full border <%= em.status_badge_class %> uppercase">
+                  <%= em.status %>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <%= link_to emergency_path(em), class: "inline-flex items-center px-3.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs transition-colors border border-indigo-200" do %>
+                  <span>Command Center</span>
+                  <i class="fas fa-chevron-right ml-1.5 text-[10px]"></i>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

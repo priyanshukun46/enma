@@ -10,19 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_30_154500) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_30_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "emergencies", force: :cascade do |t|
+    t.float "affected_radius", default: 50.0
     t.datetime "created_at", null: false
+    t.text "description"
     t.string "emergency_type"
     t.float "latitude"
+    t.bigint "location_id"
     t.float "longitude"
     t.string "severity"
+    t.datetime "simulated_at"
     t.string "status"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_emergencies_on_location_id"
   end
 
   create_table "locations", force: :cascade do |t|
@@ -62,6 +67,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_154500) do
     t.index ["origin_id"], name: "index_logistics_routes_on_origin_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "avatar_url"
+    t.datetime "created_at", null: false
+    t.string "email_address", null: false
+    t.string "name", null: false
+    t.string "password_digest"
+    t.string "provider"
+    t.string "role", default: "operator", null: false
+    t.string "uid"
+    t.datetime "updated_at", null: false
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid"
+  end
+
   create_table "warehouses", force: :cascade do |t|
     t.integer "capacity"
     t.datetime "created_at", null: false
@@ -71,6 +90,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_30_154500) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "emergencies", "locations"
   add_foreign_key "logistics_routes", "locations", column: "destination_id"
   add_foreign_key "logistics_routes", "locations", column: "origin_id"
 end

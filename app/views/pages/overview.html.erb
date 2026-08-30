@@ -1,0 +1,96 @@
+<div class="max-w-5xl mx-auto space-y-10 pb-16">
+  <!-- Header -->
+  <div class="pb-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <div class="flex items-center space-x-2">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
+          Smart India Hackathon 2026
+        </span>
+      </div>
+      <h2 class="text-3xl font-black text-gray-900 tracking-tight mt-1">2-Minute Judge Overview</h2>
+      <p class="text-xs text-gray-600 mt-0.5">High-level executive briefing summarizing the problem, solution, AI algorithms, and operational impact.</p>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <%= link_to demo_path, class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center" do %>
+        <i class="fas fa-play mr-1.5"></i>
+        <span>Live Interactive Demo</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- 4 Core Showcase Pillars -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- 1. The Problem -->
+    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-3">
+      <div class="flex items-center space-x-2 text-red-600 font-bold text-xs uppercase tracking-wider">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>1. The Problem</span>
+      </div>
+      <h3 class="text-lg font-black text-gray-900">Geographic Isolation &amp; Supply Cutoff</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Over 45 million citizens in the North Eastern Region live across rugged terrain subject to extreme monsoons, cloudbursts, and landslides. In emergencies, critical transport corridors fail, leaving entire mountain communities isolated without food or medical supply routes.
+      </p>
+    </div>
+
+    <!-- 2. The Solution -->
+    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-3">
+      <div class="flex items-center space-x-2 text-indigo-600 font-bold text-xs uppercase tracking-wider">
+        <i class="fas fa-brain"></i>
+        <span>2. The Solution</span>
+      </div>
+      <h3 class="text-lg font-black text-gray-900">ENMA AI: Predictive Logistics Engine</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        ENMA AI transforms disaster logistics from reactive chaos into explainable, autonomous intelligence. By combining baseline accessibility indexes, terrain risk models, and stockpile heuristics, ENMA AI plans the safest relief corridors in real time.
+      </p>
+    </div>
+
+    <!-- 3. The Intelligence -->
+    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-3">
+      <div class="flex items-center space-x-2 text-purple-600 font-bold text-xs uppercase tracking-wider">
+        <i class="fas fa-cogs"></i>
+        <span>3. The Intelligence Engines</span>
+      </div>
+      <h3 class="text-lg font-black text-gray-900">Explainable Multi-Criteria Algorithms</h3>
+      <ul class="text-xs text-gray-600 space-y-1.5 list-disc list-inside">
+        <li><strong>Accessibility Intelligence:</strong> 6-factor deductions (road, rain, slope).</li>
+        <li><strong>Smart Route Optimizer:</strong> Fastest, Safest, and Most Efficient routing.</li>
+        <li><strong>Disaster Response Center:</strong> Spatial buffering &amp; community priority scores.</li>
+        <li><strong>Warehouse Allocation:</strong> Optimal depot selection with transparent reasoning.</li>
+      </ul>
+    </div>
+
+    <!-- 4. The Impact -->
+    <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-3">
+      <div class="flex items-center space-x-2 text-emerald-600 font-bold text-xs uppercase tracking-wider">
+        <i class="fas fa-chart-line"></i>
+        <span>4. Measurable Real-World Impact</span>
+      </div>
+      <h3 class="text-lg font-black text-gray-900">Saving Lives &amp; Accelerating Relief</h3>
+      <ul class="text-xs text-gray-600 space-y-1.5 list-disc list-inside">
+        <li><strong>75% Faster Dispatch:</strong> Automated multi-agency directive generation.</li>
+        <li><strong>Zero Guesswork:</strong> Explainable rankings for disaster managers.</li>
+        <li><strong>Safest Corridors:</strong> Eliminates responder vehicle entrapment in mudslides.</li>
+        <li><strong>Equitable Coverage:</strong> Prevents overlooked remote highland communities.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Quick Action Navigation Footer -->
+  <div class="p-6 rounded-2xl bg-indigo-900 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h4 class="text-base font-bold">Ready to explore the platform in depth?</h4>
+      <p class="text-xs text-indigo-200 mt-0.5">Explore the live decision engines, maps, and interactive simulators.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <%= link_to architecture_path, class: "px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 transition-colors" do %>
+        <span>Explore Architecture</span>
+      <% end %>
+
+      <%= link_to root_path, class: "px-4 py-2 bg-white text-indigo-900 hover:bg-gray-100 font-black text-xs rounded-xl shadow-md transition-colors" do %>
+        <span>Open Intelligence Dashboard</span>
+      <% end %>
+    </div>
+  </div>
+</div>

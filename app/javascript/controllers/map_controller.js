@@ -10,11 +10,40 @@ export default class extends Controller {
   }
 
   connect() {
+    this.handleResize = () => {
+      if (this.map) {
+        this.map.invalidateSize()
+      }
+    }
+
     this.initializeMap()
     this.renderAllMarkers()
+
+    // Trigger map redraw to ensure full container width coverage
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize()
+      }
+    }, 150)
+
+    window.addEventListener("resize", this.handleResize)
+
+    // Setup ResizeObserver for responsive flex/grid resizing
+    if (window.ResizeObserver && this.hasContainerTarget) {
+      this.resizeObserver = new ResizeObserver(() => {
+        if (this.map) {
+          this.map.invalidateSize()
+        }
+      })
+      this.resizeObserver.observe(this.containerTarget)
+    }
   }
 
   disconnect() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect()
+    }
+    window.removeEventListener("resize", this.handleResize)
     if (this.map) {
       this.map.remove()
       this.map = null
@@ -22,11 +51,14 @@ export default class extends Controller {
   }
 
   initializeMap() {
-    // 1. Initialize Leaflet Map centered on North East India (~26.0° N, 92.5° E)
-    const centerLatLng = [26.0, 92.5]
+    // 1. Initialize Leaflet Map centered on North East India (~26.0° N, 92.8° E)
+    const centerLatLng = [26.0, 92.8]
     const defaultZoom = 7
 
-    this.map = L.map(this.containerTarget).setView(centerLatLng, defaultZoom)
+    this.map = L.map(this.containerTarget, {
+      zoomControl: true,
+      scrollWheelZoom: true
+    }).setView(centerLatLng, defaultZoom)
 
     // 2. Add OpenStreetMap Tile Layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -243,7 +275,7 @@ export default class extends Controller {
 
   showSearchResults(matches) {
     if (matches.length === 0) {
-      this.searchResultsTarget.innerHTML = `<div class="p-3 text-sm text-gray-500">No matching locations found</div>`
+      this.searchResultsTarget.innerHTML = `<div class="p-3 text-xs text-gray-500">No matching locations found</div>`
       this.searchResultsTarget.classList.remove("hidden")
       return
     }
@@ -260,12 +292,12 @@ export default class extends Controller {
         <button type="button"
                 data-action="click->map#goToLocation"
                 data-location-id="${loc.id}"
-                class="w-full text-left p-3 hover:bg-gray-50 flex flex-col transition-colors duration-150 border-b border-gray-100 last:border-0">
+                class="w-full text-left p-3 hover:bg-indigo-50/70 flex flex-col transition-colors duration-150 border-b border-gray-100 last:border-0 cursor-pointer">
           <div class="flex justify-between items-center">
-            <span class="font-bold text-sm text-gray-900">${loc.name}</span>
+            <span class="font-bold text-xs text-gray-900">${loc.name}</span>
             <span class="text-xs ${scoreClass}">${score}/100</span>
           </div>
-          <span class="text-xs text-gray-500">${loc.district}, ${loc.state}</span>
+          <span class="text-[11px] text-gray-500">${loc.district}, ${loc.state}</span>
         </button>
       `
     }).join("")

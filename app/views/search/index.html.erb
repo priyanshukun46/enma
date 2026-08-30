@@ -1,0 +1,117 @@
+<div class="max-w-4xl mx-auto space-y-6 pb-16">
+  <!-- Search Header & Form -->
+  <div class="pb-4 border-b border-gray-200 space-y-3">
+    <h2 class="text-3xl font-black text-gray-900 tracking-tight">Global Search</h2>
+    <p class="text-xs text-gray-600">Query locations, relief warehouses, and active disaster records across North East India.</p>
+
+    <%= form_with url: search_path, method: :get, local: true, class: "flex items-center gap-2 max-w-2xl pt-2" do |f| %>
+      <div class="relative flex-1">
+        <i class="fas fa-search absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+        <%= f.text_field :q,
+                         value: @query,
+                         placeholder: "Search by community name, district, state, warehouse, or emergency type...",
+                         class: "w-full pl-11 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-gray-900 bg-white shadow-sm" %>
+      </div>
+      <%= f.submit "Search", class: "px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-sm transition-colors cursor-pointer" %>
+    <% end %>
+  </div>
+
+  <% if @query.present? %>
+    <div class="text-xs text-gray-500 font-medium">
+      Found <strong><%= @total_results %></strong> matches for "<span class="text-gray-900 font-bold"><%= @query %></span>"
+    </div>
+
+    <% if @total_results == 0 %>
+      <div class="p-12 text-center bg-white rounded-2xl border border-gray-200 space-y-3">
+        <div class="w-12 h-12 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-xl mx-auto">
+          <i class="fas fa-search"></i>
+        </div>
+        <h4 class="text-base font-bold text-gray-800">No matching records found</h4>
+        <p class="text-xs text-gray-500 max-w-md mx-auto">Try searching for locations like "Tawang", "Guwahati", "Haflong", or disaster types like "Landslide", "Flood".</p>
+      </div>
+    <% else %>
+
+      <!-- 1. Location Matches -->
+      <% if @locations.any? %>
+        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center">
+            <i class="fas fa-map-marker-alt text-indigo-600 mr-2"></i>
+            Locations &amp; Communities (<%= @locations.size %>)
+          </h3>
+
+          <div class="divide-y divide-gray-100">
+            <% @locations.each do |loc| %>
+              <div class="py-3 flex items-center justify-between hover:bg-gray-50/50 px-2 rounded-lg transition-colors">
+                <div>
+                  <h4 class="text-sm font-bold text-gray-900"><%= loc.name %></h4>
+                  <span class="text-xs text-gray-500"><%= loc.district %>, <%= loc.state %> • Population: <%= number_with_delimiter(loc.population) %></span>
+                </div>
+                <div class="flex items-center space-x-3">
+                  <span class="text-xs font-black <%= loc.accessibility_score < 40 ? 'text-red-600' : 'text-gray-900' %>">
+                    <%= loc.accessibility_score %>/100
+                  </span>
+                  <%= link_to "Intelligence Report", accessibility_location_path(loc), class: "text-xs font-bold text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-2.5 py-1 rounded border border-indigo-200" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- 2. Warehouse Matches -->
+      <% if @warehouses.any? %>
+        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center">
+            <i class="fas fa-warehouse text-emerald-600 mr-2"></i>
+            Relief Warehouses &amp; Staging Hubs (<%= @warehouses.size %>)
+          </h3>
+
+          <div class="divide-y divide-gray-100">
+            <% @warehouses.each do |wh| %>
+              <div class="py-3 flex items-center justify-between hover:bg-gray-50/50 px-2 rounded-lg transition-colors">
+                <div>
+                  <h4 class="text-sm font-bold text-gray-900"><%= wh.name %></h4>
+                  <span class="text-xs text-gray-500 font-mono"><%= wh.latitude.round(3) %>°N, <%= wh.longitude.round(3) %>°E</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                  <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                    <%= number_with_delimiter(wh.capacity) %> Units Capacity
+                  </span>
+                  <%= link_to "View on Map", map_path, class: "text-xs font-bold text-gray-700 hover:text-gray-900 bg-gray-100 px-2.5 py-1 rounded" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <!-- 3. Emergency Matches -->
+      <% if @emergencies.any? %>
+        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+          <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center">
+            <i class="fas fa-radiation text-red-600 mr-2"></i>
+            Emergency &amp; Disaster Incidents (<%= @emergencies.size %>)
+          </h3>
+
+          <div class="divide-y divide-gray-100">
+            <% @emergencies.each do |em| %>
+              <div class="py-3 flex items-center justify-between hover:bg-gray-50/50 px-2 rounded-lg transition-colors">
+                <div>
+                  <h4 class="text-sm font-bold text-gray-900"><%= em.title %></h4>
+                  <span class="text-xs text-gray-500"><%= em.emergency_type %> • Radius: <%= em.affected_radius %> km</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] uppercase border <%= em.severity_badge_class %>">
+                    <%= em.severity %>
+                  </span>
+                  <%= link_to "Command Center", emergency_path(em), class: "text-xs font-bold text-red-700 hover:text-red-900 bg-red-50 px-2.5 py-1 rounded border border-red-200" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+    <% end %>
+  <% end %>
+</div>
