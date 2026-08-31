@@ -335,21 +335,93 @@ locations_data.each do |data|
 end
 puts "Configured #{Location.count} locations with accessibility intelligence scores."
 
-# --- Warehouses (Strategically located across North East India) ---
+# --- Warehouses (Strategically located with Resource Intelligence) ---
 warehouses_data = [
-  { name: "North East Regional Hub - Guwahati", latitude: 26.1800, longitude: 91.7500, capacity: 50000 },
-  { name: "Arunachal Logistics Center - Itanagar", latitude: 27.1100, longitude: 93.6200, capacity: 20000 },
-  { name: "Meghalaya Distribution Point - Shillong", latitude: 25.5800, longitude: 91.8800, capacity: 25000 },
-  { name: "Manipur Relief Base - Imphal", latitude: 24.8200, longitude: 93.9600, capacity: 18000 },
-  { name: "Tripura Central Warehouse - Agartala", latitude: 23.8400, longitude: 91.2900, capacity: 30000 }
+  {
+    name: "North East Regional Logistics Hub - Guwahati",
+    latitude: 26.1800, longitude: 91.7500, capacity: 50000,
+    district: "Kamrup Metropolitan", state: "Assam",
+    utilized_capacity: 20000, operational_status: "OPERATIONAL",
+    address: "NH-37 Logistics Corridor, Guwahati",
+    contact_phone: "+91-361-2540001",
+    resources_json: {
+      "medical_kits" => 2500, "food_packages" => 8000,
+      "water_units" => 15000, "emergency_shelters" => 400,
+      "fuel_liters" => 12000, "rescue_equipment" => 180
+    }.to_json
+  },
+  {
+    name: "Arunachal Logistics Center - Itanagar",
+    latitude: 27.1100, longitude: 93.6200, capacity: 20000,
+    district: "Papum Pare", state: "Arunachal Pradesh",
+    utilized_capacity: 14400, operational_status: "LIMITED",
+    address: "Trans-Arunachal Highway Depot, Itanagar",
+    contact_phone: "+91-360-2244001",
+    resources_json: {
+      "medical_kits" => 600, "food_packages" => 2000,
+      "water_units" => 3500, "emergency_shelters" => 120,
+      "fuel_liters" => 3000, "rescue_equipment" => 45
+    }.to_json
+  },
+  {
+    name: "Meghalaya Forward Relief Depot - Shillong",
+    latitude: 25.5800, longitude: 91.8800, capacity: 25000,
+    district: "East Khasi Hills", state: "Meghalaya",
+    utilized_capacity: 23000, operational_status: "OVERLOADED",
+    address: "Laitumkhrah Supply Depot, Shillong",
+    contact_phone: "+91-364-2222001",
+    resources_json: {
+      "medical_kits" => 200, "food_packages" => 800,
+      "water_units" => 1500, "emergency_shelters" => 40,
+      "fuel_liters" => 1200, "rescue_equipment" => 15
+    }.to_json
+  },
+  {
+    name: "Manipur Relief Base - Imphal",
+    latitude: 24.8200, longitude: 93.9600, capacity: 18000,
+    district: "Imphal West", state: "Manipur",
+    utilized_capacity: 8100, operational_status: "OPERATIONAL",
+    address: "Imphal Valley Relief Base, NH-2",
+    contact_phone: "+91-385-2450001",
+    resources_json: {
+      "medical_kits" => 1800, "food_packages" => 3500,
+      "water_units" => 5000, "emergency_shelters" => 200,
+      "fuel_liters" => 4000, "rescue_equipment" => 90
+    }.to_json
+  },
+  {
+    name: "Tripura Central Warehouse - Agartala",
+    latitude: 23.8400, longitude: 91.2900, capacity: 30000,
+    district: "West Tripura", state: "Tripura",
+    utilized_capacity: 9000, operational_status: "OPERATIONAL",
+    address: "National Highway 8, Agartala Logistics Park",
+    contact_phone: "+91-381-2325001",
+    resources_json: {
+      "medical_kits" => 1200, "food_packages" => 6000,
+      "water_units" => 10000, "emergency_shelters" => 350,
+      "fuel_liters" => 8000, "rescue_equipment" => 60
+    }.to_json
+  }
 ]
 
 warehouses_data.each do |data|
-  Warehouse.find_or_create_by!(name: data[:name]) do |warehouse|
-    warehouse.assign_attributes(data)
-  end
+  wh = Warehouse.find_or_initialize_by(name: data[:name])
+  wh.assign_attributes(data.except(:resources_json))
+  wh.resources_json = data[:resources_json]
+
+  # Link to closest seeded location
+  closest_loc = Location.all.min_by { |l|
+    dlat = (l.latitude - data[:latitude]).abs
+    dlon = (l.longitude - data[:longitude]).abs
+    dlat + dlon
+  }
+  wh.location = closest_loc if closest_loc
+
+  wh.save!
+  wh.update_readiness!
+  puts "  ✓ [#{wh.dynamic_status}] #{wh.name}: Readiness #{wh.readiness_score}/100, Util #{wh.utilization_percentage}%"
 end
-puts "Configured #{Warehouse.count} warehouses."
+puts "Configured #{Warehouse.count} warehouses with resource intelligence."
 
 # --- Emergency Records (Phase 6) ---
 emergencies_data = [
@@ -460,6 +532,7 @@ operator_pass  = ENV["OPERATOR_PASSWORD"].presence || "password123"
 
 admin_user = User.find_or_initialize_by(email_address: admin_email.downcase)
 admin_user.name = "Priyanshu Kumar (Administrator)"
+admin_user.username = "admin"
 admin_user.password = admin_pass
 admin_user.password_confirmation = admin_pass
 admin_user.role = :admin
@@ -467,11 +540,332 @@ admin_user.save!
 
 operator_user = User.find_or_initialize_by(email_address: operator_email.downcase)
 operator_user.name = "Field Logistics Officer"
+operator_user.username = "operator"
 operator_user.password = operator_pass
 operator_user.password_confirmation = operator_pass
 operator_user.role = :operator
 operator_user.save!
 
 puts "Configured #{User.count} users (Admin: #{admin_email}, Operator: #{operator_email})."
-puts "Seeding complete for ENMA AI Authentication & Platform Modules."
+
+# =============================================================================
+# --- GIS Road Network Intelligence Seeds ---
+# =============================================================================
+puts "Seeding North East India Road Accessibility Intelligence Network..."
+
+roads_data = [
+  {
+    name: "East-West Strategic Arterial (Guwahati – Nagaon – Kaziranga – Jorhat)",
+    road_number: "NH-27",
+    district: "Kamrup / Nagaon",
+    state: "Assam",
+    status: "accessible",
+    risk_score: 18.0,
+    length_km: 305.0,
+    reason: "Pavement condition optimal. Minor monsoon surface moisture, bridges fully structural.",
+    last_updated_at: 15.minutes.ago,
+    coordinates: [
+      [26.1445, 91.7362],
+      [26.1920, 92.1520],
+      [26.3450, 92.6840],
+      [26.5820, 93.1700],
+      [26.7509, 94.2037]
+    ]
+  },
+  {
+    name: "Trans-Arunachal Mountain Highway (Itanagar – Ziro – Daporijo)",
+    road_number: "NH-13",
+    district: "Papum Pare / Lower Subansiri",
+    state: "Arunachal Pradesh",
+    status: "moderate_risk",
+    risk_score: 58.0,
+    length_km: 198.0,
+    reason: "Heavy rainfall causing minor mudslides and gravel washout along unpaved curves.",
+    last_updated_at: 25.minutes.ago,
+    coordinates: [
+      [27.0844, 93.6053],
+      [27.3500, 93.7200],
+      [27.5600, 93.8300],
+      [27.9800, 94.2200]
+    ]
+  },
+  {
+    name: "Sela Pass High-Altitude Corridor (Tawang – Sela – Bomdila)",
+    road_number: "NH-229",
+    district: "Tawang / West Kameng",
+    state: "Arunachal Pradesh",
+    status: "blocked",
+    risk_score: 92.0,
+    length_km: 172.0,
+    reason: "Severe rockfall & slope failure at Sela Pass detour. Heavy transit impassable.",
+    last_updated_at: 8.minutes.ago,
+    coordinates: [
+      [27.5855, 91.8679],
+      [27.5020, 92.1000],
+      [27.3800, 92.2500],
+      [27.2645, 92.4200]
+    ]
+  },
+  {
+    name: "Guwahati – Shillong Expressway Corridor",
+    road_number: "NH-06",
+    district: "Ri-Bhoi / East Khasi Hills",
+    state: "Meghalaya",
+    status: "moderate_risk",
+    risk_score: 45.0,
+    length_km: 99.0,
+    reason: "Persistent heavy mist, low visibility & wet pavement in high plateau section.",
+    last_updated_at: 40.minutes.ago,
+    coordinates: [
+      [26.1445, 91.7362],
+      [25.9000, 91.8000],
+      [25.7200, 91.8500],
+      [25.5788, 91.8933]
+    ]
+  },
+  {
+    name: "Shillong – Cherrapunjee Highland Ridge Route",
+    road_number: "SH-05",
+    district: "East Khasi Hills",
+    state: "Meghalaya",
+    status: "high_risk",
+    risk_score: 78.0,
+    length_km: 54.0,
+    reason: "Extreme rainfall saturation (190 mm/24h), road shoulder erosion near gorge bends.",
+    last_updated_at: 12.minutes.ago,
+    coordinates: [
+      [25.5788, 91.8933],
+      [25.4500, 91.8200],
+      [25.3500, 91.7600],
+      [25.2758, 91.7226]
+    ]
+  },
+  {
+    name: "Kohima – Kangpokpi – Imphal Valley Lifeline",
+    road_number: "NH-02",
+    district: "Kohima / Senapati / Imphal West",
+    state: "Manipur",
+    status: "moderate_risk",
+    risk_score: 52.0,
+    length_km: 138.0,
+    reason: "Waterlogging in valley sectors, continuous monitoring of slope stabilization works.",
+    last_updated_at: 30.minutes.ago,
+    coordinates: [
+      [25.6751, 94.1086],
+      [25.3800, 94.0100],
+      [25.1000, 93.9600],
+      [24.8170, 93.9368]
+    ]
+  },
+  {
+    name: "Imphal – Pallel – Moreh Border Corridor",
+    road_number: "NH-102",
+    district: "Tengnoupal / Chandel",
+    state: "Manipur",
+    status: "accessible",
+    risk_score: 28.0,
+    length_km: 110.0,
+    reason: "Highway fully clear and fortified. Normal commercial and relief vehicle speeds.",
+    last_updated_at: 50.minutes.ago,
+    coordinates: [
+      [24.8170, 93.9368],
+      [24.5200, 94.0200],
+      [24.3100, 94.1800],
+      [24.2400, 94.3000]
+    ]
+  },
+  {
+    name: "Dimapur – Kohima Mountain Highway",
+    road_number: "NH-29",
+    district: "Dimapur / Kohima",
+    state: "Nagaland",
+    status: "moderate_risk",
+    risk_score: 55.0,
+    length_km: 74.0,
+    reason: "Subsidence near Dzüdza river bridge. One-way convoy flow operational.",
+    last_updated_at: 18.minutes.ago,
+    coordinates: [
+      [25.9060, 93.7270],
+      [25.8000, 93.8800],
+      [25.7200, 94.0200],
+      [25.6751, 94.1086]
+    ]
+  },
+  {
+    name: "Aizawl – Lunglei Ridge Highway",
+    road_number: "NH-54",
+    district: "Aizawl / Serchhip / Lunglei",
+    state: "Mizoram",
+    status: "high_risk",
+    risk_score: 74.0,
+    length_km: 165.0,
+    reason: "Multiple debris slides cleared to single lane. Extreme slope incline hazards.",
+    last_updated_at: 14.minutes.ago,
+    coordinates: [
+      [23.7271, 92.7176],
+      [23.4000, 92.7800],
+      [23.1000, 92.8100],
+      [22.8800, 92.7300]
+    ]
+  },
+  {
+    name: "Churaibari – Agartala Central Lifeline",
+    road_number: "NH-08",
+    district: "North Tripura / West Tripura",
+    state: "Tripura",
+    status: "accessible",
+    risk_score: 16.0,
+    length_km: 185.0,
+    reason: "Four-lane highway operating smoothly. Drainage systems fully functional.",
+    last_updated_at: 1.hour.ago,
+    coordinates: [
+      [24.4500, 92.2400],
+      [24.1800, 91.9500],
+      [23.9500, 91.6200],
+      [23.8315, 91.2868]
+    ]
+  },
+  {
+    name: "Sevoke – Teesta – Gangtok Mountain Lifeline",
+    road_number: "NH-10",
+    district: "Kalimpong / East Sikkim",
+    state: "Sikkim",
+    status: "blocked",
+    risk_score: 94.0,
+    length_km: 114.0,
+    reason: "Teesta river flooding breached foundation wall at 29th Mile. Traffic suspended.",
+    last_updated_at: 5.minutes.ago,
+    coordinates: [
+      [26.8800, 88.4700],
+      [27.0500, 88.4800],
+      [27.2000, 88.5200],
+      [27.3314, 88.6138]
+    ]
+  },
+  {
+    name: "Silchar – Haflong Hill Railway-Road Corridor",
+    road_number: "NH-27S",
+    district: "Cachar / Dima Hasao",
+    state: "Assam",
+    status: "high_risk",
+    risk_score: 82.0,
+    length_km: 102.0,
+    reason: "Barail range flash runoff. Heavy vehicles restricted due to culvert damage.",
+    last_updated_at: 20.minutes.ago,
+    coordinates: [
+      [24.8333, 92.7789],
+      [25.0200, 92.8600],
+      [25.1800, 93.0200]
+    ]
+  }
+]
+
+roads_data.each do |r_attrs|
+  coords = r_attrs.delete(:coordinates)
+  road = Road.find_or_initialize_by(road_number: r_attrs[:road_number], state: r_attrs[:state])
+  road.assign_attributes(r_attrs)
+  road.geometry_coordinates = coords
+  road.save!
+  puts "  ✓ [#{road.status.upcase}] #{road.road_number} • #{road.name} (#{road.state}): Risk #{road.risk_score}/100"
+end
+
+puts "Configured #{Road.count} monitored road corridors in GIS intelligence database."
+
+# =============================================================================
+# --- Field Incident Reports Seeds (Geo-tagged Observations) ---
+# =============================================================================
+puts "Seeding Field Incident Reports..."
+operator_user = User.find_by(role: :operator) || User.first
+
+incidents_data = [
+  {
+    incident_type: "landslide",
+    severity: "critical",
+    status: "verified",
+    location_name: "Sela Pass Detour Junction, Tawang",
+    district: "Tawang",
+    state: "Arunachal Pradesh",
+    latitude: 27.5855,
+    longitude: 91.8679,
+    reported_at: 15.minutes.ago,
+    description: "Major rockfall debris and mudslide blocking both inbound and outbound highway lanes at Sela Pass curve. Over 40 vehicles stalled. NDRF clearing detachment required.",
+    user: operator_user
+  },
+  {
+    incident_type: "flood",
+    severity: "high",
+    status: "verified",
+    location_name: "Teesta Embankment 29th Mile",
+    district: "Kalimpong",
+    state: "Sikkim",
+    latitude: 27.0500,
+    longitude: 88.4800,
+    reported_at: 45.minutes.ago,
+    description: "River water overtopping asphalt by 1.2 meters. Retaining foundation breached. Complete vehicle ban enforced until hydro-level subsides.",
+    user: operator_user
+  },
+  {
+    incident_type: "road_damage",
+    severity: "medium",
+    status: "reported",
+    location_name: "Dzüdza River Bridge Approach",
+    district: "Kohima",
+    state: "Nagaland",
+    latitude: 25.6751,
+    longitude: 94.1086,
+    reported_at: 2.hours.ago,
+    description: "Substantial pavement subsidence on west abutment approach. Heavy trucks halted, light utility vehicles passing cautiously in single file.",
+    user: operator_user
+  },
+  {
+    incident_type: "weather_disruption",
+    severity: "medium",
+    status: "verified",
+    location_name: "Cherrapunjee High Plateau Ridge",
+    district: "East Khasi Hills",
+    state: "Meghalaya",
+    latitude: 25.2758,
+    longitude: 91.7226,
+    reported_at: 3.hours.ago,
+    description: "Extremely dense cloud cover and torrential rainfall limiting forward optical visibility to under 10 meters. Emergency convoy speeds capped at 20 km/h.",
+    user: operator_user
+  },
+  {
+    incident_type: "traffic_blockage",
+    severity: "low",
+    status: "resolved",
+    location_name: "Guwahati Bypass Toll Plaza",
+    district: "Kamrup Metropolitan",
+    state: "Assam",
+    latitude: 26.1445,
+    longitude: 91.7362,
+    reported_at: 5.hours.ago,
+    description: "Breakdown of heavy timber carrier cleared by mobile crane. Logistics corridors returned to nominal flow velocity.",
+    user: operator_user
+  }
+]
+
+incidents_data.each do |inc_attrs|
+  inc = Incident.find_or_initialize_by(location_name: inc_attrs[:location_name], incident_type: inc_attrs[:incident_type])
+  inc.assign_attributes(inc_attrs)
+  inc.save!
+  puts "  ✓ [#{inc.severity.upcase}] #{inc.type_emoji} #{inc.type_label} @ #{inc.location_name}: Status #{inc.status.upcase}"
+end
+
+puts "Configured #{Incident.count} field incident reports."
+
+# =============================================================================
+# --- Run ENMA Hybrid Road Risk Intelligence Engine over All Corridors ---
+# =============================================================================
+puts "\nExecuting ENMA Hybrid Road Risk Intelligence Engine..."
+Road.find_each do |road|
+  res = road.recalculate_risk!(trigger_source: "initial_assessment")
+  puts "  ⚡ [#{res[:risk_level].upcase}] #{road.road_number} • #{road.name} (#{road.state}): Score #{res[:risk_score]}/100 (W:#{res[:factors][:weather]} H:#{res[:factors][:historical]} I:#{res[:factors][:incidents]} C:#{res[:factors][:condition]} G:#{res[:factors][:geographic]})"
+end
+
+puts "Configured #{RoadRiskAssessment.count} road risk intelligence assessments."
+puts "Seeding complete for ENMA AI Authentication, GIS, Incidents, and Hybrid Risk Intelligence Engine."
+
+
+
 

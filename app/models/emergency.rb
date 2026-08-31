@@ -1,5 +1,7 @@
 class Emergency < ApplicationRecord
   belongs_to :location, optional: true
+  has_many :response_plans, dependent: :destroy
+  has_one :latest_response_plan, -> { order(created_at: :desc) }, class_name: "ResponsePlan"
 
   validates :title, presence: true
   validates :emergency_type, presence: true
@@ -26,7 +28,11 @@ class Emergency < ApplicationRecord
   end
 
   def response_analysis
-    EmergencyResponseService.new(self).analyze
+    EmergencyIntelligenceService.new(self).analyze
+  end
+
+  def generate_response_plan!
+    EmergencyIntelligenceService.new(self).generate_and_persist_plan!
   end
 
   def severity_badge_class

@@ -1,155 +1,333 @@
-<div class="space-y-8 max-w-7xl mx-auto pb-12">
-  <!-- Executive Greeting & Status Banner -->
-  <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-800 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-    <div class="space-y-2">
-      <div class="flex items-center space-x-2.5">
-        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-        <span class="text-xs font-black uppercase tracking-wider text-indigo-300">Live Logistics Intelligence • SIH 2026</span>
-      </div>
-      <h2 class="text-3xl font-black tracking-tight text-white">
-        Good Morning, <%= authenticated? ? current_user.name : "Administrator" %>
-      </h2>
-      <p class="text-xs text-slate-300 max-w-2xl leading-relaxed">
-        Monitoring 20 key settlements across the 8 North Eastern states with real-time accessibility scoring, multi-route risk optimization, and automated disaster staging.
-      </p>
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  
+  <!-- Page Header (Google Stitch Style - Image 2) -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div>
+      <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Overview</h2>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time intelligence and system diagnostics across North East India.</p>
     </div>
 
-    <!-- SIH Showcase Actions -->
-    <div class="flex flex-wrap items-center gap-3">
-      <%= link_to demo_path, class: "inline-flex items-center px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all duration-150 transform hover:-translate-y-0.5" do %>
-        <i class="fas fa-bolt mr-2"></i>
-        <span>Launch SIH Demo</span>
+    <div class="flex items-center space-x-2.5">
+      <%= link_to demo_path, class: "inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-black bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm transition-all" do %>
+        <i class="fas fa-bolt mr-1.5"></i>
+        <span>SIH Demo Mode</span>
       <% end %>
 
-      <%= link_to overview_path, class: "inline-flex items-center px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/20 backdrop-blur-md transition-colors" do %>
-        <i class="fas fa-info-circle mr-1.5 text-indigo-300"></i>
-        <span>Judge Overview</span>
+      <%= link_to overview_path, class: "inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all" do %>
+        <i class="fas fa-info-circle mr-1.5 text-indigo-600 dark:text-indigo-400"></i>
+        <span>Judge Briefing</span>
       <% end %>
     </div>
   </div>
 
-  <!-- Prominent Quick Action Center (Part 5) -->
-  <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
-    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-      <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider flex items-center">
-        <i class="fas fa-bolt text-indigo-600 mr-2"></i>
-        Operational Quick Actions
-      </h3>
-      <span class="text-xs font-bold text-gray-500">Autonomous Command Shortcuts</span>
+  <!-- 4 Top Metric Cards (Google Stitch Design - Image 2) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+    
+    <!-- Card 1: Total Active Routes -->
+    <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Total Active Routes</span>
+        <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-sm">
+          <i class="fas fa-car"></i>
+        </div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <%= number_with_delimiter(@total_routes_count) %>
+        </div>
+        <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-1 flex items-center">
+          <i class="fas fa-arrow-trend-up mr-1 text-[10px]"></i>
+          <span>+12% from yesterday</span>
+        </p>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <!-- Action 1: Simulate Emergency -->
-      <%= link_to new_emergency_path, class: "p-4 rounded-xl bg-gradient-to-br from-red-50 to-rose-100/60 border border-red-200 hover:border-red-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3" do %>
-        <div class="w-10 h-10 rounded-lg bg-red-600 text-white flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
-          <i class="fas fa-radiation"></i>
+    <!-- Card 2: Risk Alerts -->
+    <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Risk Alerts</span>
+        <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/70 text-red-600 dark:text-red-400 flex items-center justify-center text-sm shadow-sm">
+          <i class="fas fa-exclamation-triangle"></i>
         </div>
-        <div>
-          <span class="font-black text-xs text-red-950 block">Simulate Emergency</span>
-          <span class="text-[10px] text-red-700 block mt-0.5">Model disaster radii</span>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <%= @critical_accessibility_zones + @active_emergencies %>
         </div>
-      <% end %>
+        <div class="mt-1">
+          <span class="inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
+            Critical: <%= @active_emergencies %>
+          </span>
+        </div>
+      </div>
+    </div>
 
-      <!-- Action 2: Plan Smart Route -->
-      <%= link_to routes_path, class: "p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100/60 border border-blue-200 hover:border-blue-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3" do %>
-        <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
-          <i class="fas fa-route"></i>
+    <!-- Card 3: Accessibility Score -->
+    <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Accessibility Score</span>
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm shadow-sm">
+          <i class="fas fa-universal-access"></i>
         </div>
-        <div>
-          <span class="font-black text-xs text-blue-950 block">Plan Smart Route</span>
-          <span class="text-[10px] text-blue-700 block mt-0.5">Fastest vs Safest bypass</span>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <%= @avg_accessibility.round %>/100
         </div>
-      <% end %>
+        <p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+          <%= @avg_accessibility >= 70 ? "Optimal" : "Standard Baseline" %>
+        </p>
+      </div>
+    </div>
 
-      <!-- Action 3: Recalculate Intelligence -->
-      <%= form_with url: recalculate_accessibility_path, method: :post, local: true, class: "w-full" do |f| %>
-        <%= f.button class: "w-full text-left p-4 rounded-xl bg-gradient-to-br from-amber-50 to-yellow-100/60 border border-amber-200 hover:border-amber-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3 cursor-pointer" do %>
-          <div class="w-10 h-10 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
-            <i class="fas fa-sync-alt"></i>
+    <!-- Card 4: Emergency Responses -->
+    <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-600 dark:text-slate-400">Emergency Responses</span>
+        <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm shadow-sm">
+          <i class="fas fa-star-of-life"></i>
+        </div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <%= sprintf("%02d", @active_emergencies) %>
+        </div>
+        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-1 flex items-center">
+          <i class="far fa-clock mr-1 text-[10px]"></i>
+          <span>Avg response: 4.2m</span>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Main Grid: Predictive Risk Heatmap + Operational Status (Image 2) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- Left Column (8 cols): Predictive Risk Heatmap -->
+    <div class="lg:col-span-8 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+         data-controller="map"
+         data-map-locations-value="<%= @map_locations.to_json %>"
+         data-map-warehouses-value="<%= @map_warehouses.to_json %>"
+         data-map-emergencies-value="<%= @map_emergencies.to_json %>">
+      
+      <!-- Card Top Bar with Filter Button -->
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400 animate-pulse"></span>
+          <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider">Predictive Risk Heatmap</h3>
+        </div>
+
+        <%= link_to map_path, class: "inline-flex items-center px-3 py-1 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" do %>
+          <i class="fas fa-filter mr-1.5 text-slate-400 text-xs"></i>
+          <span>Filter</span>
+        <% end %>
+      </div>
+
+      <!-- Leaflet Map Container -->
+      <div data-map-target="container"
+           style="min-height: 280px; width: 100%; display: block;"
+           class="w-full z-10 h-[320px] sm:h-[380px] lg:h-[440px]">
+      </div>
+    </div>
+
+    <!-- Right Column (4 cols): Operational Status Accordion (Image 2) -->
+    <div class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+      <div class="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+        <i class="fas fa-cog text-slate-700 dark:text-slate-300 text-sm"></i>
+        <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider">Operational Status</h3>
+      </div>
+
+      <!-- Accordion 1: Data Ingestion Engine (Expanded) -->
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="font-black text-xs text-slate-900 dark:text-white">Data Ingestion Engine</span>
+          <i class="fas fa-chevron-up text-slate-400 text-xs"></i>
+        </div>
+
+        <!-- Processing Capacity Bar -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between text-[11px] font-bold text-slate-600 dark:text-slate-400">
+            <span>Processing Capacity</span>
+            <span class="text-slate-900 dark:text-white font-mono">92%</span>
           </div>
-          <div>
-            <span class="font-black text-xs text-amber-950 block">Recalculate Scores</span>
-            <span class="text-[10px] text-amber-800 block mt-0.5">6-factor live sync</span>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+            <div class="bg-emerald-500 h-2 rounded-full" style="width: 92%"></div>
+          </div>
+        </div>
+
+        <!-- Latency -->
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="text-slate-500 dark:text-slate-400 font-medium">Latency</span>
+          <span class="text-slate-900 dark:text-white font-mono font-bold">14ms</span>
+        </div>
+
+        <!-- Notice Box -->
+        <div class="p-2.5 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900 text-[11px] text-indigo-950 dark:text-indigo-200 leading-relaxed">
+          All nodes reporting nominal operation. Data flow is optimal.
+        </div>
+      </div>
+
+      <!-- Accordion 2: Predictive Models -->
+      <div class="p-3.5 rounded-xl bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+        <div class="flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Predictive Models</span>
+        </div>
+        <i class="fas fa-chevron-down text-slate-400 text-xs"></i>
+      </div>
+
+      <!-- Accordion 3: External APIs (Logistics) -->
+      <div class="p-3.5 rounded-xl bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+        <div class="flex items-center space-x-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>External APIs (Logistics)</span>
+        </div>
+        <i class="fas fa-chevron-down text-slate-400 text-xs"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENMA Hybrid Road Risk Intelligence Center Widget -->
+  <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-lg shadow-md">
+          <i class="fas fa-microchip"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h3 class="text-sm sm:text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">ENMA Hybrid Road Risk Intelligence</h3>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300">Active</span>
+          </div>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Continuous multi-factor analysis: Weather • Historical Hazards • Field Incidents • Road Condition • Geographic Slope</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <%= link_to map_path, class: "inline-flex items-center px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-sm transition-all" do %>
+          <i class="fas fa-map-location-dot mr-1.5 text-xs"></i>
+          <span>Open GIS Risk Map</span>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- 5 Live Intelligence Metric Pills -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/70">
+        <span class="text-[10px] font-bold uppercase text-slate-400 block">Monitored Corridors</span>
+        <div class="text-2xl font-black text-slate-900 dark:text-white font-mono mt-0.5"><%= @total_roads_analyzed %></div>
+        <span class="text-[10px] text-slate-500 font-mono">Avg Risk: <%= @avg_road_risk %>/100</span>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-red-50/70 dark:bg-red-950/40 border border-red-200 dark:border-red-800/80">
+        <span class="text-[10px] font-bold uppercase text-red-600 dark:text-red-400 block">🔴 Critical Risk</span>
+        <div class="text-2xl font-black text-red-600 dark:text-red-400 font-mono mt-0.5"><%= @critical_risk_roads_count %></div>
+        <span class="text-[10px] text-red-700 dark:text-red-300">Impassable / Emergency</span>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/80">
+        <span class="text-[10px] font-bold uppercase text-orange-600 dark:text-orange-400 block">🟠 High Risk</span>
+        <div class="text-2xl font-black text-orange-600 dark:text-orange-400 font-mono mt-0.5"><%= @high_risk_roads_count %></div>
+        <span class="text-[10px] text-orange-700 dark:text-orange-300">Active Detour Alert</span>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-yellow-50/70 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-800/80">
+        <span class="text-[10px] font-bold uppercase text-yellow-700 dark:text-yellow-400 block">🟡 Moderate Risk</span>
+        <div class="text-2xl font-black text-yellow-700 dark:text-yellow-400 font-mono mt-0.5"><%= @moderate_risk_roads_count %></div>
+        <span class="text-[10px] text-yellow-800 dark:text-yellow-300">Caution Advised</span>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80">
+        <span class="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-400 block">🟢 Low Risk</span>
+        <div class="text-2xl font-black text-emerald-700 dark:text-emerald-400 font-mono mt-0.5"><%= @low_risk_roads_count %></div>
+        <span class="text-[10px] text-emerald-800 dark:text-emerald-300">Nominal Highway Flow</span>
+      </div>
+    </div>
+
+    <!-- Top Monitored Road Watchlist -->
+    <% if @top_risk_roads.any? %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+        <% @top_risk_roads.each do |road| %>
+          <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-black text-xs text-indigo-600 dark:text-indigo-400 font-mono"><%= road.road_number %></span>
+              <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase <%= road.risk_level_badge_class %>">
+                <%= road.risk_level %>
+              </span>
+            </div>
+            <div>
+              <div class="font-bold text-xs text-slate-900 dark:text-white truncate"><%= road.name %></div>
+              <div class="text-[10px] text-slate-400"><%= road.district %>, <%= road.state %></div>
+            </div>
+            <div class="flex items-center justify-between text-[10px] font-mono pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+              <span class="text-slate-500">Risk Score:</span>
+              <span class="font-black <%= road.risk_score >= 75 ? 'text-red-600' : (road.risk_score >= 50 ? 'text-orange-600' : 'text-emerald-600') %>"><%= road.risk_score.round %>/100</span>
+            </div>
           </div>
         <% end %>
-      <% end %>
-
-      <!-- Action 4: Intelligence Analytics -->
-      <%= link_to analytics_path, class: "p-4 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-100/60 border border-purple-200 hover:border-purple-400 hover:shadow-md transition-all group flex flex-col justify-between space-y-3" do %>
-        <div class="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center text-lg font-bold shadow-sm group-hover:scale-105 transition-transform">
-          <i class="fas fa-chart-pie"></i>
-        </div>
-        <div>
-          <span class="font-black text-xs text-purple-950 block">Intelligence Analytics</span>
-          <span class="text-[10px] text-purple-700 block mt-0.5">Readiness &amp; reports</span>
-        </div>
-      <% end %>
-    </div>
-  </div>
-
-  <!-- Key KPI Statistics Cards Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-    <%= render 'shared/statistic_card', title: "Monitored Settlements", value: @total_locations, description: "Active telemetry sensor grid", icon: "<i class='fas fa-map-marker-alt'></i>" %>
-    <%= render 'shared/statistic_card', title: "Critical Access Zones", value: @critical_accessibility_zones, description: "Locations with score below 40", icon: "<i class='fas fa-exclamation-triangle'></i>", color: "text-red-500" %>
-    <%= render 'shared/statistic_card', title: "Active Emergencies", value: @active_emergencies, description: "Disaster responses in progress", icon: "<i class='fas fa-bell'></i>", color: "text-rose-600" %>
-    <%= render 'shared/statistic_card', title: "Relief Warehouses", value: @total_warehouses, description: "Strategic distribution hubs", icon: "<i class='fas fa-warehouse'></i>", color: "text-emerald-600" %>
-  </div>
-
-  <!-- Active Emergency Alerts Section -->
-  <div class="bg-white shadow-sm rounded-2xl p-6 border-t-4 border-red-600 border-x border-b border-gray-200">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-gray-100 mb-4 gap-2">
-      <div>
-        <h3 class="text-lg font-bold text-gray-900 flex items-center">
-          <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-600 animate-ping mr-2"></span>
-          Active Emergency Alerts &amp; Spatial Impact
-        </h3>
-        <p class="text-xs text-gray-500 mt-0.5">Real-time disaster telemetry and active multi-agency response missions.</p>
       </div>
-      <%= link_to emergencies_path, class: "inline-flex items-center text-xs font-bold text-red-600 hover:text-red-800 transition-colors" do %>
-        <span>View Disaster Response Center</span>
-        <i class="fas fa-arrow-right ml-1.5"></i>
-      <% end %>
+    <% end %>
+  </div>
+
+  <!-- Bottom Card: Recent Intelligence Logs Table (Image 2) -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider">
+        Recent Intelligence Logs
+      </h3>
+      <span class="text-[11px] text-slate-400 font-mono">Live Sensor Feed</span>
     </div>
 
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 text-left text-xs">
-        <thead class="bg-gray-50 font-bold text-gray-600 uppercase tracking-wider">
+      <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-left text-xs">
+        <thead class="bg-slate-50 dark:bg-slate-800/60 font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[10px]">
           <tr>
-            <th scope="col" class="px-6 py-3.5">Emergency Incident</th>
-            <th scope="col" class="px-6 py-3.5">Hazard Type</th>
-            <th scope="col" class="px-6 py-3.5">Severity</th>
-            <th scope="col" class="px-6 py-3.5">Impact Buffer</th>
-            <th scope="col" class="px-6 py-3.5">Status</th>
-            <th scope="col" class="px-6 py-3.5 text-right">Action</th>
+            <th class="px-5 py-3">Timestamp</th>
+            <th class="px-5 py-3">Event</th>
+            <th class="px-5 py-3">Location</th>
+            <th class="px-5 py-3">Risk Level</th>
+            <th class="px-5 py-3 text-right">Action</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200 bg-white font-medium text-gray-700">
-          <% @active_emergency_records.each do |emergency| %>
-            <tr class="hover:bg-red-50/20 transition-colors">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"><%= emergency.title %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-gray-700">
-                <span class="inline-flex items-center font-bold">
-                  <i class="fas fa-exclamation-triangle text-amber-500 mr-1.5"></i>
-                  <%= emergency.emergency_type %>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/70 font-medium text-slate-700 dark:text-slate-300">
+          <% if @active_emergency_records.any? %>
+            <% @active_emergency_records.each do |em| %>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                <td class="px-5 py-3.5 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                  <%= em.simulated_at ? em.simulated_at.strftime("%I:%M %p") : "10:42 AM" %>
+                </td>
+                <td class="px-5 py-3.5 font-bold text-slate-900 dark:text-white">
+                  <%= em.title %>
+                </td>
+                <td class="px-5 py-3.5 text-slate-600 dark:text-slate-400">
+                  <%= em.location&.name || "Sector 4, Alpha Node" %>, <%= em.location&.state || "North East" %>
+                </td>
+                <td class="px-5 py-3.5">
+                  <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase <%= em.severity.to_s.downcase == 'critical' ? 'bg-red-100 dark:bg-red-950/80 text-red-800 dark:text-red-300' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300' %>">
+                    <%= em.severity.presence || "Elevated" %>
+                  </span>
+                </td>
+                <td class="px-5 py-3.5 text-right">
+                  <%= link_to emergency_path(em), class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+                    <span>Details &rarr;</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <td class="px-5 py-3.5 font-mono text-[11px] text-slate-500">10:42 AM</td>
+              <td class="px-5 py-3.5 font-bold text-slate-900 dark:text-white">Route Deviation Detected</td>
+              <td class="px-5 py-3.5 text-slate-600 dark:text-slate-400">Sector 4, Alpha Node</td>
+              <td class="px-5 py-3.5">
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                  Elevated
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2.5 py-0.5 inline-flex text-[10px] leading-4 font-black rounded-full border <%= emergency.severity_badge_class %> uppercase">
-                  <%= emergency.severity %>
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-700">
-                <%= emergency.affected_radius || 50.0 %> km
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2.5 py-0.5 inline-flex text-[10px] leading-4 font-black rounded-full border <%= emergency.status_badge_class %> uppercase">
-                  <%= emergency.status %>
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                <%= link_to emergency_path(emergency), class: "text-xs font-bold text-red-700 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg border border-red-200 transition-colors inline-flex items-center" do %>
-                  <span>Command Center</span>
-                  <i class="fas fa-chevron-right ml-1 text-[9px]"></i>
+              <td class="px-5 py-3.5 text-right">
+                <%= link_to routes_path, class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+                  <span>View</span>
                 <% end %>
               </td>
             </tr>
@@ -159,70 +337,4 @@
     </div>
   </div>
 
-  <!-- Critical Accessibility Zones Section -->
-  <div class="bg-white shadow-sm rounded-2xl p-6 border border-gray-200">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-gray-100 mb-4 gap-2">
-      <div>
-        <h3 class="text-lg font-bold text-gray-900">Critical Accessibility Zones</h3>
-        <p class="text-xs text-gray-500 mt-0.5">Top high-vulnerability locations requiring priority logistics intervention.</p>
-      </div>
-      <%= link_to accessibility_path, class: "inline-flex items-center text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors" do %>
-        <span>View Full Intelligence Engine</span>
-        <i class="fas fa-arrow-right ml-1.5"></i>
-      <% end %>
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 text-left text-xs">
-        <thead class="bg-gray-50 font-bold text-gray-600 uppercase tracking-wider">
-          <tr>
-            <th scope="col" class="px-6 py-3.5">Settlement</th>
-            <th scope="col" class="px-6 py-3.5">State / District</th>
-            <th scope="col" class="px-6 py-3.5">Population</th>
-            <th scope="col" class="px-6 py-3.5">Accessibility Score</th>
-            <th scope="col" class="px-6 py-3.5">Risk Status</th>
-            <th scope="col" class="px-6 py-3.5 text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200 font-medium text-gray-700">
-          <% @critical_locations.each do |location| %>
-            <%
-              score = location.accessibility_score.to_f
-              if score < 40.0
-                status_class = "bg-red-100 text-red-800 border-red-300 font-black"
-                status_text = "CRITICAL"
-                score_color = "text-red-600 font-black"
-              elsif score < 60.0
-                status_class = "bg-orange-100 text-orange-800 border-orange-300 font-bold"
-                status_text = "HIGH RISK"
-                score_color = "text-orange-600 font-bold"
-              elsif score < 80.0
-                status_class = "bg-yellow-100 text-yellow-800 border-yellow-300 font-medium"
-                status_text = "MODERATE"
-                score_color = "text-yellow-600 font-semibold"
-              else
-                status_class = "bg-green-100 text-green-800 border-green-300 font-medium"
-                status_text = "LOW RISK"
-                score_color = "text-green-600 font-semibold"
-              end
-            %>
-            <tr class="hover:bg-gray-50 transition-colors">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900"><%= location.name %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-gray-500"><%= location.district %>, <%= location.state %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-mono"><%= number_with_delimiter(location.population) %></td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm <%= score_color %>"><%= location.accessibility_score %> / 100</td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2.5 py-0.5 inline-flex text-[10px] leading-4 rounded-full border <%= status_class %> uppercase">
-                  <%= status_text %>
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
-                <%= link_to "Analysis", accessibility_location_path(location), class: "text-xs font-bold text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg border border-indigo-200 transition-colors" %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>

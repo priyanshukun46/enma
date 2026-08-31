@@ -1,5 +1,5 @@
 class EmergenciesController < ApplicationController
-  before_action :set_emergency, only: [:show, :update_status]
+  before_action :set_emergency, only: [:show, :update_status, :generate_plan, :export_briefing]
 
   def index
     @status_filter = params[:status].presence || "all"
@@ -44,7 +44,8 @@ class EmergenciesController < ApplicationController
     end
 
     if @emergency.save
-      flash[:notice] = "Emergency scenario successfully initialized & analyzed."
+      @emergency.generate_response_plan!
+      flash[:notice] = "Emergency scenario successfully initialized & automated AI Response Plan generated."
       redirect_to emergency_path(@emergency)
     else
       @locations = Location.order(:name)
@@ -54,7 +55,27 @@ class EmergenciesController < ApplicationController
   end
 
   def show
-    @analysis = EmergencyResponseService.new(@emergency).analyze
+    @analysis = @emergency.response_analysis
+    @response_plan = @emergency.latest_response_plan || @emergency.generate_response_plan!
+  end
+
+  def generate_plan
+    @response_plan = @emergency.generate_response_plan!
+    flash[:notice] = "⚡ AI Response Plan regenerated and updated with real-time intelligence."
+    redirect_to emergency_path(@emergency)
+  end
+
+  def export_briefing
+    @response_plan = @emergency.latest_response_plan || @emergency.generate_response_plan!
+    respond_to do |format|
+      format.text { render plain: @response_plan.formatted_briefing }
+      format.json { render json: @response_plan.plan_payload }
+      format.html do
+        send_data @response_plan.formatted_briefing,
+                  filename: "ENMA_AI_Response_Plan_#{@emergency.id}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.txt",
+                  type: "text/plain"
+      end
+    end
   end
 
   def update_status
@@ -69,7 +90,7 @@ class EmergenciesController < ApplicationController
   end
 
   def demo_scenario
-    # Create or update realistic SIH demonstration scenario
+    # Create or update realistic SIH demonstration scenario (Heavy Rainfall -> Critical Landslide near Tawang)
     tawang = Location.find_by(name: "Tawang") || Location.first
 
     demo_emergency = Emergency.create!(
@@ -85,7 +106,10 @@ class EmergenciesController < ApplicationController
       description: "Torrential monsoon cloudburst triggered severe slope failure blocking arterial NH-13/NH-229 corridor. Multiple highland villages isolated with immediate relief supply deficit."
     )
 
-    flash[:notice] = "⚡ SIH 2026 Demo Scenario Activated: Critical Landslide near Tawang simulated successfully."
+    # Generate full Response Plan automatically
+    demo_emergency.generate_response_plan!
+
+    flash[:notice] = "⚡ SIH 2026 Demo Scenario Activated: Critical Landslide near Tawang simulated & AI Response Plan generated successfully."
     redirect_to emergency_path(demo_emergency)
   end
 

@@ -1,0 +1,222 @@
+class Road < ApplicationRecord
+  serialize :geometry_coordinates, coder: JSON
+
+  has_many :risk_assessments, class_name: "RoadRiskAssessment", dependent: :destroy
+  has_one :latest_risk_assessment, -> { order(calculated_at: :desc) }, class_name: "RoadRiskAssessment"
+
+  STATUSES = %w[accessible moderate_risk high_risk blocked].freeze
+  RISK_LEVELS = %w[low moderate high critical].freeze
+  ROAD_CONDITIONS = %w[excellent good moderate poor critical].freeze
+
+  CONDITION_SCORES = {
+    "excellent" => 5.0,
+    "good" => 20.0,
+    "moderate" => 50.0,
+    "poor" => 75.0,
+    "critical" => 100.0
+  }.freeze
+
+  ENMA_RISK_WEIGHTS = {
+    weather: 0.30,
+    historical: 0.20,
+    incidents: 0.25,
+    condition: 0.15,
+    geographic: 0.10
+  }.freeze
+
+  STATES = [
+    "Assam",
+    "Arunachal Pradesh",
+    "Meghalaya",
+    "Manipur",
+    "Mizoram",
+    "Nagaland",
+    "Tripura",
+    "Sikkim"
+  ].freeze
+
+  validates :name, presence: true
+  validates :road_number, presence: true
+  validates :state, presence: true, inclusion: { in: STATES }
+  validates :status, presence: true, inclusion: { in: STATUSES }
+  validates :risk_level, presence: true, inclusion: { in: RISK_LEVELS }
+  validates :road_condition, presence: true, inclusion: { in: ROAD_CONDITIONS }
+  validates :risk_score, presence: true, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0 }
+  validates :weather_risk, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0 }
+  validates :historical_risk, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0 }
+  validates :incident_risk, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0 }
+  validates :condition_risk, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0 }
+  validates :geographic_risk, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 100.0 }
+
+  scope :accessible, -> { where(status: "accessible") }
+  scope :moderate_risk, -> { where(status: "moderate_risk") }
+  scope :high_risk, -> { where(status: "high_risk") }
+  scope :blocked, -> { where(status: "blocked") }
+
+  scope :low_risk_level, -> { where(risk_level: "low") }
+  scope :moderate_risk_level, -> { where(risk_level: "moderate") }
+  scope :high_risk_level, -> { where(risk_level: "high") }
+  scope :critical_risk_level, -> { where(risk_level: "critical") }
+
+  scope :by_state, ->(state) { where(state: state) if state.present? && state != "all" }
+  scope :by_status, ->(status) { where(status: status) if status.present? && status != "all" }
+  scope :by_risk_level, ->(level) { where(risk_level: level) if level.present? && level != "all" }
+  scope :by_risk_range, ->(min, max) { where(risk_score: (min.to_f)..(max.to_f)) if min.present? && max.present? }
+  scope :by_risk_desc, -> { order(risk_score: :desc) }
+
+  # =========================================================================
+  # Coordinates & Geometry Helpers
+  # =========================================================================
+  def coordinates
+    data = geometry_coordinates
+    if data.is_a?(String)
+      data = begin
+        JSON.parse(data)
+      rescue JSON::ParserError
+        []
+      end
+    end
+    data.is_a?(Array) ? data : []
+  end
+
+  def coordinates=(val)
+    if val.is_a?(String)
+      super(val)
+    else
+      super(val.to_json)
+    end
+  end
+
+  # =========================================================================
+  # Intelligence Engine Integration
+  # =========================================================================
+  def recalculate_risk!(trigger_source: "manual")
+    Enma::RoadRiskIntelligenceService.new(self).calculate_and_update!(trigger_source: trigger_source)
+  end
+
+  def risk_explanation
+    Enma::RiskExplanationService.new(self).generate
+  end
+
+  # =========================================================================
+  # Visual & Styling Helpers
+  # =========================================================================
+  def status_color
+    case status.to_s.downcase
+    when "accessible"
+      "#10b981" # Green
+    when "moderate_risk"
+      "#eab308" # Yellow
+    when "high_risk"
+      "#f97316" # Orange
+    when "blocked"
+      "#ef4444" # Red
+    else
+      "#64748b" # Gray
+    end
+  end
+
+  def risk_level_color
+    case risk_level.to_s.downcase
+    when "low"      then "#10b981"
+    when "moderate" then "#eab308"
+    when "high"     then "#f97316"
+    when "critical" then "#ef4444"
+    else "#64748b"
+    end
+  end
+
+  def status_display
+    case status.to_s.downcase
+    when "accessible"    then "Accessible"
+    when "moderate_risk" then "Moderate Risk"
+    when "high_risk"     then "High Risk"
+    when "blocked"       then "Blocked"
+    else status.to_s.titleize
+    end
+  end
+
+  def risk_level_display
+    case risk_level.to_s.downcase
+    when "critical" then "CRITICAL RISK"
+    when "high"     then "HIGH RISK"
+    when "moderate" then "MODERATE RISK"
+    when "low"      then "LOW RISK"
+    else risk_level.to_s.upcase
+    end
+  end
+
+  def risk_level_badge_class
+    case risk_level.to_s.downcase
+    when "critical"
+      "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800 font-black animate-pulse"
+    when "high"
+      "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-800 font-bold"
+    when "moderate"
+      "bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800 font-bold"
+    when "low"
+      "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 font-medium"
+    else
+      "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+    end
+  end
+
+  def status_badge_class
+    case status.to_s.downcase
+    when "accessible"
+      "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800"
+    when "moderate_risk"
+      "bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800"
+    when "high_risk"
+      "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-800"
+    when "blocked"
+      "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800 font-black"
+    else
+      "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+    end
+  end
+
+  def formatted_last_updated
+    time = last_risk_calculated_at || last_updated_at || updated_at || Time.current
+    if time > 1.hour.ago
+      "#{((Time.current - time) / 60).round} mins ago"
+    elsif time > 1.day.ago
+      "#{((Time.current - time) / 3600).round} hours ago"
+    else
+      time.strftime("%b %d, %H:%M")
+    end
+  end
+
+  def as_map_json
+    explanation = risk_explanation
+    {
+      id: id,
+      name: name,
+      road_number: road_number,
+      district: district,
+      state: state,
+      status: status,
+      status_display: status_display,
+      risk_level: risk_level,
+      risk_level_display: risk_level_display,
+      risk_level_badge_class: risk_level_badge_class,
+      status_color: status_color,
+      status_badge_class: status_badge_class,
+      risk_score: risk_score.round(1),
+      factors: {
+        weather: weather_risk.round(1),
+        historical: historical_risk.round(1),
+        incidents: incident_risk.round(1),
+        condition: condition_risk.round(1),
+        geographic: geographic_risk.round(1)
+      },
+      weights: ENMA_RISK_WEIGHTS,
+      primary_factors: explanation[:primary_factors],
+      summary_reason: explanation[:narrative_summary].presence || reason.presence || "Nominal conditions along corridor.",
+      length_km: length_km,
+      road_condition: road_condition.titleize,
+      coordinates: coordinates,
+      last_updated: formatted_last_updated
+    }
+  end
+end

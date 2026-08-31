@@ -3,7 +3,7 @@ require "test_helper"
 class RouteOptimizationServiceTest < ActiveSupport::TestCase
   setup do
     @guwahati = Location.create!(
-      name: "Guwahati",
+      name: "Guwahati Hub",
       latitude: 26.1445,
       longitude: 91.7362,
       road_quality: "excellent",
@@ -13,7 +13,7 @@ class RouteOptimizationServiceTest < ActiveSupport::TestCase
     )
 
     @tawang = Location.create!(
-      name: "Tawang",
+      name: "Tawang Post",
       latitude: 27.5855,
       longitude: 91.8679,
       road_quality: "poor",
@@ -31,25 +31,30 @@ class RouteOptimizationServiceTest < ActiveSupport::TestCase
     assert distance < 200.0
   end
 
-  test "generates three distinct route strategies with multi-criteria scores" do
+  test "generates distinct FASTEST, SAFEST, and BALANCED route strategies with multi-criteria scores" do
     service = RouteOptimizationService.new(origin: @guwahati, destination: @tawang, vehicle_type: "Truck")
     result = service.calculate
 
     routes = result[:routes]
     assert_not_nil routes[:fastest]
     assert_not_nil routes[:safest]
-    assert_not_nil routes[:efficient]
+    assert_not_nil routes[:balanced]
 
-    # Check that scores dimension hash exists
-    [routes[:fastest], routes[:safest], routes[:efficient]].each do |r|
+    [routes[:fastest], routes[:safest], routes[:balanced]].each do |r|
+      assert r[:risk_score] >= 0.0 && r[:risk_score] <= 100.0
+      assert r[:accessibility_score] >= 0.0 && r[:accessibility_score] <= 100.0
+      assert r[:efficiency_score] >= 0.0 && r[:efficiency_score] <= 100.0
+      assert r[:overall_score] >= 0.0 && r[:overall_score] <= 100.0
+
       assert_not_nil r[:scores][:safety]
       assert_not_nil r[:scores][:time]
       assert_not_nil r[:scores][:accessibility]
-      assert_not_nil r[:scores][:overall_intelligence]
-      assert r[:coordinates].size >= 2
+      assert_not_nil r[:scores][:efficiency]
+      assert_not_nil r[:scores][:overall_score]
+      assert r[:geometry].size >= 2
     end
 
-    # Safest has high safety score
+    # Safest has highest safety score (lowest risk)
     assert routes[:safest][:scores][:safety] >= routes[:fastest][:scores][:safety]
   end
 
@@ -68,5 +73,14 @@ class RouteOptimizationServiceTest < ActiveSupport::TestCase
     assert rec[:confidence_percentage] >= 75
     assert rec[:reasons].any?
     assert_not_nil rec[:trade_off]
+    assert rec[:trade_off].include?("recommended")
+  end
+
+  test "supports different vehicle profiles with customized weights" do
+    amb_service = RouteOptimizationService.new(origin: @guwahati, destination: @tawang, vehicle_type: "Ambulance")
+    truck_service = RouteOptimizationService.new(origin: @guwahati, destination: @tawang, vehicle_type: "Truck")
+
+    assert_equal 60.0, amb_service.send(:vehicle_profile)[:base_speed]
+    assert_equal 42.0, truck_service.send(:vehicle_profile)[:base_speed]
   end
 end

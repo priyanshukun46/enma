@@ -1,24 +1,40 @@
 class User < ApplicationRecord
   has_secure_password validations: false
 
+  has_many :incidents, dependent: :nullify
+
   enum :role, { operator: "operator", admin: "admin" }, default: :operator
 
   normalizes :email_address, with: ->(e) { e.to_s.strip.downcase }
+  normalizes :username, with: ->(u) { u.to_s.strip.downcase.presence }
 
   generates_token_for :password_reset, expires_in: 20.minutes do
     password_salt&.last(10)
   end
+
+  before_validation :derive_username_if_blank
 
   validates :name, presence: true
   validates :email_address, presence: true,
                             uniqueness: { case_sensitive: false },
                             format: { with: URI::MailTo::EMAIL_REGEXP, message: "is not a valid email address" }
 
+  validates :username, uniqueness: { case_sensitive: false, allow_nil: true },
+                       format: { with: /\A[a-zA-Z0-9_.]+\z/, message: "can only contain letters, numbers, underscores and dots", allow_nil: true }
+
   validates :password, length: { minimum: 8, message: "must be at least 8 characters long" },
                        confirmation: true,
                        if: -> { password.present? }
   validates :password, presence: true,
                        if: -> { provider.blank? && password_digest.blank? }
+
+  # Find user by either username, email address, or name
+  def self.find_by_login(identifier)
+    clean_id = identifier.to_s.strip.downcase
+    return nil if clean_id.blank?
+
+    where("LOWER(email_address) = :id OR LOWER(username) = :id OR LOWER(name) = :id", id: clean_id).first
+  end
 
   # OAuth find or create logic
   def self.from_omniauth(auth)
@@ -28,7 +44,8 @@ class User < ApplicationRecord
     uid = auth.uid.to_s
     info = auth.info || {}
     email = info.email.presence || "#{provider}_#{uid}@oauth.enma.ai"
-    name = info.name.presence || info.nickname.presence || "ENMA Intelligence Officer"
+    nickname = info.nickname.presence
+    name = info.name.presence || nickname || "ENMA Intelligence Officer"
     avatar = info.image.presence
 
     # First attempt: find by existing provider + UID
@@ -38,13 +55,14 @@ class User < ApplicationRecord
     # Second attempt: find by email to link existing account safely
     user = find_by(email_address: email.downcase)
     if user
-      user.update(provider: provider, uid: uid, avatar_url: user.avatar_url.presence || avatar)
+      user.update(provider: provider, uid: uid, avatar_url: user.avatar_url.presence || avatar, username: user.username.presence || nickname)
       return user
     end
 
     # Third attempt: create new user defaulting to operator
     create!(
       name: name,
+      username: nickname,
       email_address: email.downcase,
       provider: provider,
       uid: uid,
@@ -65,7 +83,7 @@ class User < ApplicationRecord
     case provider.to_s.downcase
     when "google_oauth2", "google" then "Google"
     when "github" then "GitHub"
-    else "Email / Password"
+    else "Username / Password"
     end
   end
 
@@ -85,6 +103,23 @@ class User < ApplicationRecord
       parts.first[0, 2].upcase
     else
       "EA"
+    end
+  end
+
+  private
+
+  def derive_username_if_blank
+    if username.blank? && email_address.present?
+      base_user = email_address.split("@").first.to_s.gsub(/[^a-zA-Z0-9_.]/, "")
+      if base_user.present?
+        candidate = base_user
+        counter = 1
+        while User.where.not(id: id).exists?(username: candidate.downcase)
+          candidate = "#{base_user}_#{counter}"
+          counter += 1
+        end
+        self.username = candidate.downcase
+      end
     end
   end
 end

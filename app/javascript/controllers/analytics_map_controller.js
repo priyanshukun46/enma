@@ -56,11 +56,11 @@ export default class extends Controller {
     // Update active button state
     this.modeButtonTargets.forEach(btn => {
       if (btn.dataset.mode === mode) {
-        btn.classList.remove('bg-white', 'text-gray-700')
+        btn.classList.remove('bg-white', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300')
         btn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm')
       } else {
         btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm')
-        btn.classList.add('bg-white', 'text-gray-700')
+        btn.classList.add('bg-white', 'dark:bg-slate-900', 'text-slate-700', 'dark:text-slate-300')
       }
     })
 

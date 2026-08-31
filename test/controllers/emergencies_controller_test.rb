@@ -31,7 +31,7 @@ class EmergenciesControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get emergencies_url
     assert_response :success
-    assert_select "h2", "Emergency Response Center"
+    assert_select "h2", /Active Incidents/
     assert_select "tbody tr", minimum: 1
   end
 

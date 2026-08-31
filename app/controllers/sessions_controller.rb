@@ -4,14 +4,15 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by(email_address: params[:email_address].to_s.strip.downcase)
+    login_param = params[:login].presence || params[:email_address].presence || params[:username]
+    user = User.find_by_login(login_param)
 
     if user&.authenticate(params[:password])
       login(user)
       flash[:notice] = "Welcome back, #{user.name}!"
       redirect_to(session.delete(:return_to) || root_path)
     else
-      flash.now[:alert] = "Invalid email or password. Please verify your credentials and try again."
+      flash.now[:alert] = "Invalid username, email, or password. Please verify your credentials and try again."
       render :new, status: :unprocessable_entity
     end
   end
@@ -23,10 +24,12 @@ class SessionsController < ApplicationController
     
     email = "demo.#{clean_provider}@enma.ai"
     name = "#{provider_name} Officer"
+    username = "#{clean_provider}_demo"
     avatar = clean_provider == "github" ? "https://avatars.githubusercontent.com/u/9919?v=4" : "https://lh3.googleusercontent.com/a/ACg8ocI"
 
     user = User.find_by(email_address: email) || User.create!(
       name: name,
+      username: username,
       email_address: email,
       provider: clean_provider,
       uid: "#{clean_provider}_demo_#{SecureRandom.hex(4)}",

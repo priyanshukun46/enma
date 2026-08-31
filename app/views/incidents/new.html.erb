@@ -1,0 +1,385 @@
+<div class="max-w-6xl mx-auto space-y-6 pb-28 sm:pb-16"
+     data-controller="incident-form">
+
+  <!-- Mobile Sticky Top Header -->
+  <div class="sticky top-0 z-30 -mx-3 -mt-3 sm:mx-0 sm:mt-0 px-4 py-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between sm:rounded-2xl mb-4 sm:mb-6">
+    <div class="flex items-center space-x-3">
+      <%= link_to incidents_path, class: "w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center text-xs transition-colors" do %>
+        <i class="fas fa-arrow-left"></i>
+      <% end %>
+      <div>
+        <h1 class="text-base sm:text-xl font-black tracking-tight text-slate-900 dark:text-white leading-none">Report Field Incident</h1>
+        <p class="text-[10px] text-slate-400 font-mono mt-0.5 hidden sm:block">ENMA AI Rapid Emergency Observation Network</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
+        <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping mr-1"></span>
+        LIVE OPS
+      </span>
+    </div>
+  </div>
+
+  <!-- Form Container with Intentional 2-Column Responsive Layout -->
+  <%= form_with model: @incident, url: incidents_path, local: true, data: { action: "submit->incident-form#submitForm" }, class: "space-y-6" do |f| %>
+    
+    <% if @incident.errors.any? %>
+      <div class="p-4 rounded-2xl bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-200 text-xs space-y-1">
+        <div class="font-bold flex items-center">
+          <i class="fas fa-exclamation-circle mr-2 text-sm text-red-600"></i>
+          <span><%= pluralize(@incident.errors.count, "error") %> prevented submitting:</span>
+        </div>
+        <ul class="list-disc list-inside pl-1 space-y-0.5 text-red-700 dark:text-red-300 font-medium">
+          <% @incident.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- LEFT COLUMN: Incident Type, Location, Severity, Description (lg:col-span-7) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- STEP 1: Incident Type Selection (Large Touch Cards) -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">1</span>
+              Hazard Type <span class="text-red-500 ml-1">*</span>
+            </label>
+            <span class="text-[10px] text-slate-400 font-mono">1-tap selection</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <% Incident::INCIDENT_TYPES.each do |key, meta| %>
+              <% is_checked = (@incident.incident_type == key) || (key == "landslide" && @incident.incident_type.blank?) %>
+              <label class="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-800/40 cursor-pointer transition-all active:scale-95 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/70 dark:has-[:checked]:bg-indigo-950/70 has-[:checked]:shadow-md min-h-[88px]"
+                     data-action="click->incident-form#selectType"
+                     data-type-emoji="<%= meta[:emoji] %>"
+                     data-type-label="<%= meta[:label] %>">
+                <%= f.radio_button :incident_type, key, checked: is_checked, class: "sr-only" %>
+                <span class="text-2xl sm:text-3xl mb-1.5"><%= meta[:emoji] %></span>
+                <span class="text-xs font-black text-slate-900 dark:text-white text-center leading-tight"><%= meta[:label] %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- STEP 2: Location Capture Card (3 Polished States) -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">2</span>
+              Incident Location <span class="text-red-500 ml-1">*</span>
+            </label>
+            <span class="text-[10px] text-slate-400 font-mono">GPS Sensor</span>
+          </div>
+
+          <!-- 1. GPS Loading State -->
+          <div data-incident-form-target="gpsLoadingState"
+               class="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 animate-pulse shadow-md">
+              <i class="fas fa-location-crosshairs text-base animate-spin"></i>
+            </div>
+            <div>
+              <div class="text-xs font-black text-slate-900 dark:text-white">Detecting GPS Location...</div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400">Acquiring high-accuracy satellite coordinates.</div>
+            </div>
+          </div>
+
+          <!-- 2. GPS Success State -->
+          <div data-incident-form-target="gpsSuccessState"
+               class="hidden p-4 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-center space-x-3.5">
+              <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+                <i class="fas fa-check text-base font-black"></i>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-black text-emerald-900 dark:text-emerald-200 uppercase tracking-wide">Location Captured</span>
+                  <span data-incident-form-target="accuracyDisplay" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-200 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200"></span>
+                </div>
+                <div class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                  <span data-incident-form-target="latitudeDisplay"></span>, <span data-incident-form-target="longitudeDisplay"></span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button"
+                    data-action="click->incident-form#captureLocation"
+                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-sm transition-all flex items-center space-x-1.5 cursor-pointer self-end sm:self-center">
+              <i class="fas fa-rotate text-xs"></i>
+              <span>Refresh GPS</span>
+            </button>
+          </div>
+
+          <!-- 3. GPS Failed / Fallback State -->
+          <div data-incident-form-target="gpsFailedState"
+               class="hidden p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 space-y-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div>
+                <div class="text-xs font-black text-amber-900 dark:text-amber-200">GPS Signal Unavailable</div>
+                <div data-gps-error-msg class="text-[11px] text-amber-800 dark:text-amber-300"></div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 pt-1">
+              <button type="button"
+                      data-action="click->incident-form#captureLocation"
+                      class="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm cursor-pointer">
+                Try Again
+              </button>
+
+              <button type="button"
+                      data-action="click->incident-form#toggleManualCoordinates"
+                      class="px-3 py-1.5 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 font-bold text-xs rounded-xl shadow-sm cursor-pointer">
+                Enter Coordinates Manually
+              </button>
+            </div>
+          </div>
+
+          <!-- Manual Coordinate & Landmark Inputs (Hidden by default when GPS is active) -->
+          <div data-incident-form-target="manualCoordinatesPanel" class="space-y-3 pt-1">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <%= f.label :latitude, "Latitude (°N)", class: "block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1" %>
+                <%= f.number_field :latitude,
+                                   step: :any,
+                                   required: true,
+                                   placeholder: "27.5855",
+                                   data: { incident_form_target: "latitude", action: "input->incident-form#updateLiveSummary" },
+                                   class: "w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+              </div>
+
+              <div>
+                <%= f.label :longitude, "Longitude (°E)", class: "block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1" %>
+                <%= f.number_field :longitude,
+                                   step: :any,
+                                   required: true,
+                                   placeholder: "91.8679",
+                                   data: { incident_form_target: "longitude", action: "input->incident-form#updateLiveSummary" },
+                                   class: "w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <%= f.label :location_name, "Landmark / Corridor", class: "block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1" %>
+                <%= f.text_field :location_name,
+                                 placeholder: "e.g. Sela Pass Curve 12",
+                                 class: "w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+              </div>
+
+              <div>
+                <%= f.label :district, "District", class: "block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1" %>
+                <%= f.text_field :district,
+                                 placeholder: "e.g. Tawang",
+                                 class: "w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+              </div>
+
+              <div>
+                <%= f.label :state, "State", class: "block text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1" %>
+                <%= f.select :state,
+                             Road::STATES,
+                             { prompt: "-- Select State --" },
+                             class: "w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: Severity Selection -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+            <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">3</span>
+            Hazard Severity Level <span class="text-red-500 ml-1">*</span>
+          </label>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <% [
+              ["low", "Low", "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border-emerald-300", "Stable / Minor delay"],
+              ["medium", "Medium", "bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-300 border-yellow-300", "Attention / Caution"],
+              ["high", "High", "bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 border-orange-300", "Warning / Severe damage"],
+              ["critical", "Critical", "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-300 font-black", "Emergency / Impassable"]
+            ].each do |val, label, badge_styling, desc| %>
+              <% is_checked = (@incident.severity == val) || (val == "medium" && @incident.severity.blank?) %>
+              <label class="relative flex flex-col p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition-all active:scale-95 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50 dark:has-[:checked]:bg-indigo-950/50 has-[:checked]:shadow-md"
+                     data-action="click->incident-form#selectSeverity"
+                     data-severity-value="<%= val %>"
+                     data-severity-label="<%= label %>"
+                     data-badge-class="<%= badge_styling %>">
+                <%= f.radio_button :severity, val, checked: is_checked, class: "sr-only" %>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black <%= badge_styling %> px-2 py-0.5 rounded-full border"><%= label %></span>
+                </div>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-tight"><%= desc %></span>
+              </label>
+            <% end %>
+          </div>
+
+          <!-- Contextual Alert Banner for Critical -->
+          <div data-incident-form-target="criticalAlertBanner"
+               class="hidden p-3 rounded-xl bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-800 text-xs text-red-900 dark:text-red-200 flex items-center space-x-2 animate-fadeIn">
+            <i class="fas fa-triangle-exclamation text-red-600 flex-shrink-0"></i>
+            <span>Critical incidents immediately alert NDRF, SDRF, and recalculate regional logistics corridors.</span>
+          </div>
+        </div>
+
+        <!-- STEP 5: Description -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">4</span>
+              Additional Field Observations <span class="text-red-500 ml-1">*</span>
+            </label>
+            <span data-incident-form-target="descriptionCount" class="text-[10px] font-mono text-slate-400">0 / 2000 chars</span>
+          </div>
+
+          <%= f.text_area :description,
+                          rows: 4,
+                          required: true,
+                          placeholder: "Describe the situation, road condition, estimated vehicle queues, bridge structural integrity, or immediate danger...",
+                          data: { incident_form_target: "descriptionInput", action: "input->incident-form#updateDescriptionCount" },
+                          class: "w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:text-slate-400" %>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: Photo Evidence & Live Incident Summary (lg:col-span-5) -->
+      <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-6">
+        
+        <!-- STEP 3: Photographic Evidence Card -->
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">5</span>
+              Photo Evidence
+            </label>
+            <span data-incident-form-target="photoCountBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-mono"></span>
+          </div>
+
+          <!-- Hidden File Inputs -->
+          <%= f.file_field :photos,
+                           multiple: true,
+                           accept: "image/jpeg,image/jpg,image/png,image/webp",
+                           data: { incident_form_target: "fileInput", action: "change->incident-form#handleFiles" },
+                           class: "hidden" %>
+
+          <input type="file"
+                 accept="image/*"
+                 capture="environment"
+                 data-incident-form-target="cameraInput"
+                 data-action="change->incident-form#handleFiles"
+                 class="hidden"
+                 id="mobile_camera_lens_input">
+
+          <!-- Large Camera Capture Action Area -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- 1. Native Mobile Camera -->
+            <label for="mobile_camera_lens_input"
+                   class="p-4 rounded-2xl border-2 border-dashed border-indigo-400 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-950/30 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 cursor-pointer transition-all flex flex-col items-center justify-center text-center space-y-2 active:scale-95">
+              <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-base shadow-md">
+                <i class="fas fa-camera"></i>
+              </div>
+              <div>
+                <span class="text-xs font-black text-slate-900 dark:text-white block">Open Camera</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Capture scene live</span>
+              </div>
+            </label>
+
+            <!-- 2. Gallery Upload -->
+            <button type="button"
+                    onclick="document.querySelector('[data-incident-form-target=fileInput]').click()"
+                    class="p-4 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-all flex flex-col items-center justify-center text-center space-y-2 active:scale-95">
+              <div class="w-10 h-10 rounded-2xl bg-slate-700 dark:bg-slate-600 text-white flex items-center justify-center text-base shadow-md">
+                <i class="fas fa-images"></i>
+              </div>
+              <div>
+                <span class="text-xs font-black text-slate-900 dark:text-white block">From Gallery</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">Choose saved files</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Previews Grid -->
+          <div data-incident-form-target="previewContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1"></div>
+
+          <div data-incident-form-target="emptyPreviewNotice" class="text-center py-3 text-xs text-slate-400">
+            <i class="fas fa-image mr-1"></i> No photos attached yet (Max 5).
+          </div>
+        </div>
+
+        <!-- STEP 6: Live Incident Summary Card (Verification before submission) -->
+        <div class="bg-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-[10px] font-black uppercase text-indigo-400 tracking-wider flex items-center">
+              <i class="fas fa-clipboard-check mr-1.5 text-xs"></i>
+              Incident Summary
+            </span>
+            <span class="text-[10px] text-slate-400 font-mono">Verify Report</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">Hazard Type:</span>
+              <div class="font-bold flex items-center space-x-1.5">
+                <span data-incident-form-target="summaryTypeEmoji">🪨</span>
+                <span data-incident-form-target="summaryTypeLabel">Landslide</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">Severity:</span>
+              <span data-incident-form-target="summarySeverityBadge"
+                    class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-yellow-100 text-yellow-800 border border-yellow-300">
+                Medium
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">Location:</span>
+              <span data-incident-form-target="summaryLocationText" class="font-mono text-slate-200 font-bold">
+                📍 Location pending GPS
+              </span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-slate-400">Evidence:</span>
+              <span data-incident-form-target="summaryPhotosText" class="text-slate-300 font-medium">
+                📷 No photos attached
+              </span>
+            </div>
+          </div>
+
+          <!-- Desktop Submit Button (Hidden on Mobile) -->
+          <div class="hidden sm:block pt-3 border-t border-slate-800">
+            <button type="submit"
+                    data-incident-form-target="submitButton"
+                    class="w-full py-3.5 px-6 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-2xl shadow-lg hover:shadow-red-600/30 transition-all flex items-center justify-center space-x-2 cursor-pointer">
+              <i data-incident-form-target="submitSpinner" class="fas fa-circle-notch fa-spin hidden mr-2"></i>
+              <span data-incident-form-target="submitLabel">Submit Incident Report</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Sticky Bottom Action Bar (Fixed on Mobile Viewports) -->
+    <div class="fixed inset-x-0 bottom-0 z-40 sm:hidden bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 p-3 shadow-2xl safe-area-pb">
+      <button type="submit"
+              data-incident-form-target="submitButton"
+              class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 active:scale-98 text-white font-black text-sm rounded-2xl shadow-lg flex items-center justify-center space-x-2 cursor-pointer transition-all">
+        <i class="fas fa-paper-plane text-xs"></i>
+        <span>SUBMIT INCIDENT REPORT</span>
+      </button>
+    </div>
+
+  <% end %>
+</div>

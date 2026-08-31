@@ -98,10 +98,12 @@ class AccessibilityScoreService
   private
 
   def factor_breakdown
+    weather = WeatherService.fetch(location.latitude, location.longitude, fallback_location: location)
+    
     road_val = location.road_quality.to_s.downcase.strip
     road_penalty = ROAD_PENALTIES.fetch(road_val, 15)
 
-    rain_val = location.rainfall_level.to_s.downcase.strip
+    rain_val = weather[:rainfall_level].to_s.downcase.strip.presence || location.rainfall_level.to_s.downcase.strip
     rain_penalty = RAINFALL_PENALTIES.fetch(rain_val, 5)
 
     landslide_val = location.landslide_risk.to_s.downcase.strip
@@ -116,6 +118,12 @@ class AccessibilityScoreService
     warehouse_dist = (location.distance_to_warehouse || 25.0).to_f
     warehouse_penalty = calculate_warehouse_penalty(warehouse_dist)
 
+    rainfall_display_value = if weather[:source] == "live" && weather[:temperature].present?
+                               "#{rain_val.capitalize} (#{weather[:temperature].round(1)}°C, #{weather[:precipitation]} mm)"
+                             else
+                               rain_val.capitalize.presence || "Moderate"
+                             end
+
     {
       road_quality: {
         title: "Road Quality",
@@ -126,12 +134,13 @@ class AccessibilityScoreService
         description: road_description(road_val)
       },
       rainfall: {
-        title: "Rainfall Level",
-        value: rain_val.capitalize.presence || "Moderate",
+        title: "Rainfall & Weather",
+        value: rainfall_display_value,
         raw_value: rain_val,
         impact: -rain_penalty,
         impact_level: impact_level_text(rain_penalty, 25),
-        description: rainfall_description(rain_val)
+        description: rainfall_description(rain_val, weather),
+        weather: weather
       },
       landslide_risk: {
         title: "Landslide Risk",
@@ -226,13 +235,19 @@ class AccessibilityScoreService
     end
   end
 
-  def rainfall_description(val)
-    case val
-    when "low", "low rainfall"           then "Normal dry/mild precipitation"
-    when "moderate", "moderate rainfall" then "Moderate seasonal monsoon showers"
-    when "high", "high rainfall"         then "Heavy rainfall with localized flash flooding risks"
-    when "extreme", "extreme rainfall"   then "Torrential cloudburst levels; severe waterlogging"
-    else "Typical seasonal rainfall"
+  def rainfall_description(val, weather = nil)
+    base_text = case val
+                when "low", "low rainfall"           then "Normal dry/mild precipitation"
+                when "moderate", "moderate rainfall" then "Moderate seasonal monsoon showers"
+                when "high", "high rainfall"         then "Heavy rainfall with localized flash flooding risks"
+                when "extreme", "extreme rainfall"   then "Torrential cloudburst levels; severe waterlogging"
+                else "Typical seasonal rainfall"
+                end
+
+    if weather && weather[:source] == "live"
+      "Live Weather Telemetry: #{weather[:condition_text]} (#{weather[:temperature]&.round(1)}°C, Wind: #{weather[:wind_speed]&.round(1)} km/h, Rain: #{weather[:precipitation]} mm/hr). #{base_text}."
+    else
+      base_text
     end
   end
 

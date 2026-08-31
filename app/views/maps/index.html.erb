@@ -1,187 +1,494 @@
-<div class="space-y-6 max-w-full mx-auto"
+<div class="space-y-5 max-w-full mx-auto pb-12 w-full"
      data-controller="map"
-     data-map-locations-value="<%= @locations.to_json %>"
-     data-map-warehouses-value="<%= @warehouses.to_json %>"
-     data-map-emergencies-value="<%= @emergencies.to_json %>">
+     data-map-roads-value="<%= @roads_json.to_json %>"
+     data-map-locations-value="<%= @locations_json.to_json %>"
+     data-map-warehouses-value="<%= @warehouses_json.to_json %>"
+     data-map-emergencies-value="<%= @emergencies_json.to_json %>"
+     data-map-incidents-value="<%= @reported_incidents_json.to_json %>">
 
-  <!-- Header Banner -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-4">
+  <!-- Header Banner (Google Stitch Style) -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
     <div>
       <div class="flex items-center space-x-2.5">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
-          GIS Active
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping mr-1.5"></span>
+          GIS INTELLIGENCE ACTIVE
         </span>
-        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">North East Accessibility Intelligence Map</h2>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Road Accessibility Intelligence Map</h2>
       </div>
-      <p class="text-xs text-slate-500 mt-1">Real-time geospatial monitoring of settlements, accessibility risk tiers, relief depots, and active emergency zones.</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time geospatial monitoring of national highways, mountain corridors, hazard blockages, and relief staging bases across North East India.</p>
     </div>
 
-    <div class="flex items-center space-x-3">
-      <%= link_to accessibility_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all" do %>
-        <i class="fas fa-list-ol mr-2 text-xs"></i>
-        <span>Accessibility Engine</span>
+    <div class="flex flex-wrap items-center gap-2.5">
+      <button type="button"
+              data-action="click->map#resetFilters"
+              class="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer">
+        <i class="fas fa-rotate-left mr-1.5 text-xs text-slate-400"></i>
+        <span>Reset View</span>
+      </button>
+
+      <%= link_to new_incident_path, class: "inline-flex items-center px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-black rounded-xl shadow-sm transition-all" do %>
+        <i class="fas fa-camera mr-1.5 text-xs"></i>
+        <span>Report Incident</span>
+      <% end %>
+
+      <%= link_to routes_path, class: "inline-flex items-center px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl shadow-sm transition-all" do %>
+        <i class="fas fa-route mr-1.5 text-xs"></i>
+        <span>Smart Route Planner</span>
       <% end %>
     </div>
   </div>
 
-  <!-- Responsive Map Layout: Left Controls + Right Full-Width Map -->
-  <div class="flex flex-col lg:flex-row items-start gap-6 w-full">
-    <!-- Left Control Panel -->
-    <div class="w-full lg:w-80 xl:w-96 flex-shrink-0 space-y-4">
+  <!-- Top Intelligence Dashboard Cards (Dynamic Calculation) -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+    <!-- Card 1: Total Monitored Roads -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
+      <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Total Roads</span>
+      <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono"><%= @total_roads %></div>
+      <span class="text-[10px] text-slate-400 block font-medium">Monitored corridors</span>
+    </div>
+
+    <!-- Card 2: Accessible -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Accessible</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono"><%= @accessible_roads %></div>
+      <span class="text-[10px] text-emerald-700 dark:text-emerald-300 font-medium">Clear for logistics</span>
+    </div>
+
+    <!-- Card 3: Moderate Risk -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-yellow-600 dark:text-yellow-400 uppercase tracking-wider">Moderate</span>
+        <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-black text-yellow-600 dark:text-yellow-400 font-mono"><%= @moderate_risk_roads %></div>
+      <span class="text-[10px] text-yellow-700 dark:text-yellow-300 font-medium">Passable with caution</span>
+    </div>
+
+    <!-- Card 4: High Risk -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">High Risk</span>
+        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-black text-orange-600 dark:text-orange-400 font-mono"><%= @high_risk_roads %></div>
+      <span class="text-[10px] text-orange-700 dark:text-orange-300 font-medium">Landslide/flood danger</span>
+    </div>
+
+    <!-- Card 5: Blocked -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Blocked</span>
+        <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+      </div>
+      <div class="text-2xl sm:text-3xl font-black text-red-600 dark:text-red-400 font-mono"><%= @blocked_roads %></div>
+      <span class="text-[10px] text-red-700 dark:text-red-300 font-medium">Complete road closure</span>
+    </div>
+
+    <!-- Card 6: Active Incidents -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Incidents</span>
+        <i class="fas fa-radiation text-xs text-indigo-600"></i>
+      </div>
+      <div class="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 font-mono"><%= @active_incidents_count %></div>
+      <span class="text-[10px] text-slate-400 font-medium">Disaster coordinates</span>
+    </div>
+  </div>
+
+  <!-- Main GIS Split Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
+    
+    <!-- LEFT / MAIN AREA: Interactive Leaflet Map & Filter Pills (lg:col-span-8) -->
+    <div class="lg:col-span-8 space-y-3 w-full">
       
-      <!-- 1. Search Location Card -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center">
-            <i class="fas fa-search-location text-indigo-600 mr-2"></i>
-            Search Location
-          </h3>
-          <span class="text-[10px] text-slate-400 font-semibold">20 Monitored</span>
+      <!-- Quick Status Filter Bar (Google Stitch Style) -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2.5 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button type="button"
+                  data-action="click->map#filterByStatus"
+                  data-status="all"
+                  data-status-btn
+                  class="px-3 py-1.5 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-sm transition-all cursor-pointer">
+            All Roads (<%= @total_roads %>)
+          </button>
+
+          <button type="button"
+                  data-action="click->map#filterByStatus"
+                  data-status="accessible"
+                  data-status-btn
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center space-x-1.5 cursor-pointer">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>Accessible (<%= @accessible_roads %>)</span>
+          </button>
+
+          <button type="button"
+                  data-action="click->map#filterByStatus"
+                  data-status="moderate_risk"
+                  data-status-btn
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center space-x-1.5 cursor-pointer">
+            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+            <span>Moderate (<%= @moderate_risk_roads %>)</span>
+          </button>
+
+          <button type="button"
+                  data-action="click->map#filterByStatus"
+                  data-status="high_risk"
+                  data-status-btn
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center space-x-1.5 cursor-pointer">
+            <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+            <span>High Risk (<%= @high_risk_roads %>)</span>
+          </button>
+
+          <button type="button"
+                  data-action="click->map#filterByStatus"
+                  data-status="blocked"
+                  data-status-btn
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all flex items-center space-x-1.5 cursor-pointer">
+            <span class="w-2 h-2 rounded-full bg-red-600"></span>
+            <span>Blocked (<%= @blocked_roads %>)</span>
+          </button>
         </div>
 
-        <div class="relative">
-          <input type="text"
-                 data-map-target="searchQuery"
-                 data-action="input->map#search"
-                 autocomplete="off"
-                 placeholder="Search name, district, or state..."
-                 class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white focus:outline-none text-xs text-slate-900 transition-colors">
-          <div class="absolute left-3 top-2.5 text-slate-400 text-xs pointer-events-none">
-            <i class="fas fa-search"></i>
-          </div>
-
-          <!-- Dynamic Search Results Dropdown -->
-          <div data-map-target="searchResults"
-               class="mt-1.5 hidden max-h-64 overflow-y-auto border border-slate-200 rounded-xl bg-white shadow-xl z-50 absolute inset-x-0">
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. Map Layers & Filters Card -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-          <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center">
-            <i class="fas fa-layer-group text-indigo-600 mr-2"></i>
-            Map Layers &amp; Filters
-          </h3>
-          <span class="text-[10px] text-slate-400 font-semibold">Interactive</span>
-        </div>
-
-        <div class="space-y-2.5">
-          <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-colors cursor-pointer">
-            <div class="flex items-center space-x-2.5 text-xs font-bold text-slate-700">
-              <span class="w-3 h-3 rounded-full bg-blue-500 shadow-sm"></span>
-              <span>Accessible Settlements</span>
-            </div>
-            <input type="checkbox"
-                   data-action="change->map#toggleFilter"
-                   data-filter="locations"
-                   checked
-                   class="h-4 w-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer">
-          </label>
-
-          <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-red-50/50 border border-transparent hover:border-red-200 transition-colors cursor-pointer">
-            <div class="flex items-center space-x-2.5 text-xs font-bold text-red-900">
-              <span class="w-3 h-3 rounded-full bg-red-600 shadow-sm animate-pulse"></span>
-              <span>Critical Zones (&lt; 40)</span>
-            </div>
-            <input type="checkbox"
-                   data-action="change->map#toggleFilter"
-                   data-filter="critical"
-                   checked
-                   class="h-4 w-4 text-red-600 border-slate-300 rounded focus:ring-red-500 cursor-pointer">
-          </label>
-
-          <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-emerald-50/50 border border-transparent hover:border-emerald-200 transition-colors cursor-pointer">
-            <div class="flex items-center space-x-2.5 text-xs font-bold text-emerald-900">
-              <span class="w-3 h-3 rounded-full bg-emerald-600 shadow-sm"></span>
-              <span>Relief Warehouses</span>
-            </div>
-            <input type="checkbox"
-                   data-action="change->map#toggleFilter"
-                   data-filter="warehouses"
-                   checked
-                   class="h-4 w-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer">
-          </label>
-
-          <label class="flex items-center justify-between p-2.5 rounded-xl hover:bg-amber-50/50 border border-transparent hover:border-amber-200 transition-colors cursor-pointer">
-            <div class="flex items-center space-x-2.5 text-xs font-bold text-amber-900">
-              <span class="w-3 h-3 rounded-full bg-amber-500 shadow-sm"></span>
-              <span>Active Emergencies</span>
-            </div>
-            <input type="checkbox"
-                   data-action="change->map#toggleFilter"
-                   data-filter="emergencies"
-                   checked
-                   class="h-4 w-4 text-amber-500 border-slate-300 rounded focus:ring-amber-500 cursor-pointer">
-          </label>
+        <div class="text-[11px] text-slate-400 font-mono hidden sm:block">
+          <i class="fas fa-layer-group text-indigo-500 mr-1"></i> Multi-Layer GIS Active
         </div>
       </div>
 
-      <!-- 3. Legend Card -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
-        <h3 class="text-xs font-black text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">
-          Accessibility Legend
-        </h3>
-        
-        <div class="space-y-2 text-xs">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-green-600"></span>
-              <span class="text-slate-700 font-medium">Highly Accessible</span>
-            </div>
-            <span class="text-slate-400 font-mono text-[11px]">80 - 100</span>
-          </div>
+      <!-- Leaflet Map Canvas -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-md border border-slate-200 dark:border-slate-800 overflow-hidden relative w-full">
+        <div data-map-target="container"
+             style="min-height: 420px; width: 100%; display: block;"
+             class="w-full z-10 h-[460px] sm:h-[580px] lg:h-[700px]">
+        </div>
 
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
-              <span class="text-slate-700 font-medium">Moderately Accessible</span>
-            </div>
-            <span class="text-slate-400 font-mono text-[11px]">60 - 79</span>
+        <!-- Floating Tactical Map Legend -->
+        <div class="absolute bottom-4 left-4 z-20 bg-slate-900/90 dark:bg-slate-950/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-xl border border-slate-700/80 text-[11px] space-y-1.5 max-w-[220px]">
+          <div class="font-black uppercase tracking-wider text-[9px] text-slate-400 border-b border-slate-800 pb-1 flex items-center justify-between">
+            <span>Road Status Legend</span>
+            <i class="fas fa-map-pin text-indigo-400"></i>
           </div>
-
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-              <span class="text-slate-700 font-medium">Difficult Access</span>
-            </div>
-            <span class="text-slate-400 font-mono text-[11px]">40 - 59</span>
+          <div class="flex items-center space-x-2">
+            <span class="w-3.5 h-1 rounded-full bg-emerald-500"></span>
+            <span>Accessible Corridor</span>
           </div>
-
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-red-600"></span>
-              <span class="text-red-700 font-bold">Critical Vulnerability</span>
-            </div>
-            <span class="text-red-600 font-mono text-[11px]">0 - 39</span>
+          <div class="flex items-center space-x-2">
+            <span class="w-3.5 h-1 rounded-full bg-yellow-400"></span>
+            <span>Moderate Risk (Weather/Fog)</span>
           </div>
-
-          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
-              <span class="text-slate-700 font-medium">Relief Warehouses</span>
-            </div>
-            <span class="text-slate-500 text-[11px]"><%= @warehouses.size %> Hubs</span>
+          <div class="flex items-center space-x-2">
+            <span class="w-3.5 h-1 rounded-full bg-orange-500"></span>
+            <span>High Risk (Debris/Rain)</span>
           </div>
-
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
-              <span class="text-slate-700 font-medium">Active Emergencies</span>
-            </div>
-            <span class="text-slate-500 text-[11px]"><%= @emergencies.size %> Active</span>
+          <div class="flex items-center space-x-2">
+            <span class="w-3.5 h-1 rounded-full bg-red-500 border-dashed"></span>
+            <span>Blocked / Closed Route</span>
+          </div>
+          <div class="flex items-center space-x-2 pt-1 border-t border-slate-800">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping mr-1"></span>
+            <span class="text-red-400 font-bold">Active Emergency</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Right Map Container: Expands to fill all remaining space -->
-    <div class="flex-1 min-w-0 w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
-      <div data-map-target="container"
-           style="height: 680px; min-height: 550px; width: 100%; display: block;"
-           class="w-full z-10">
+    <!-- RIGHT SIDE INTELLIGENCE PANEL (lg:col-span-4) -->
+    <div class="lg:col-span-4 space-y-4 w-full">
+      
+      <!-- 1. Search Location or Road Card with Autocomplete -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
+            <i class="fas fa-search-location text-indigo-600 dark:text-indigo-400 mr-2 text-xs"></i>
+            <span>Search Map</span>
+          </h3>
+          <span class="text-[10px] text-slate-400 font-mono">Live GIS Search</span>
+        </div>
+
+        <div class="relative">
+          <div class="relative flex items-center">
+            <i class="fas fa-search absolute left-3 text-slate-400 text-xs pointer-events-none"></i>
+            <input type="text"
+                   data-map-target="searchQuery"
+                   data-action="input->map#search focus->map#search"
+                   autocomplete="off"
+                   placeholder="Search NH-13, Guwahati, Tawang, etc..."
+                   class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-none text-xs text-slate-900 dark:text-white transition-colors placeholder:text-slate-400">
+          </div>
+
+          <!-- Dynamic Search Results Dropdown -->
+          <div data-map-target="searchResults"
+               class="mt-1.5 hidden max-h-60 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 shadow-2xl z-50 absolute inset-x-0">
+          </div>
+        </div>
       </div>
+
+      <!-- 2. Dynamic GIS Filters & State Selector -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
+          <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
+            <i class="fas fa-sliders text-indigo-600 dark:text-indigo-400 mr-2 text-xs"></i>
+            <span>GIS Filters</span>
+          </h3>
+          <span class="text-[10px] text-slate-400 font-mono">Real-time</span>
+        </div>
+
+        <!-- State Selector -->
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
+            Region / State Filter
+          </label>
+          <select data-map-target="stateFilter"
+                  data-action="change->map#filterByState"
+                  class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
+            <option value="all">-- All North Eastern States (8 States) --</option>
+            <% @states.each do |st| %>
+              <option value="<%= st %>" <%= 'selected' if @selected_state == st %>><%= st %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <!-- Maximum Risk Score Slider -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Max Risk Threshold</label>
+            <span data-map-target="riskRangeDisplay" class="text-xs font-mono font-black text-indigo-600 dark:text-indigo-400">&le; 100/100</span>
+          </div>
+          <input type="range"
+                 min="0"
+                 max="100"
+                 value="100"
+                 data-map-target="riskRange"
+                 data-action="input->map#filterByRisk"
+                 class="w-full accent-indigo-600 cursor-pointer">
+          <div class="flex justify-between text-[9px] text-slate-400 font-mono">
+            <span>0 (Safe)</span>
+            <span>50 (Moderate)</span>
+            <span>100 (Critical)</span>
+          </div>
+        </div>
+
+        <!-- Layer Toggles -->
+        <div class="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+          <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Visible Layers</span>
+
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="roads" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <span>Roads</span>
+            </label>
+
+            <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="locations" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <span>Settlements</span>
+            </label>
+
+            <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="warehouses" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <span>Relief Depots</span>
+            </label>
+
+            <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="emergencies" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <span>Incidents</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Selected Road / Node Intelligence Details Card (Active on click) -->
+      <div data-map-target="detailsPanel"
+           class="hidden bg-white dark:bg-slate-900 rounded-3xl shadow-xl border-2 border-indigo-500 dark:border-indigo-600 p-5 space-y-3.5 transition-all animate-fadeIn">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
+            <span class="text-[10px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">AI Risk Intelligence Dossier</span>
+          </div>
+          <button type="button"
+                  data-action="click->map#closeDetails"
+                  class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs p-1 cursor-pointer">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between gap-2">
+            <h4 data-map-target="detailTitle" class="text-base font-black text-slate-900 dark:text-white leading-tight"></h4>
+            <span data-map-target="detailStatusBadge" class="flex-shrink-0"></span>
+          </div>
+          <p data-map-target="detailSubtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
+        </div>
+
+        <!-- Risk Level & Overall Meter -->
+        <div class="space-y-1.5 pt-1 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-600 dark:text-slate-300 font-bold text-[11px]">Composite Risk Score:</span>
+            <div class="flex items-center space-x-1.5">
+              <span data-map-target="detailRiskScore" class="font-mono font-black text-sm text-slate-900 dark:text-white"></span>
+              <span data-map-target="detailRiskLevel" class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded"></span>
+            </div>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+            <div data-map-target="detailRiskBar" class="h-2 rounded-full transition-all duration-500"></div>
+          </div>
+        </div>
+
+        <!-- 5-Factor Risk Breakdown -->
+        <div class="space-y-2 pt-1">
+          <span class="text-[10px] font-black uppercase text-slate-400 tracking-wider block">Multi-Factor Analysis Breakdown</span>
+          
+          <div class="space-y-1.5 text-[11px]">
+            <!-- Weather Risk (30%) -->
+            <div>
+              <div class="flex justify-between text-slate-600 dark:text-slate-400 text-[10px] font-bold">
+                <span>🌧 Weather Risk (30%)</span>
+                <span data-map-target="detailWeatherRisk" class="font-mono"></span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div data-map-target="detailWeatherBar" class="h-1.5 bg-blue-500 rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Historical Risk (20%) -->
+            <div>
+              <div class="flex justify-between text-slate-600 dark:text-slate-400 text-[10px] font-bold">
+                <span>📜 Historical Risk (20%)</span>
+                <span data-map-target="detailHistoricalRisk" class="font-mono"></span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div data-map-target="detailHistoricalBar" class="h-1.5 bg-purple-500 rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Recent Incident Risk (25%) -->
+            <div>
+              <div class="flex justify-between text-slate-600 dark:text-slate-400 text-[10px] font-bold">
+                <span>🪨 Incident Risk (25%)</span>
+                <span data-map-target="detailIncidentRisk" class="font-mono"></span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div data-map-target="detailIncidentBar" class="h-1.5 bg-red-500 rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Road Condition (15%) -->
+            <div>
+              <div class="flex justify-between text-slate-600 dark:text-slate-400 text-[10px] font-bold">
+                <span>🚧 Road Condition (15%)</span>
+                <span data-map-target="detailConditionRisk" class="font-mono"></span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div data-map-target="detailConditionBar" class="h-1.5 bg-amber-500 rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Geographic Risk (10%) -->
+            <div>
+              <div class="flex justify-between text-slate-600 dark:text-slate-400 text-[10px] font-bold">
+                <span>⛰ Geographic Risk (10%)</span>
+                <span data-map-target="detailGeographicRisk" class="font-mono"></span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <div data-map-target="detailGeographicBar" class="h-1.5 bg-emerald-500 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explainable Primary Risk Drivers -->
+        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 space-y-2">
+          <span class="text-[10px] font-black uppercase text-slate-400 block">AI Explainability Drivers:</span>
+          <div data-map-target="detailPrimaryFactors" class="space-y-1.5 text-[11px]"></div>
+          <p data-map-target="detailReason" class="italic text-[11px] text-slate-600 dark:text-slate-300 pt-1 border-t border-slate-200 dark:border-slate-700 leading-snug"></p>
+        </div>
+
+        <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 font-mono">
+          <span>Telemetry: <strong data-map-target="detailUpdated" class="text-slate-700 dark:text-slate-300"></strong></span>
+          <span data-map-target="detailLocation"></span>
+        </div>
+
+        <div class="pt-1">
+          <a data-map-target="detailActionLink"
+             href="#"
+             class="inline-flex items-center justify-center w-full py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition-all">
+            <span>Analyze Tactical Corridors &rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 4. Active Regional Incidents & Field Reports List -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
+            <i class="fas fa-satellite-dish text-red-600 mr-2 text-xs"></i>
+            <span>Live Field Hazard Reports</span>
+          </h3>
+          <%= link_to "View All (#{Incident.count})", incidents_path, class: "text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline" %>
+        </div>
+
+        <div class="space-y-2 max-h-56 overflow-y-auto">
+          <% if @reported_incidents.any? %>
+            <% @reported_incidents.first(5).each do |inc| %>
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/60 transition-colors cursor-pointer flex items-center justify-between"
+                   data-action="click->map#panToIncident"
+                   data-incident-id="<%= inc.id %>">
+                <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                  <span class="text-base flex-shrink-0"><%= inc.type_emoji %></span>
+                  <div class="min-w-0 flex-1">
+                    <strong class="text-xs font-bold text-slate-900 dark:text-white block truncate"><%= inc.location_name.presence || "#{inc.type_label} Hazard" %></strong>
+                    <span class="text-[10px] text-slate-500 dark:text-slate-400"><%= inc.type_label %> &bull; <%= inc.formatted_reported_time %></span>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase <%= inc.severity_badge_class %> flex-shrink-0 ml-2">
+                  <%= inc.severity %>
+                </span>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-xs text-slate-400 p-2 text-center">No field hazard reports logged yet.</p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- 5. High-Priority Corridor Watchlist -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+          <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
+            <i class="fas fa-triangle-exclamation text-orange-500 mr-2 text-xs"></i>
+            <span>Critical Corridor Watchlist</span>
+          </h3>
+          <span class="text-[10px] font-mono text-slate-400">Risk &ge; 60</span>
+        </div>
+
+        <div class="space-y-2 max-h-60 overflow-y-auto">
+          <% high_risk_subset = @roads.select { |r| r.risk_score >= 60 }.first(5) %>
+          <% if high_risk_subset.any? %>
+            <% high_risk_subset.each do |road| %>
+              <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-700/60 transition-colors cursor-pointer flex items-center justify-between"
+                   data-action="click->map#panToRoad"
+                   data-road-id="<%= road.id %>">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center space-x-1.5">
+                    <span class="font-black text-xs text-indigo-600 dark:text-indigo-400 font-mono"><%= road.road_number %></span>
+                    <span class="text-xs font-bold text-slate-900 dark:text-white truncate"><%= road.name %></span>
+                  </div>
+                  <span class="text-[10px] text-slate-500 dark:text-slate-400"><%= road.district %>, <%= road.state %></span>
+                </div>
+                <div class="text-right flex-shrink-0 ml-2">
+                  <span class="font-black font-mono text-xs <%= road.risk_score >= 80 ? 'text-red-600' : 'text-orange-600' %>"><%= road.risk_score.round %>/100</span>
+                  <span class="text-[9px] block uppercase font-bold <%= road.status == 'blocked' ? 'text-red-500' : 'text-orange-500' %>"><%= road.status.humanize %></span>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="text-xs text-slate-400 p-2 text-center">All monitored corridors nominal.</p>
+          <% end %>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

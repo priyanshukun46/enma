@@ -1,0 +1,117 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+    <div>
+      <h1 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Warehouse Intelligence</h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Operational readiness and emergency resource intelligence across North East India.</p>
+    </div>
+  </div>
+
+  <!-- Top Metrics -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Warehouses</p>
+      <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= @total_warehouses %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Strategic relief staging bases.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Operational</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @operational_count %></span>
+        <span class="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded">Ready</span>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Fully deployable.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Capacity</p>
+      <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= number_with_delimiter(@total_capacity) %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Combined stockpile units.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Available Resources</p>
+      <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= number_with_delimiter(@total_available_resources) %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Total relief units in stock.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Avg Readiness</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-slate-900 dark:text-white"><%= @average_readiness %></span>
+        <span class="text-xs font-bold text-slate-600 dark:text-slate-300">/100</span>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Network readiness index.</p>
+    </div>
+  </div>
+
+  <!-- Warehouse Table -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-warehouse text-indigo-600 mr-2"></i>
+        Warehouse Network Registry
+      </h3>
+      <span class="text-[11px] text-slate-400 font-mono"><%= @total_warehouses %> staging bases</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-left text-xs">
+        <thead class="bg-slate-50 dark:bg-slate-800/60 font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[10px]">
+          <tr>
+            <th class="px-5 py-3">Warehouse</th>
+            <th class="px-5 py-3">Location</th>
+            <th class="px-5 py-3">Status</th>
+            <th class="px-5 py-3">Capacity</th>
+            <th class="px-5 py-3">Utilization</th>
+            <th class="px-5 py-3">Resources</th>
+            <th class="px-5 py-3">Readiness</th>
+            <th class="px-5 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
+          <% @warehouses.each do |wh| %>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+              <td class="px-5 py-3.5">
+                <div class="font-bold text-slate-900 dark:text-white text-sm"><%= wh.name %></div>
+                <% if wh.district.present? %>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400"><%= wh.district %>, <%= wh.state %></div>
+                <% end %>
+              </td>
+              <td class="px-5 py-3.5 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                <%= wh.latitude&.round(3) %>°N, <%= wh.longitude&.round(3) %>°E
+              </td>
+              <td class="px-5 py-3.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border <%= wh.status_badge_class %>">
+                  <%= wh.dynamic_status %>
+                </span>
+              </td>
+              <td class="px-5 py-3.5">
+                <div class="font-bold"><%= number_with_delimiter(wh.capacity) %></div>
+                <div class="text-[11px] text-slate-500"><%= number_with_delimiter(wh.available_capacity) %> avail</div>
+              </td>
+              <td class="px-5 py-3.5">
+                <div class="flex items-center space-x-2">
+                  <div class="w-20 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full <%= wh.utilization_percentage > 85 ? 'bg-red-500' : (wh.utilization_percentage > 60 ? 'bg-amber-500' : 'bg-emerald-500') %>" style="width: <%= [wh.utilization_percentage, 100].min %>%"></div>
+                  </div>
+                  <span class="text-[11px] font-bold font-mono"><%= wh.utilization_percentage %>%</span>
+                </div>
+              </td>
+              <td class="px-5 py-3.5 font-mono font-bold"><%= number_with_delimiter(wh.total_available_resources) %></td>
+              <td class="px-5 py-3.5">
+                <span class="font-black font-mono <%= wh.readiness_color_class %>"><%= wh.readiness_score&.round(1) || '—' %>/100</span>
+              </td>
+              <td class="px-5 py-3.5 text-right">
+                <%= link_to warehouse_path(wh), class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+                  Details &rarr;
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

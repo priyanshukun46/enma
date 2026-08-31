@@ -1,0 +1,129 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-16">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+    <div>
+      <div class="flex items-center space-x-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800">
+          <i class="fas fa-satellite-dish mr-1"></i> Live Field Reports
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Field Incident Reports</h1>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Crowdsourced &amp; official geo-tagged transportation blockage and hazard observations.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2.5">
+      <%= link_to map_path, class: "inline-flex items-center px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all" do %>
+        <i class="fas fa-map-location-dot text-indigo-600 mr-1.5"></i>
+        <span>GIS Map View</span>
+      <% end %>
+
+      <%= link_to new_incident_path, class: "inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-black rounded-xl shadow-md transition-all" do %>
+        <i class="fas fa-camera mr-1.5"></i>
+        <span>Report New Incident</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Metric Counters -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+      <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Total Incidents</span>
+      <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono"><%= @total_count %></div>
+      <span class="text-[10px] text-slate-500">All recorded reports</span>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+      <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">Reported</span>
+      <div class="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400 font-mono"><%= @reported_count %></div>
+      <span class="text-[10px] text-amber-700 dark:text-amber-300">Awaiting verification</span>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+      <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Verified</span>
+      <div class="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 font-mono"><%= @verified_count %></div>
+      <span class="text-[10px] text-indigo-700 dark:text-indigo-300">Active GIS hazards</span>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
+      <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">Critical</span>
+      <div class="text-2xl sm:text-3xl font-black text-red-600 dark:text-red-400 font-mono"><%= @critical_count %></div>
+      <span class="text-[10px] text-red-700 dark:text-red-300">High priority alerts</span>
+    </div>
+  </div>
+
+  <!-- Incident Reports List -->
+  <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-list-ul text-indigo-600 mr-2"></i>
+        Incident Telemetry Registry
+      </h3>
+      <span class="text-[11px] text-slate-400 font-mono"><%= @incidents.size %> reports</span>
+    </div>
+
+    <% if @incidents.any? %>
+      <div class="divide-y divide-slate-100 dark:divide-slate-800">
+        <% @incidents.each do |inc| %>
+          <div class="p-5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            
+            <!-- Left Info -->
+            <div class="flex items-start space-x-3.5 flex-1 min-w-0">
+              <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xl flex-shrink-0 shadow-sm">
+                <%= inc.type_emoji %>
+              </div>
+
+              <div class="space-y-1 min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-sm font-black text-slate-900 dark:text-white truncate"><%= inc.location_name.presence || "#{inc.type_label} Hazard" %></span>
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase border <%= inc.severity_badge_class %>">
+                    <%= inc.severity %>
+                  </span>
+                  <span class="px-2 py-0.5 rounded-full text-[9px] font-bold border <%= inc.status_badge_class %>">
+                    <%= inc.status %>
+                  </span>
+                </div>
+
+                <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
+                  <%= inc.description %>
+                </p>
+
+                <div class="flex flex-wrap items-center gap-3 text-[10px] text-slate-400 font-mono pt-0.5">
+                  <span><i class="fas fa-crosshairs mr-1 text-indigo-500"></i> <%= inc.latitude.round(4) %>°N, <%= inc.longitude.round(4) %>°E</span>
+                  <span>&bull;</span>
+                  <span><i class="fas fa-clock mr-1"></i> <%= inc.formatted_reported_time %></span>
+                  <% if inc.photos.attached? && inc.photos.any? %>
+                    <span>&bull;</span>
+                    <span class="text-indigo-600 dark:text-indigo-400 font-bold"><i class="fas fa-camera mr-1"></i> <%= inc.photos.count %> photo(s)</span>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Action -->
+            <div class="flex items-center space-x-2 flex-shrink-0 self-end sm:self-center">
+              <%= link_to incident_path(inc), class: "px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors flex items-center space-x-1" do %>
+                <span>Details</span>
+                <i class="fas fa-arrow-right text-[10px] ml-1"></i>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="p-12 text-center space-y-3">
+        <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-xl">
+          <i class="fas fa-clipboard-check"></i>
+        </div>
+        <div class="text-sm font-bold text-slate-900 dark:text-white">No Incident Reports Logged</div>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto">Field officers can capture real-time road blockage coordinates and photographs using the report button below.</p>
+        <div class="pt-2">
+          <%= link_to new_incident_path, class: "inline-flex items-center px-4 py-2 bg-red-600 text-white font-bold text-xs rounded-xl shadow" do %>
+            <i class="fas fa-plus mr-1.5"></i>
+            <span>Log First Field Incident</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

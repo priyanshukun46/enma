@@ -30,7 +30,16 @@ class EmergencyResponseServiceTest < ActiveSupport::TestCase
       name: "Guwahati Hub",
       latitude: 26.1800,
       longitude: 91.7500,
-      capacity: 50000
+      capacity: 50000,
+      utilized_capacity: 15000,
+      operational_status: "OPERATIONAL",
+      readiness_score: 85.0,
+      resources_json: {
+        "medical_kits" => 2000, "food_packages" => 5000,
+        "water_units" => 10000, "emergency_shelters" => 300,
+        "fuel_liters" => 8000, "rescue_equipment" => 100
+      }.to_json,
+      location: @guwahati
     )
 
     @emergency = Emergency.create!(

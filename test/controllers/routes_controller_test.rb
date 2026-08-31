@@ -33,7 +33,7 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should calculate routes on valid POST and render results" do
-    assert_difference("LogisticsRoute.count", 3) do
+    assert_difference("LogisticsRoute.count", 4) do
       post calculate_routes_url, params: {
         origin_id: @origin.id,
         destination_id: @destination.id,

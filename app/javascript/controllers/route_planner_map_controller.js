@@ -16,7 +16,10 @@ export default class extends Controller {
     "originSelect",
     "destinationSelect",
     "vehicleInput",
-    "voiceToggle"
+    "voiceToggle",
+    "searchForm",
+    "originLat",
+    "originLon"
   ]
 
   static values = {
@@ -45,7 +48,9 @@ export default class extends Controller {
       this.renderMapElements()
     }
 
-    setTimeout(() => { if (this.map) this.map.invalidateSize() }, 150)
+    setTimeout(() => { if (this.map) this.map.invalidateSize() }, 50)
+    setTimeout(() => { if (this.map) this.map.invalidateSize() }, 250)
+    setTimeout(() => { if (this.map) this.map.invalidateSize() }, 600)
     window.addEventListener("resize", this.handleResize)
 
     if (window.ResizeObserver && this.hasContainerTarget) {
@@ -201,7 +206,8 @@ export default class extends Controller {
       const config = {
         fastest:   { color: '#2563eb', weight: 6, zIndex: 400, label: 'Fastest' },
         safest:    { color: '#059669', weight: 8, zIndex: 500, label: 'Safest' },
-        efficient: { color: '#d97706', weight: 6, zIndex: 400, label: 'Efficient' }
+        efficient: { color: '#E95420', weight: 6, zIndex: 400, label: 'Balanced' },
+        balanced:  { color: '#E95420', weight: 6, zIndex: 400, label: 'Balanced' }
       }
 
       Object.entries(routes).forEach(([typeKey, rData]) => {
@@ -267,29 +273,41 @@ export default class extends Controller {
   }
 
   // Switch Active Route
-  selectRoute(typeKey) {
-    if (!this.polylines || !this.polylines[typeKey]) return
+  selectRoute(eventOrTypeKey) {
+    let typeKey = (typeof eventOrTypeKey === 'string') ? eventOrTypeKey : null
+
+    if (!typeKey && eventOrTypeKey) {
+      typeKey = eventOrTypeKey.currentTarget?.dataset?.routeType ||
+                eventOrTypeKey.target?.closest('[data-route-type]')?.dataset?.routeType
+    }
+
+    if (!typeKey) return
 
     this.activeRouteValue = typeKey
 
-    Object.entries(this.polylines).forEach(([key, poly]) => {
-      if (key === typeKey) {
-        poly.setStyle({ weight: 9, opacity: 1.0, dashArray: null })
-        poly.bringToFront()
-      } else {
-        poly.setStyle({ weight: 4, opacity: 0.30, dashArray: '6, 6' })
-      }
-    })
+    if (this.polylines) {
+      Object.entries(this.polylines).forEach(([key, poly]) => {
+        if (key === typeKey) {
+          poly.setStyle({ weight: 9, opacity: 1.0, dashArray: null })
+          poly.bringToFront()
+          if (this.map) {
+            this.map.fitBounds(poly.getBounds(), { padding: [50, 50] })
+          }
+        } else {
+          poly.setStyle({ weight: 4, opacity: 0.30, dashArray: '6, 6' })
+        }
+      })
+    }
 
     if (this.hasRouteCardTargets) {
       this.routeCardTargets.forEach(card => {
         const isMatch = card.dataset.routeType === typeKey
         if (isMatch) {
-          card.classList.add("ring-2", "ring-indigo-600", "bg-indigo-50/50", "shadow-md")
-          card.classList.remove("opacity-70")
+          card.classList.add("border-indigo-600", "bg-indigo-50/30", "dark:bg-indigo-950/40", "ring-2", "ring-indigo-500/30", "shadow-md")
+          card.classList.remove("opacity-60", "border-slate-200", "dark:border-slate-800")
         } else {
-          card.classList.remove("ring-2", "ring-indigo-600", "bg-indigo-50/50", "shadow-md")
-          card.classList.add("opacity-70")
+          card.classList.remove("border-indigo-600", "bg-indigo-50/30", "dark:bg-indigo-950/40", "ring-2", "ring-indigo-500/30", "shadow-md")
+          card.classList.add("opacity-60", "border-slate-200", "dark:border-slate-800")
         }
       })
     }
@@ -499,5 +517,54 @@ export default class extends Controller {
       this.map.removeLayer(this.userAccuracyCircle)
       this.userAccuracyCircle = null
     }
+  }
+
+  locateUser() {
+    if (!("geolocation" in navigator)) {
+      alert("Geolocation is not supported by your browser.")
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lon = position.coords.longitude
+
+        if (this.hasOriginLatTarget && this.hasOriginLonTarget) {
+          this.originLatTarget.value = lat
+          this.originLonTarget.value = lon
+        }
+
+        if (this.hasOriginSelectTarget) {
+          // Set origin select value to user_location
+          let userOpt = this.originSelectTarget.querySelector('option[value="user_location"]')
+          if (!userOpt) {
+            userOpt = document.createElement("option")
+            userOpt.value = "user_location"
+            userOpt.textContent = `📍 My Current Location (${lat.toFixed(2)}, ${lon.toFixed(2)})`
+            this.originSelectTarget.prepend(userOpt)
+          }
+          this.originSelectTarget.value = "user_location"
+        }
+
+        if (this.hasSearchFormTarget) {
+          this.searchFormTarget.submit()
+        }
+      },
+      (error) => {
+        let msg = "Unable to retrieve your current location."
+        if (error.code === error.PERMISSION_DENIED) {
+          msg = "Location permission denied. Please allow location access in your browser."
+        } else if (error.code === error.TIMEOUT) {
+          msg = "Location request timed out. Please try again."
+        }
+        alert(msg)
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000
+      }
+    )
   }
 }

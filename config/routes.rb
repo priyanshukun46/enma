@@ -57,22 +57,32 @@ Rails.application.routes.draw do
 
   # Phase 4: Accessibility Intelligence Engine Routes
   get "accessibility", to: "accessibility#index"
+  post "accessibility", to: "accessibility#recalculate"
   get "accessibility/:id", to: "accessibility#show", as: :accessibility_location
   post "accessibility/recalculate", to: "accessibility#recalculate", as: :recalculate_accessibility
 
   # Phase 5: Smart Route Planner Routes
   get "routes", to: "routes#index"
+  get "routes/geocode", to: "routes#geocode", as: :geocode_routes
   post "routes/calculate", to: "routes#calculate", as: :calculate_routes
 
   # Phase 6: Emergency Simulation & Disaster Response Center Routes
   resources :emergencies, only: [:index, :new, :create, :show] do
     member do
       patch :update_status
+      post :generate_plan
+      get :export_briefing
     end
     collection do
       post :demo_scenario
     end
   end
+
+  # Phase 8: Warehouse & Resource Intelligence
+  resources :warehouses, only: [:index, :show]
+
+  # Field Incident Reporting (Geo-tagged Photo Reports)
+  resources :incidents, only: [:index, :new, :create, :show]
 
   # Phase 7 / Analytics: ENMA AI Intelligence Analytics Center Routes
   get "analytics", to: "analytics#index"

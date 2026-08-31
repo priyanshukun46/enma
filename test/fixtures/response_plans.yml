@@ -1,0 +1,31 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  emergency: one
+  warehouse_name: MyString
+  route_title: MyString
+  estimated_response_time: MyString
+  total_population_at_risk: 1
+  affected_communities_count: 1
+  severity_score: 1.5
+  severity_level: MyString
+  primary_risks: MyText
+  action_items: MyText
+  plan_payload: MyText
+  status: MyString
+  generated_at: 2026-08-31 00:58:50
+
+two:
+  emergency: two
+  warehouse_name: MyString
+  route_title: MyString
+  estimated_response_time: MyString
+  total_population_at_risk: 1
+  affected_communities_count: 1
+  severity_score: 1.5
+  severity_level: MyString
+  primary_risks: MyText
+  action_items: MyText
+  plan_payload: MyText
+  status: MyString
+  generated_at: 2026-08-31 00:58:50

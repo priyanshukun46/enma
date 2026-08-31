@@ -8,7 +8,7 @@ class LogisticsRoute < ApplicationRecord
   validates :distance, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :estimated_time, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :risk_score, presence: true, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
-  validates :route_type, presence: true, inclusion: { in: %w[fastest safest efficient] }
+  validates :route_type, presence: true, inclusion: { in: %w[fastest safest efficient balanced alternate] }
 
   validate :origin_and_destination_must_differ
 

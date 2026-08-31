@@ -1,35 +1,35 @@
-<div class="space-y-6 max-w-4xl mx-auto">
+<div class="space-y-6 max-w-4xl mx-auto pb-12">
   <!-- Header & Back navigation -->
-  <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+  <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
     <div>
-      <div class="flex items-center space-x-2 text-sm text-gray-500 mb-1">
-        <%= link_to emergencies_path, class: "text-indigo-600 hover:text-indigo-800 font-medium flex items-center" do %>
+      <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 mb-1">
+        <%= link_to emergencies_path, class: "text-indigo-600 dark:text-indigo-400 hover:underline font-bold flex items-center" do %>
           <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
           <span>Back to Disaster Registry</span>
         <% end %>
       </div>
-      <h2 class="text-3xl font-black text-gray-900">Simulate Emergency Disaster</h2>
-      <p class="text-xs text-gray-600 mt-0.5">Model disaster scenarios to trigger automated impact assessments, warehouse allocation, and emergency route calculations.</p>
+      <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Simulate Emergency Disaster</h2>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Model disaster scenarios to trigger automated impact assessments, warehouse allocation, and emergency route calculations.</p>
     </div>
   </div>
 
   <!-- Simulation Form Card -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 md:p-8">
     <%= form_with model: @emergency, local: true, class: "space-y-6" do |f| %>
       
       <!-- Incident Title -->
       <div>
-        <%= f.label :title, "Incident Title / Mission Name", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" %>
+        <%= f.label :title, "Incident Title / Mission Name", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2" %>
         <%= f.text_field :title,
                          placeholder: "e.g. Flash Flood & Road Collapse near Haflong Sector",
                          required: true,
-                         class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm font-medium text-gray-900 bg-gray-50/50 hover:bg-white transition-colors" %>
+                         class: "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-xs sm:text-sm font-medium text-slate-900 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 transition-colors placeholder:text-slate-400" %>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Emergency Hazard Type -->
         <div>
-          <%= f.label :emergency_type, "Disaster / Hazard Type", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" %>
+          <%= f.label :emergency_type, "Disaster / Hazard Type", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2" %>
           <%= f.select :emergency_type,
                        options_for_select([
                          ["Landslide & Mudflow", "Landslide"],
@@ -38,12 +38,12 @@
                          ["Road Blockage & Bridge Failure", "Road Blockage"]
                        ], @emergency.emergency_type),
                        {},
-                       class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm font-medium text-gray-900 bg-gray-50/50 hover:bg-white transition-colors" %>
+                       class: "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-xs sm:text-sm font-medium text-slate-900 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 transition-colors" %>
         </div>
 
         <!-- Severity Level -->
         <div>
-          <%= f.label :severity, "Severity Classification", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" %>
+          <%= f.label :severity, "Severity Classification", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2" %>
           <%= f.select :severity,
                        options_for_select([
                          ["Critical (Extreme Threat to Life & Supply Access)", "Critical"],
@@ -52,13 +52,13 @@
                          ["Low (Minor Weather Warning)", "Low"]
                        ], @emergency.severity),
                        {},
-                       class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm font-medium text-gray-900 bg-gray-50/50 hover:bg-white transition-colors" %>
+                       class: "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-xs sm:text-sm font-medium text-slate-900 dark:text-white bg-slate-50/50 dark:bg-slate-800/60 transition-colors" %>
         </div>
       </div>
 
       <!-- Epicenter Location Selection -->
-      <div class="p-5 rounded-xl bg-gray-50 border border-gray-200 space-y-4">
-        <h4 class="text-xs font-black text-gray-900 uppercase tracking-wider flex items-center">
+      <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 space-y-4">
+        <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
           <i class="fas fa-map-marker-alt text-red-600 mr-2"></i>
           Disaster Epicenter Coordinates
         </h4>
@@ -66,34 +66,34 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- Location Dropdown -->
           <div class="md:col-span-3">
-            <%= f.label :location_id, "Select Monitored Community (Auto-populates GPS)", class: "block text-xs font-semibold text-gray-700 mb-1.5" %>
+            <%= f.label :location_id, "Select Monitored Community (Auto-populates GPS)", class: "block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5" %>
             <%= f.select :location_id,
                          options_from_collection_for_select(@locations, :id, :name, @emergency.location_id),
                          { include_blank: "-- Select Location or Enter Manual Coordinates Below --" },
-                         class: "w-full px-3.5 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm font-medium text-gray-900 bg-white" %>
+                         class: "w-full px-3.5 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 text-xs sm:text-sm font-medium text-slate-900 dark:text-white bg-white dark:bg-slate-800" %>
           </div>
 
           <!-- Manual Latitude -->
           <div>
-            <%= f.label :latitude, "Latitude (°N)", class: "block text-xs font-semibold text-gray-700 mb-1" %>
+            <%= f.label :latitude, "Latitude (°N)", class: "block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1" %>
             <%= f.number_field :latitude,
                                step: :any,
                                placeholder: "27.5855",
-                               class: "w-full px-3.5 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-xs font-mono bg-white" %>
+                               class: "w-full px-3.5 py-2 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white" %>
           </div>
 
           <!-- Manual Longitude -->
           <div>
-            <%= f.label :longitude, "Longitude (°E)", class: "block text-xs font-semibold text-gray-700 mb-1" %>
+            <%= f.label :longitude, "Longitude (°E)", class: "block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1" %>
             <%= f.number_field :longitude,
                                step: :any,
                                placeholder: "91.8679",
-                               class: "w-full px-3.5 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-xs font-mono bg-white" %>
+                               class: "w-full px-3.5 py-2 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white" %>
           </div>
 
           <!-- Affected Radius -->
           <div>
-            <%= f.label :affected_radius, "Impact Radius (km)", class: "block text-xs font-semibold text-gray-700 mb-1" %>
+            <%= f.label :affected_radius, "Impact Radius (km)", class: "block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1" %>
             <%= f.select :affected_radius,
                          options_for_select([
                            ["10 km (Localized Impact)", 10.0],
@@ -102,26 +102,26 @@
                            ["100 km (Wide Area Catastrophe)", 100.0]
                          ], @emergency.affected_radius || 50.0),
                          {},
-                         class: "w-full px-3.5 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-xs bg-white font-medium" %>
+                         class: "w-full px-3.5 py-2 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-medium" %>
           </div>
         </div>
       </div>
 
       <!-- Description / Scenario Notes -->
       <div>
-        <%= f.label :description, "Scenario Description & Operational Context", class: "block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2" %>
+        <%= f.label :description, "Scenario Description & Operational Context", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2" %>
         <%= f.text_area :description,
                         rows: 3,
                         placeholder: "Provide scenario parameters (e.g. 48-hour continuous monsoon cloudburst triggering multiple mudslides along state highway)",
-                        class: "w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 text-sm bg-gray-50/50 hover:bg-white transition-colors" %>
+                        class: "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 text-xs sm:text-sm bg-slate-50/50 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 text-slate-900 dark:text-white transition-colors placeholder:text-slate-400" %>
       </div>
 
       <!-- Submit & Trigger Buttons -->
-      <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-        <%= link_to "Cancel", emergencies_path, class: "text-xs font-semibold text-gray-500 hover:text-gray-800" %>
+      <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+        <%= link_to "Cancel", emergencies_path, class: "text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white" %>
 
         <%= f.submit "Launch Simulation",
-                     class: "inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-black text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" %>
+                     class: "inline-flex items-center px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer" %>
       </div>
     <% end %>
   </div>

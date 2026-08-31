@@ -21,6 +21,16 @@ class RoutesController < ApplicationController
     end
   end
 
+  def geocode
+    query = params[:q].to_s.strip
+    result = GeocodingService.search(query)
+    if result
+      render json: result
+    else
+      render json: { error: "Location not found" }, status: :not_found
+    end
+  end
+
   def calculate
     origin_id = params[:origin_id]
     destination_id = params[:destination_id]
@@ -91,8 +101,16 @@ class RoutesController < ApplicationController
   end
 
   def process_route_calculation(origin_id, destination_id, vehicle_type)
-    @origin = Location.find_by(id: origin_id)
-    @destination = Location.find_by(id: destination_id)
+    if origin_id.to_s == "user_location" && params[:origin_lat].present? && params[:origin_lon].present?
+      lat = params[:origin_lat].to_f
+      lon = params[:origin_lon].to_f
+      nearest = Location.all.min_by { |l| ((l.latitude - lat)**2 + (l.longitude - lon)**2) }
+      @origin = nearest || Location.first
+    else
+      @origin = Location.find_by(id: origin_id) || Location.find_by(name: origin_id)
+    end
+
+    @destination = Location.find_by(id: destination_id) || Location.find_by(name: destination_id)
     @selected_vehicle = vehicle_type.presence || "Truck"
 
     unless @origin && @destination
@@ -120,6 +138,12 @@ class RoutesController < ApplicationController
 
   def save_calculated_routes(orig, dest, vtype, results)
     return unless results && results[:routes]
+
+    # Avoid duplicate writes if this route was analyzed in the last 15 minutes
+    recent_exists = LogisticsRoute.where(origin: orig, destination: dest, vehicle_type: vtype)
+                                  .where("created_at > ?", 15.minutes.ago)
+                                  .exists?
+    return if recent_exists
 
     results[:routes].each do |type_key, route_data|
       LogisticsRoute.create!(

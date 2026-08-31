@@ -44,45 +44,54 @@ class RouteOptimizationService
   def calculate
     validate_locations!
 
-    active_emergencies = find_corridor_emergencies
+    cache_key = "route_opt_v3_#{origin.id}_#{destination.id}_#{vehicle_type.parameterize}"
 
-    # 1. Obtain real road route alternatives from RoutingService (with resilient fallback)
-    raw_alternatives = RoutingService.new(origin: origin, destination: destination).alternatives
-    source_provider = raw_alternatives.first&.dig(:source) || "fallback_haversine"
-    fallback_used = raw_alternatives.first&.dig(:fallback_used) || false
+    Rails.cache.fetch(cache_key, expires_in: 1.hour) do
+      active_emergencies = find_corridor_emergencies
 
-    # 2. Analyze and score each candidate route using ENMA AI multi-criteria intelligence
-    analyzed_routes = raw_alternatives.map.with_index do |route_candidate, idx|
-      analyze_single_route(route_candidate, idx, active_emergencies)
+      # 1. Obtain real road route alternatives from RoutingService (with resilient fallback)
+      raw_alternatives = RoutingService.new(origin: origin, destination: destination).alternatives
+      source_provider = raw_alternatives.first&.dig(:source) || "fallback_haversine"
+      fallback_used = raw_alternatives.first&.dig(:fallback_used) || false
+
+      # 2. Analyze and score each candidate route using ENMA AI multi-criteria intelligence
+      analyzed_routes = raw_alternatives.map.with_index do |route_candidate, idx|
+        analyze_single_route(route_candidate, idx, active_emergencies)
+      end
+
+      # Ensure at least 3 distinct routes exist for comparison (if provider returned only 1)
+      ensured_routes = synthesize_strategy_routes(analyzed_routes, active_emergencies)
+
+      # 3. Categorize into Fastest, Safest, and Most Efficient
+      classified_routes = categorize_routes(ensured_routes)
+
+      # 4. Determine ENMA AI Recommended Route
+      recommended_type, recommendation_data = determine_best_recommendation(classified_routes, active_emergencies)
+
+      # Mark is_recommended flag
+      classified_routes.each do |type_key, rdata|
+        rdata[:is_recommended] = (type_key == recommended_type)
+      end
+
+      {
+        origin: origin,
+        destination: destination,
+        vehicle_type: vehicle_type,
+        straight_distance_km: straight_distance_km.round(1),
+        active_emergencies: active_emergencies,
+        routes: classified_routes,
+        recommended_route_type: recommended_type,
+        recommendation: recommendation_data,
+        source_provider: source_provider,
+        fallback_used: fallback_used,
+        corridor_weather: {
+          origin: origin_weather,
+          destination: destination_weather,
+          source: (origin_weather[:source] == "live" && destination_weather[:source] == "live") ? "live" : "demo_fallback"
+        },
+        calculated_at: Time.current
+      }
     end
-
-    # Ensure at least 3 distinct routes exist for comparison (if provider returned only 1)
-    ensured_routes = synthesize_strategy_routes(analyzed_routes, active_emergencies)
-
-    # 3. Categorize into Fastest, Safest, and Most Efficient
-    classified_routes = categorize_routes(ensured_routes)
-
-    # 4. Determine ENMA AI Recommended Route
-    recommended_type, recommendation_data = determine_best_recommendation(classified_routes, active_emergencies)
-
-    # Mark is_recommended flag
-    classified_routes.each do |type_key, rdata|
-      rdata[:is_recommended] = (type_key == recommended_type)
-    end
-
-    {
-      origin: origin,
-      destination: destination,
-      vehicle_type: vehicle_type,
-      straight_distance_km: straight_distance_km.round(1),
-      active_emergencies: active_emergencies,
-      routes: classified_routes,
-      recommended_route_type: recommended_type,
-      recommendation: recommendation_data,
-      source_provider: source_provider,
-      fallback_used: fallback_used,
-      calculated_at: Time.current
-    }
   end
 
   def calculate_haversine_distance(lat1, lon1, lat2, lon2)
@@ -131,49 +140,70 @@ class RouteOptimizationService
     duration_mins = raw_route[:duration_minutes] || (duration_hrs * 60).round
     coords = raw_route[:coordinates] || []
 
-    # 1. Proximity to Active Emergencies along coordinates
+    # 1. Multi-point corridor weather exposure intelligence
+    corridor_weather = WeatherService.sample_corridor_weather(coords, fallback_location: origin)
+    weather_exposure = corridor_weather[:weather_exposure_score].to_f
+
+    # 2. Proximity to Active Emergencies along coordinates
     emergency_proximity = evaluate_emergency_exposure(coords, emergencies)
     emergency_count = emergency_proximity[:intersected_count]
 
-    # 2. Environmental & Terrain Hazard Risk
+    # 3. Environmental & Terrain Hazard Risk
     road_penalty = evaluate_road_quality_penalty
     landslide_penalty = evaluate_landslide_penalty(index)
-    rainfall_penalty = evaluate_rainfall_penalty
+    rainfall_penalty = (weather_exposure * 0.35)
 
-    # Compute Safety Score (100 = completely safe, 0 = critical hazard)
-    raw_risk = (emergency_count * 20.0) + road_penalty + landslide_penalty + rainfall_penalty
+    # Compute Composite Environmental Risk & Safety Score (0 - 100)
+    raw_risk = (emergency_count * 25.0) + rainfall_penalty + (landslide_penalty * 0.9) + (road_penalty * 0.7)
     # Detour credit: Alternative routes that curve away from straight line reduce risk
     detour_credit = (index > 0) ? (index * 12.0) : 0.0
     final_risk_score = [[0.0, raw_risk - detour_credit].max, 100.0].min.round(1)
     safety_score = (100.0 - final_risk_score).round(1)
 
-    # 3. Accessibility Score of Corridor
+    # 4. Accessibility Score of Corridor (0 - 100)
     orig_acc = origin.accessibility_score.presence || 50.0
     dest_acc = destination.accessibility_score.presence || 50.0
     accessibility_score = (((orig_acc + dest_acc) / 2.0) - (index * 2.0)).clamp(10.0, 100.0).round(1)
 
-    # 4. Time Score (Compared against ideal benchmark duration)
+    # 5. Time & Distance Efficiency Score (0 - 100)
     base_speed = vehicle_profile[:base_speed]
     ideal_hours = (straight_distance_km * 1.25) / base_speed
     time_ratio = ideal_hours / [duration_hrs, 0.1].max
     time_score = (time_ratio * 100.0).clamp(10.0, 100.0).round(1)
 
-    # 5. Distance Score (Compared against direct line distance)
     dist_ratio = (straight_distance_km * 1.25) / [dist_km, 0.1].max
     distance_score = (dist_ratio * 100.0).clamp(10.0, 100.0).round(1)
+    efficiency_score = ((time_score * 0.5) + (distance_score * 0.5)).round(1)
 
-    # 6. Environmental Risk Score (Cleanliness / Passability)
+    # 6. Environmental Score
     environmental_score = (100.0 - (landslide_penalty + rainfall_penalty)).clamp(0.0, 100.0).round(1)
 
-    # 7. Composite Overall Intelligence Score (Weighted by Vehicle Type)
-    weights = vehicle_profile[:weights]
-    overall_score = (
-      (safety_score * weights[:safety]) +
-      (time_score * weights[:time]) +
-      (accessibility_score * weights[:accessibility]) +
-      (distance_score * (weights[:distance] || 0.05)) +
-      (environmental_score * (weights[:environmental] || 0.05))
-    ).round(1)
+    # 7. ENMA AI Overall Score: 45% Safety + 30% Accessibility + 25% Efficiency
+    raw_overall = (
+      (safety_score * 0.45) +
+      (accessibility_score * 0.30) +
+      (efficiency_score * 0.25)
+    )
+
+    # Risk Penalty: If route enters active disaster zones or severe hazards (risk >= 40.0),
+    # dampen overall score so a dangerous route cannot outscore a safe detour.
+    risk_dampener = if final_risk_score >= 70.0
+                      0.40 # Critical disaster intersection / extreme hazard
+                    elsif final_risk_score >= 50.0
+                      0.65 # High hazard
+                    elsif final_risk_score >= 35.0
+                      0.85 # Moderate hazard
+                    else
+                      1.0
+                    end
+
+    overall_score = (raw_overall * risk_dampener).clamp(5.0, 100.0).round(1)
+
+    # 8. Dynamic Explainable Factor Generation
+    positive_factors, negative_factors = generate_route_factors(
+      safety_score, final_risk_score, accessibility_score, efficiency_score,
+      corridor_weather, emergency_proximity, duration_mins
+    )
 
     {
       id: raw_route[:id] || "route_#{index + 1}",
@@ -182,27 +212,80 @@ class RouteOptimizationService
       duration_minutes: duration_mins,
       estimated_hours: duration_hrs,
       estimated_time_formatted: format_duration(duration_hrs),
+      geometry: coords,
       coordinates: coords,
       steps: raw_route[:steps] || [],
-      source: raw_route[:source] || "osrm",
+      source: raw_route[:source] || "live",
       summary: raw_route[:summary] || "Navigable Highway Corridor",
       scores: {
+        risk_score: final_risk_score,
+        environmental_risk: final_risk_score,
+        weather_exposure: weather_exposure,
         safety: safety_score,
         time: time_score,
         accessibility: accessibility_score,
         distance: distance_score,
+        efficiency: efficiency_score,
         environmental: environmental_score,
+        overall_score: overall_score,
         overall_intelligence: overall_score
       },
       risk_score: final_risk_score,
       risk_level: risk_level_for(final_risk_score),
+      accessibility_score: accessibility_score,
+      efficiency_score: efficiency_score,
+      overall_score: overall_score,
+      weather_exposure_score: weather_exposure,
+      corridor_weather: corridor_weather,
       emergency_exposure: emergency_proximity,
+      positive_factors: positive_factors,
+      negative_factors: negative_factors,
       hazard_factors: {
         road_quality: worst_road_quality,
         landslide_risk: worst_landslide_risk,
         rainfall_level: worst_rainfall_level
       }
     }
+  end
+
+  def generate_route_factors(safety_score, risk_score, acc_score, eff_score, weather, emergencies, duration_mins)
+    positives = []
+    negatives = []
+
+    # Weather factors
+    if weather[:weather_exposure_score] <= 25.0
+      positives << "✓ Nominal weather conditions (#{weather[:max_precipitation_mm]} mm/hr rainfall)"
+    else
+      negatives << "⚠ Weather exposure: #{weather[:condition_summary]} (#{weather[:max_precipitation_mm]} mm/hr, #{weather[:max_wind_kmh]} km/h wind)"
+    end
+
+    # Emergency proximity
+    if emergencies[:intersected_count].zero?
+      positives << "✓ Zero active disaster zone intersections along corridor"
+    else
+      negatives << "⚠ Intersects #{emergencies[:intersected_count]} active disaster hazard zone(s)"
+    end
+
+    # Risk & Safety
+    if risk_score <= 30.0
+      positives << "✓ Low environmental & terrain risk (#{risk_score}/100)"
+    elsif risk_score >= 60.0
+      negatives << "⚠ High environmental & landslide risk (#{risk_score}/100)"
+    end
+
+    # Accessibility
+    if acc_score >= 70.0
+      positives << "✓ High corridor accessibility rating (#{acc_score}/100)"
+    elsif acc_score < 45.0
+      negatives << "⚠ Difficult terrain gradient and limited hospital accessibility (#{acc_score}/100)"
+    end
+
+    # Efficiency
+    if eff_score >= 80.0
+      positives << "✓ High transit efficiency and direct route corridor"
+    end
+
+    [positives, negatives]
   end
 
   def evaluate_emergency_exposure(coords, emergencies)
@@ -270,8 +353,18 @@ class RouteOptimizationService
     end || "low"
   end
 
+  def origin_weather
+    @origin_weather ||= WeatherService.fetch(origin.latitude, origin.longitude, fallback_location: origin)
+  end
+
+  def destination_weather
+    @destination_weather ||= WeatherService.fetch(destination.latitude, destination.longitude, fallback_location: destination)
+  end
+
   def worst_rainfall_level
-    [origin.rainfall_level.to_s.downcase, destination.rainfall_level.to_s.downcase].max_by do |r|
+    orig_level = origin_weather[:rainfall_level].presence || origin.rainfall_level.to_s.downcase
+    dest_level = destination_weather[:rainfall_level].presence || destination.rainfall_level.to_s.downcase
+    [orig_level, dest_level].max_by do |r|
       %w[low moderate high extreme].index(r) || 0
     end || "low"
   end
@@ -395,10 +488,16 @@ class RouteOptimizationService
     efficient[:hex_color] = "#d97706"
     efficient[:badge_class] = "bg-amber-100 text-amber-800 border-amber-200"
 
+    balanced = efficient.dup
+    balanced[:type] = "balanced"
+    balanced[:title] = "Balanced Route"
+    balanced[:tagline] = "Optimal Time, Safety & Distance Balance"
+
     {
       fastest: fastest,
       safest: safest,
-      efficient: efficient
+      efficient: efficient,
+      balanced: balanced
     }
   end
 
@@ -409,25 +508,30 @@ class RouteOptimizationService
     vtype = vehicle_type.downcase
     fastest = classified_routes[:fastest]
     safest = classified_routes[:safest]
-    efficient = classified_routes[:efficient]
+    balanced = classified_routes[:balanced] || classified_routes[:efficient]
 
     # Decide winner based on overall intelligence score and vehicle context
     candidates = [
       [:fastest, fastest],
       [:safest, safest],
-      [:efficient, efficient]
+      [:balanced, balanced]
     ]
 
-    best_type, best_route = candidates.max_by { |_, r| r[:scores][:overall_intelligence] }
-
-    # If severe hazards exist, force safest for ambulances and emergency response units
-    if (vtype.include?("ambulance") || vtype.include?("emergency")) && fastest[:risk_score] >= 45.0
+    # Safety Principle: If the fastest route passes through high/critical hazard zones (risk >= 40.0),
+    # ENMA AI must NEVER recommend the high-risk route over a safe detour!
+    if fastest[:risk_score] >= 40.0 && safest[:risk_score] < fastest[:risk_score]
       best_type = :safest
       best_route = safest
+    elsif (fastest[:risk_score] - safest[:risk_score]) >= 15.0 && fastest[:risk_score] > 25.0
+      # If Safest saves significant risk (15+ pts), prefer Safest or Balanced
+      best_type = (balanced && balanced[:risk_score] <= safest[:risk_score] + 5.0) ? :balanced : :safest
+      best_route = (best_type == :balanced) ? balanced : safest
+    else
+      best_type, best_route = candidates.max_by { |_, r| r[:scores][:overall_score] || r[:scores][:overall_intelligence] }
     end
 
     # Build dynamic explainable reasoning
-    reasons = generate_explainable_reasons(best_type, best_route, fastest, safest, efficient, emergencies)
+    reasons = generate_explainable_reasons(best_type, best_route, fastest, safest, balanced, emergencies)
     trade_off = generate_trade_off_analysis(best_type, best_route, fastest, safest)
 
     recommendation_data = {
@@ -443,7 +547,7 @@ class RouteOptimizationService
     [best_type, recommendation_data]
   end
 
-  def generate_explainable_reasons(chosen_type, chosen_route, fastest, safest, efficient, emergencies)
+  def generate_explainable_reasons(chosen_type, chosen_route, fastest, safest, balanced, emergencies)
     reasons = []
 
     if chosen_route[:emergency_exposure][:intersected_count] == 0
@@ -477,12 +581,12 @@ class RouteOptimizationService
     if chosen_type == :safest && chosen_route[:id] != fastest[:id]
       time_diff = chosen_route[:duration_minutes] - fastest[:duration_minutes]
       dist_diff = (chosen_route[:distance_km] - fastest[:distance_km]).round(1)
-      risk_diff = (fastest[:risk_score] - chosen_route[:risk_score]).round(1)
-      "Although #{fastest[:title]} is #{dist_diff} km shorter (#{time_diff} mins faster), it passes through higher-hazard terrain. The Safest Route is recommended to reduce risk by #{risk_diff} points."
+      risk_reduction_pct = (((fastest[:risk_score] - chosen_route[:risk_score]) / [fastest[:risk_score], 1.0].max) * 100.0).round
+      "#{chosen_route[:title]} is recommended by ENMA AI because it has #{risk_reduction_pct > 0 ? "#{risk_reduction_pct}% lower environmental risk" : 'lower risk'} and better accessibility (#{chosen_route[:scores][:accessibility]}/100) despite adding #{time_diff} minutes of travel time."
     elsif chosen_type == :fastest && chosen_route[:risk_score] <= 35.0
-      "Fastest Route selected because corridor weather and landslide telemetry indicate nominal conditions with manageable risk."
+      "Fastest Route is recommended because corridor weather and landslide telemetry indicate nominal conditions with manageable risk (#{chosen_route[:risk_score]}/100)."
     else
-      "Balanced Route selected to optimize transit time while maintaining logistical security for #{vehicle_type}."
+      "Balanced Route is recommended to optimize transit time while maintaining logistical security for #{vehicle_type}."
     end
   end
 end
