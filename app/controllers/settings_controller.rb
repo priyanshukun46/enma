@@ -9,7 +9,7 @@ class SettingsController < ApplicationController
     @user = current_user
 
     # If user already has a password, verify current password
-    if @user.password_digest.present? && !@user.authenticate(params[:current_password])
+    if @user.encrypted_password.present? && !@user.valid_password?(params[:current_password])
       flash.now[:alert] = "Current password is incorrect."
       return render :show, status: :unprocessable_entity
     end
@@ -59,7 +59,7 @@ class SettingsController < ApplicationController
     @user = current_user
     provider_name = @user.provider_label
 
-    if @user.password_digest.blank?
+    if @user.encrypted_password.blank?
       flash[:alert] = "You must set a password above before disconnecting #{provider_name} to ensure you don't lose account access."
     else
       @user.update(provider: nil, uid: nil)

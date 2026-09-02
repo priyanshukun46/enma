@@ -35,7 +35,7 @@ class MapsController < ApplicationController
     end
 
     @warehouses = Warehouse.all
-    @emergencies = Emergency.where(status: ["Active", "Responding", "open"]).order(created_at: :desc)
+    @emergencies = Emergency.includes(:location).where(status: ["Active", "Responding", "open"]).order(created_at: :desc)
     @reported_incidents = Incident.includes(:user, photos_attachments: :blob).recent
     @active_incidents_count = @emergencies.count + @reported_incidents.where(status: %w[reported verified]).count
 

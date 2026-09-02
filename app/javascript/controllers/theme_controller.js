@@ -8,21 +8,27 @@ export default class extends Controller {
   }
 
   get currentTheme() {
-    return localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+    const saved = localStorage.getItem("theme")
+    if (saved) return saved
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
   }
 
   toggle() {
-    const newTheme = document.documentElement.classList.contains("dark") ? "light" : "dark"
+    const isDark = document.documentElement.classList.contains("dark") || document.documentElement.dataset.theme === "dark"
+    const newTheme = isDark ? "light" : "dark"
     this.applyTheme(newTheme)
   }
 
   applyTheme(theme) {
-    if (theme === "dark") {
+    const isDark = theme === "dark"
+    if (isDark) {
       document.documentElement.classList.add("dark")
+      document.documentElement.dataset.theme = "dark"
       localStorage.setItem("theme", "dark")
       this.updateIcons(true)
     } else {
       document.documentElement.classList.remove("dark")
+      document.documentElement.dataset.theme = "light"
       localStorage.setItem("theme", "light")
       this.updateIcons(false)
     }
@@ -30,10 +36,10 @@ export default class extends Controller {
 
   updateIcons(isDark) {
     if (this.hasIconTarget) {
-      this.iconTarget.className = isDark ? "fas fa-sun text-amber-400" : "fas fa-moon text-slate-600 dark:text-slate-300"
+      this.iconTarget.className = isDark ? "fas fa-moon text-accent" : "fas fa-sun text-accent"
     }
     if (this.hasTextTarget) {
-      this.textTarget.textContent = isDark ? "Light Mode" : "Dark Mode"
+      this.textTarget.textContent = isDark ? "Dark Theme" : "Light Theme"
     }
   }
 }

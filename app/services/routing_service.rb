@@ -4,7 +4,9 @@ require "uri"
 
 class RoutingService
   DEFAULT_OSRM_URL = "https://router.project-osrm.org".freeze
-  TIMEOUT_SECONDS = 2.0 # Standard network timeout for routing APIs
+  TIMEOUT_SECONDS = 0.6 # Fast network timeout with instant fallback
+
+  @@memory_cache = {}
 
   attr_reader :origin, :destination, :options
 
@@ -18,13 +20,19 @@ class RoutingService
   def alternatives
     cache_key = "osrm_routes_#{origin_lat.round(3)}_#{origin_lon.round(3)}_#{destination_lat.round(3)}_#{destination_lon.round(3)}"
     
+    return @@memory_cache[cache_key] if !Rails.env.test? && @@memory_cache.key?(cache_key)
+
     # 1. Check Rails Cache first (instant <1ms response)
     cached = Rails.cache.read(cache_key)
-    return cached if cached.present?
+    if cached.present?
+      @@memory_cache[cache_key] = cached
+      return cached
+    end
 
-    # 2. Try real road routing provider (OSRM) with 1.0s timeout
+    # 2. Try real road routing provider (OSRM) with 0.6s timeout
     routes = fetch_osrm_routes
     if routes.present? && routes.any?
+      @@memory_cache[cache_key] = routes
       Rails.cache.write(cache_key, routes, expires_in: 6.hours)
       return routes
     end

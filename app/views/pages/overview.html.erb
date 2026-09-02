@@ -3,7 +3,7 @@
   <div class="pb-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
       <div class="flex items-center space-x-2">
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-accent/15 text-accent border border-accent/20">
           Smart India Hackathon 2026
         </span>
       </div>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="flex items-center space-x-3">
-      <%= link_to demo_path, class: "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center" do %>
+      <%= link_to demo_path, class: "px-4 py-2 bg-accent hover:opacity-90 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center" do %>
         <i class="fas fa-play mr-1.5"></i>
         <span>Live Interactive Demo</span>
       <% end %>
@@ -35,7 +35,7 @@
 
     <!-- 2. The Solution -->
     <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-3">
-      <div class="flex items-center space-x-2 text-indigo-600 font-bold text-xs uppercase tracking-wider">
+      <div class="flex items-center space-x-2 text-accent font-bold text-xs uppercase tracking-wider">
         <i class="fas fa-brain"></i>
         <span>2. The Solution</span>
       </div>
@@ -77,10 +77,10 @@
   </div>
 
   <!-- Quick Action Navigation Footer -->
-  <div class="p-6 rounded-2xl bg-indigo-900 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div class="p-6 rounded-2xl bg-accent/15 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
       <h4 class="text-base font-bold">Ready to explore the platform in depth?</h4>
-      <p class="text-xs text-indigo-200 mt-0.5">Explore the live decision engines, maps, and interactive simulators.</p>
+      <p class="text-xs text-accent mt-0.5">Explore the live decision engines, maps, and interactive simulators.</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-3">
@@ -88,7 +88,7 @@
         <span>Explore Architecture</span>
       <% end %>
 
-      <%= link_to root_path, class: "px-4 py-2 bg-white text-indigo-900 hover:bg-gray-100 font-black text-xs rounded-xl shadow-md transition-colors" do %>
+      <%= link_to dashboard_path, class: "px-4 py-2 bg-white text-accent hover:bg-gray-100 font-black text-xs rounded-xl shadow-md transition-colors" do %>
         <span>Open Intelligence Dashboard</span>
       <% end %>
     </div>

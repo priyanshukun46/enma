@@ -1,0 +1,186 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+    <div>
+      <div class="flex items-center space-x-2.5">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent border border-accent/20 dark:border-accent/20">
+          <i class="fas fa-satellite-dish mr-1 text-[10px]"></i> Live Telemetry
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Live Logistics &amp; Delivery Monitoring</h1>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time GPS tracking, delivery progress, delay detection, and route deviation intelligence across North East India.</p>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <%= link_to live_map_shipments_path, class: "px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all flex items-center" do %>
+        <i class="fas fa-map-marked-alt text-accent mr-1.5"></i>
+        <span>Live Fleet Map</span>
+      <% end %>
+
+      <%= link_to vehicles_path, class: "px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all flex items-center" do %>
+        <i class="fas fa-truck text-slate-500 mr-1.5"></i>
+        <span>Fleet Registry</span>
+      <% end %>
+
+      <%= link_to new_shipment_path, class: "px-4 py-2 bg-accent hover:opacity-90 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center" do %>
+        <i class="fas fa-plus mr-1.5"></i>
+        <span>Dispatch Shipment</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Key Metrics Dashboard Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Shipments</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-slate-900 dark:text-white"><%= @active_count %></span>
+        <span class="text-xs font-bold text-slate-500">/ <%= @total_shipments %> total</span>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Convoys in transit / assigned.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">On-Time Deliveries</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @on_time_count %></span>
+        <span class="text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded">Nominal</span>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Operating on planned ETA.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Delayed Deliveries</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-amber-600 dark:text-amber-400"><%= @delayed_count %></span>
+        <span class="text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded">&gt; 15m delay</span>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Impacted by weather/hazards.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">High-Risk Deliveries</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-rose-600 dark:text-rose-400"><%= @high_risk_count %></span>
+        <span class="text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/80 px-2 py-0.5 rounded">Corridor Risk</span>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">In high-hazard mountain cuts.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Active Alerts</p>
+      <div class="mt-2 flex items-baseline justify-between">
+        <span class="text-3xl font-black text-purple-600 dark:text-purple-400"><%= @critical_alerts_count %></span>
+        <%= link_to "View", logistics_alerts_path, class: "text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline" %>
+      </div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Deviations, delays &amp; roadblocks.</p>
+    </div>
+  </div>
+
+  <!-- Live Shipments Feed Table -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-truck-ramp-box text-accent mr-2"></i>
+        Active Supply Chain Dispatch Registry
+      </h3>
+      <span class="text-[11px] text-slate-400 font-mono"><%= @shipments.size %> active manifests</span>
+    </div>
+
+    <% if @shipments.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-left text-xs">
+          <thead class="bg-slate-50 dark:bg-slate-800/60 font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[10px]">
+            <tr>
+              <th class="px-5 py-3">Tracking &amp; Vehicle</th>
+              <th class="px-5 py-3">Cargo &amp; Priority</th>
+              <th class="px-5 py-3">Corridor Track</th>
+              <th class="px-5 py-3">Delivery Progress</th>
+              <th class="px-5 py-3">ETA &amp; Delay</th>
+              <th class="px-5 py-3">Status</th>
+              <th class="px-5 py-3 text-right">Telemetry</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
+            <% @shipments.each do |sh| %>
+              <% meta = sh.cargo_meta %>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                <td class="px-5 py-3.5">
+                  <div class="font-mono font-bold text-slate-900 dark:text-white text-xs"><%= sh.tracking_number %></div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center mt-0.5">
+                    <i class="fas fa-truck text-[9px] mr-1 text-accent"></i>
+                    <span><%= sh.vehicle&.registration_number || "Unassigned" %></span>
+                    <% if sh.is_simulated %>
+                      <span class="ml-1.5 px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">SIMULATED</span>
+                    <% end %>
+                  </div>
+                </td>
+
+                <td class="px-5 py-3.5">
+                  <div class="font-bold flex items-center space-x-1.5">
+                    <i class="fas <%= meta[:icon] %> <%= meta[:color] %>"></i>
+                    <span><%= meta[:label] %></span>
+                  </div>
+                  <span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase border <%= sh.priority_badge_class %>">
+                    <%= sh.priority %>
+                  </span>
+                </td>
+
+                <td class="px-5 py-3.5">
+                  <div class="font-bold text-slate-900 dark:text-white"><%= sh.origin_name %> &rarr; <%= sh.destination_name %></div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400"><%= sh.total_distance_km&.round(1) || 0 %> km corridor</div>
+                </td>
+
+                <td class="px-5 py-3.5">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-20 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full <%= sh.progress_percentage >= 95 ? 'bg-emerald-500' : 'bg-accent' %>" style="width: <%= [sh.progress_percentage, 100].min %>%"></div>
+                    </div>
+                    <span class="text-[11px] font-bold font-mono"><%= sh.progress_percentage&.round(0) || 0 %>%</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 mt-0.5"><%= sh.distance_traveled_km&.round(1) || 0 %> km covered</div>
+                </td>
+
+                <td class="px-5 py-3.5">
+                  <div class="font-black text-slate-900 dark:text-white"><%= sh.enma_adjusted_eta ? sh.enma_adjusted_eta.strftime("%l:%M %p") : "—" %></div>
+                  <div class="text-[10px] font-mono <%= sh.delay_minutes.to_i > 0 ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-emerald-600 dark:text-emerald-400' %>">
+                    <%= sh.formatted_delay %>
+                  </div>
+                </td>
+
+                <td class="px-5 py-3.5">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border <%= sh.status_badge_class %>">
+                    <%= sh.status.humanize %>
+                  </span>
+                  <% if sh.deviation_detected %>
+                    <span class="block mt-1 text-[9px] font-bold text-rose-600 dark:text-rose-400">
+                      ⚠️ Off route
+                    </span>
+                  <% end %>
+                </td>
+
+                <td class="px-5 py-3.5 text-right">
+                  <%= link_to shipment_path(sh), class: "text-xs font-bold text-accent dark:text-accent hover:underline" do %>
+                    Monitor &rarr;
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="p-12 text-center space-y-3">
+        <i class="fas fa-boxes-stacked text-3xl text-slate-300 dark:text-slate-600"></i>
+        <h4 class="text-sm font-bold text-slate-700 dark:text-slate-300">No active shipments in transit</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400">Dispatch your first essential supply delivery to begin real-time GPS monitoring.</p>
+        <div class="pt-2">
+          <%= link_to new_shipment_path, class: "px-4 py-2 bg-accent hover:opacity-90 text-white text-xs font-black rounded-xl shadow-md transition-all inline-flex items-center" do %>
+            <i class="fas fa-plus mr-1.5"></i>
+            <span>Dispatch New Delivery</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

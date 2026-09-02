@@ -5,7 +5,7 @@
     <div>
       <div class="flex items-center space-x-2.5">
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800">
-          <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping mr-1.5"></span>
+          <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse mr-1.5"></span>
           Tactical Command
         </span>
         <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Active Incidents</h2>
@@ -21,7 +21,7 @@
         </button>
       <% end %>
 
-      <%= link_to new_emergency_path, class: "inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-sm transition-all" do %>
+      <%= link_to new_emergency_path, class: "inline-flex items-center px-4 py-2 bg-accent hover:opacity-90 text-white font-black text-xs rounded-xl shadow-sm transition-all" do %>
         <i class="fas fa-plus mr-1.5 text-xs"></i>
         <span>Simulate Incident</span>
       <% end %>
@@ -34,62 +34,77 @@
     <!-- Left Column (8 cols): Incident Cards -->
     <div class="lg:col-span-8 space-y-4">
       <div class="flex items-center justify-between px-1">
-        <span class="text-xs font-black uppercase text-slate-600 dark:text-slate-400 tracking-wider">Live Incident Feed</span>
-        <span class="text-xs font-mono font-bold text-red-600 dark:text-red-400"><%= @emergencies.count { |e| e.status.to_s.downcase != "resolved" } %> Active Incidents</span>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-black uppercase text-slate-800 dark:text-slate-200 tracking-wider">Live Incident Feed</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800">
+            <%= @emergencies.count { |e| e.status.to_s.downcase != "resolved" } %> Active
+          </span>
+        </div>
+        <span class="text-[11px] font-mono text-slate-400">Auto-refresh 5s</span>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <% if @emergencies.any? %>
           <% @emergencies.first(4).each do |em| %>
             <% 
-              badge_color = case em.severity.to_s.downcase
-                            when "critical" then "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800 font-black"
-                            when "high"     then "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-800 font-bold"
-                            when "medium", "moderate" then "bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800"
-                            else "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800"
-                            end
+              sev_badge = case em.severity.to_s.downcase
+                          when "critical" then "bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/80 font-black"
+                          when "high"     then "bg-orange-50 dark:bg-orange-950/80 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800/80 font-bold"
+                          when "medium", "moderate" then "bg-yellow-50 dark:bg-yellow-950/80 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800/80 font-bold"
+                          else "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/80 font-bold"
+                          end
               
-              icon_class = case em.emergency_type.to_s.downcase
-                           when /landslide|mudslide/ then "fa-mountain text-amber-500"
-                           when /flood|water/       then "fa-water text-blue-500"
-                           when /power|outage/      then "fa-bolt text-emerald-500"
-                           else "fa-fire-alt text-red-500"
-                           end
+              icon_box = case em.emergency_type.to_s.downcase
+                         when /landslide|mudslide/ then { icon: "fa-mountain", color: "bg-amber-500/10 text-amber-600 dark:text-amber-400" }
+                         when /flood|water/       then { icon: "fa-water", color: "bg-accent/10 text-accent" }
+                         when /power|outage/      then { icon: "fa-bolt", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" }
+                         when /road|blockage/     then { icon: "fa-road-barrier", color: "bg-rose-500/10 text-rose-600 dark:text-rose-400" }
+                         else { icon: "fa-fire-alt", color: "bg-red-500/10 text-red-600 dark:text-red-400" }
+                         end
             %>
-            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4 hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all">
               
-              <!-- Card Top: Icon + Title + Severity Badge -->
-              <div class="flex items-start justify-between gap-2">
-                <div class="flex items-start space-x-3">
-                  <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
-                    <i class="fas <%= icon_class %>"></i>
+              <!-- Card Top: Icon + Title + Severity Pill -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-xl <%= icon_box[:color] %> flex items-center justify-center text-xs flex-shrink-0 font-bold">
+                      <i class="fas <%= icon_box[:icon] %>"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      <%= em.emergency_type %>
+                    </span>
                   </div>
-                  <div>
-                    <h3 class="font-black text-sm text-slate-900 dark:text-white leading-tight"><%= em.title %></h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center">
-                      <i class="fas fa-map-pin text-[10px] text-slate-400 mr-1"></i>
-                      <%= em.location&.name || "District Sector" %>, <%= em.location&.state || "North East" %>
-                    </p>
-                  </div>
+
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider border <%= sev_badge %>">
+                    <%= em.severity %>
+                  </span>
                 </div>
 
-                <span class="px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider border <%= badge_color %> flex-shrink-0">
-                  <%= em.severity %>
-                </span>
+                <div>
+                  <h3 class="font-black text-sm text-slate-900 dark:text-white leading-snug line-clamp-2">
+                    <%= em.title %>
+                  </h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center">
+                    <i class="fas fa-location-dot text-[10px] text-accent mr-1.5 flex-shrink-0"></i>
+                    <span class="truncate"><%= em.location&.name || "District Sector" %>, <%= em.location&.state || "North East" %></span>
+                  </p>
+                </div>
               </div>
 
               <!-- Card Bottom: Elapsed Time & View Details Link -->
-              <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
                 <div>
                   <span class="text-[9px] font-black uppercase text-slate-400 tracking-wider block">Elapsed Time</span>
-                  <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+                  <span class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 flex items-center mt-0.5">
+                    <i class="far fa-clock text-[10px] text-slate-400 mr-1"></i>
                     <%= em.simulated_at ? sprintf("%02d:%02d:%02d", ((Time.current - em.simulated_at) / 3600).to_i, (((Time.current - em.simulated_at) % 3600) / 60).to_i, ((Time.current - em.simulated_at) % 60).to_i) : "00:14:32" %>
                   </span>
                 </div>
 
-                <%= link_to emergency_path(em), class: "inline-flex items-center text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 transition-colors" do %>
-                  <span>View Details</span>
-                  <i class="fas fa-chevron-right ml-1 text-[9px]"></i>
+                <%= link_to emergency_path(em), class: "inline-flex items-center px-3 py-1 bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent hover:bg-accent hover:text-white dark:hover:bg-accent dark:hover:text-white text-xs font-bold rounded-lg border border-accent/20 dark:border-accent/20 shadow-sm transition-all" do %>
+                  <span>Details</span>
+                  <i class="fas fa-arrow-right ml-1.5 text-[9px]"></i>
                 <% end %>
               </div>
             </div>
@@ -102,7 +117,7 @@
     <div class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
       <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
         <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-          <i class="fas fa-cubes text-indigo-600 dark:text-indigo-400 mr-2 text-xs"></i>
+          <i class="fas fa-cubes text-accent dark:text-accent mr-2 text-xs"></i>
           <span>Resource Availability</span>
         </h3>
         <span class="text-[10px] font-mono text-slate-400">Tactical Fleet</span>
@@ -110,53 +125,65 @@
 
       <div class="space-y-4">
         <!-- Resource 1: Medical Teams -->
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-sm flex-shrink-0">
-              <i class="fas fa-user-md"></i>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-7 h-7 rounded-lg bg-accent/15 dark:bg-accent/10 text-accent dark:text-accent flex items-center justify-center text-xs flex-shrink-0">
+                <i class="fas fa-user-md"></i>
+              </div>
+              <span class="font-bold text-xs text-slate-900 dark:text-white">Medical Teams</span>
             </div>
-            <div>
-              <span class="font-bold text-xs text-slate-900 dark:text-white block">Medical Teams</span>
-              <span class="text-[11px] text-slate-500 dark:text-slate-400">4 / 12 Dispatched (8 Ready)</span>
-            </div>
+            <span class="text-xs font-black text-accent dark:text-accent font-mono">68% Ready</span>
           </div>
-          <div class="text-right font-mono">
-            <span class="text-sm font-black text-indigo-600 dark:text-indigo-400">68%</span>
-            <span class="text-[9px] text-slate-400 block uppercase">Ready</span>
+
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-accent h-1.5 rounded-full" style="width: 68%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+            <span>4 / 12 Dispatched</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">8 Ready</span>
           </div>
         </div>
 
         <!-- Resource 2: Fire & Rescue -->
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 flex items-center justify-center text-sm flex-shrink-0">
-              <i class="fas fa-fire-extinguisher"></i>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300 flex items-center justify-center text-xs flex-shrink-0">
+                <i class="fas fa-fire-extinguisher"></i>
+              </div>
+              <span class="font-bold text-xs text-slate-900 dark:text-white">Fire &amp; Rescue</span>
             </div>
-            <div>
-              <span class="font-bold text-xs text-slate-900 dark:text-white block">Fire &amp; Rescue</span>
-              <span class="text-[11px] text-slate-500 dark:text-slate-400">8 / 10 Deployed (2 Ready)</span>
-            </div>
+            <span class="text-xs font-black text-red-600 dark:text-red-400 font-mono">20% Ready</span>
           </div>
-          <div class="text-right font-mono">
-            <span class="text-sm font-black text-red-600 dark:text-red-400">20%</span>
-            <span class="text-[9px] text-slate-400 block uppercase">Ready</span>
+
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-red-500 h-1.5 rounded-full" style="width: 20%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+            <span>8 / 10 Deployed</span>
+            <span class="font-bold text-amber-600 dark:text-amber-400">2 Ready</span>
           </div>
         </div>
 
         <!-- Resource 3: Hazmat Units -->
-        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm flex-shrink-0">
-              <i class="fas fa-biohazard"></i>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-xs flex-shrink-0">
+                <i class="fas fa-biohazard"></i>
+              </div>
+              <span class="font-bold text-xs text-slate-900 dark:text-white">Hazmat &amp; Heavy Units</span>
             </div>
-            <div>
-              <span class="font-bold text-xs text-slate-900 dark:text-white block">Hazmat &amp; Heavy Units</span>
-              <span class="text-[11px] text-slate-500 dark:text-slate-400">1 / 5 Dispatched (4 Ready)</span>
-            </div>
+            <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 font-mono">80% Ready</span>
           </div>
-          <div class="text-right font-mono">
-            <span class="text-sm font-black text-emerald-600 dark:text-emerald-400">80%</span>
-            <span class="text-[9px] text-slate-400 block uppercase">Ready</span>
+
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 80%"></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+            <span>1 / 5 Dispatched</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400">4 Ready</span>
           </div>
         </div>
       </div>
@@ -168,7 +195,7 @@
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/60">
       <div>
         <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-          <i class="fas fa-clipboard-list text-indigo-600 dark:text-indigo-400 mr-2 text-xs"></i>
+          <i class="fas fa-clipboard-list text-accent dark:text-accent mr-2 text-xs"></i>
           <span>Full Disaster Registry</span>
         </h3>
         <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Comprehensive chronological database of recorded disaster events and active operations.</p>
@@ -194,17 +221,17 @@
           <% @emergencies.each do |em| %>
             <% 
               sev_badge = case em.severity.to_s.downcase
-                          when "critical" then "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800 font-black"
-                          when "high"     then "bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border-orange-300 dark:border-orange-800 font-bold"
-                          when "medium", "moderate" then "bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800"
-                          else "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800"
+                          when "critical" then "bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/80 font-black"
+                          when "high"     then "bg-orange-50 dark:bg-orange-950/80 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800/80 font-bold"
+                          when "medium", "moderate" then "bg-yellow-50 dark:bg-yellow-950/80 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800/80 font-bold"
+                          else "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/80 font-bold"
                           end
               
               stat_badge = case em.status.to_s.downcase
-                           when "active"     then "bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border-red-300 dark:border-red-800 font-black"
-                           when "responding" then "bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800 font-bold"
-                           when "monitoring" then "bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300 border-yellow-300 dark:border-yellow-800"
-                           when "resolved"   then "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800"
+                           when "active"     then "bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/80 font-black"
+                           when "responding" then "bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800/80 font-bold"
+                           when "monitoring" then "bg-yellow-50 dark:bg-yellow-950/80 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800/80 font-medium"
+                           when "resolved"   then "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/80 font-medium"
                            else "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
                            end
             %>
@@ -217,7 +244,7 @@
                 <span class="font-bold text-slate-700 dark:text-slate-300"><%= em.emergency_type %></span>
               </td>
               <td class="px-5 py-3.5">
-                <span class="px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider border <%= sev_badge %>">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider border <%= sev_badge %>">
                   <%= em.severity %>
                 </span>
               </td>
@@ -226,13 +253,14 @@
                 <div class="text-[10px] text-slate-400"><%= em.location&.state || "North East" %></div>
               </td>
               <td class="px-5 py-3.5">
-                <span class="px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider border <%= stat_badge %>">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider border <%= stat_badge %>">
                   <%= em.status %>
                 </span>
               </td>
-              <td class="px-5 py-3.5 text-right">
-                <%= link_to emergency_path(em), class: "inline-flex items-center px-3 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white text-xs font-bold rounded-xl border border-indigo-200 dark:border-indigo-800 shadow-sm transition-all" do %>
-                  <span>Command Center &rarr;</span>
+              <td class="px-5 py-3.5 text-right whitespace-nowrap">
+                <%= link_to emergency_path(em), class: "inline-flex items-center px-3 py-1.5 bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent hover:bg-accent hover:text-white dark:hover:bg-accent dark:hover:text-white text-xs font-bold rounded-xl border border-accent/20 dark:border-accent/20 shadow-sm transition-all" do %>
+                  <span>Command Center</span>
+                  <i class="fas fa-arrow-right ml-1.5 text-[9px]"></i>
                 <% end %>
               </td>
             </tr>
@@ -242,3 +270,4 @@
     </div>
   </div>
 </div>
+

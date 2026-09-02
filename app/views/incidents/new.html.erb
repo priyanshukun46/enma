@@ -4,7 +4,7 @@
   <!-- Mobile Sticky Top Header -->
   <div class="sticky top-0 z-30 -mx-3 -mt-3 sm:mx-0 sm:mt-0 px-4 py-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between sm:rounded-2xl mb-4 sm:mb-6">
     <div class="flex items-center space-x-3">
-      <%= link_to incidents_path, class: "w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center text-xs transition-colors" do %>
+      <%= link_to incidents_path, class: "w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-accent dark:hover:text-accent flex items-center justify-center text-xs transition-colors" do %>
         <i class="fas fa-arrow-left"></i>
       <% end %>
       <div>
@@ -47,7 +47,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">1</span>
+              <span class="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center font-bold mr-2">1</span>
               Hazard Type <span class="text-red-500 ml-1">*</span>
             </label>
             <span class="text-[10px] text-slate-400 font-mono">1-tap selection</span>
@@ -56,7 +56,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             <% Incident::INCIDENT_TYPES.each do |key, meta| %>
               <% is_checked = (@incident.incident_type == key) || (key == "landslide" && @incident.incident_type.blank?) %>
-              <label class="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-500 bg-slate-50/50 dark:bg-slate-800/40 cursor-pointer transition-all active:scale-95 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/70 dark:has-[:checked]:bg-indigo-950/70 has-[:checked]:shadow-md min-h-[88px]"
+              <label class="relative flex flex-col items-center justify-center p-3.5 sm:p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-accent dark:hover:border-accent bg-slate-50/50 dark:bg-slate-800/40 cursor-pointer transition-all active:scale-95 has-[:checked]:border-accent has-[:checked]:bg-accent/10 dark:has-[:checked]:bg-accent/10 has-[:checked]:shadow-md min-h-[88px]"
                      data-action="click->incident-form#selectType"
                      data-type-emoji="<%= meta[:emoji] %>"
                      data-type-label="<%= meta[:label] %>">
@@ -72,7 +72,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">2</span>
+              <span class="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center font-bold mr-2">2</span>
               Incident Location <span class="text-red-500 ml-1">*</span>
             </label>
             <span class="text-[10px] text-slate-400 font-mono">GPS Sensor</span>
@@ -80,8 +80,8 @@
 
           <!-- 1. GPS Loading State -->
           <div data-incident-form-target="gpsLoadingState"
-               class="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/80 flex items-center space-x-3.5">
-            <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 animate-pulse shadow-md">
+               class="p-4 rounded-2xl bg-accent/10 dark:bg-accent/10 border border-accent/20 dark:border-accent/20/80 flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center flex-shrink-0 animate-pulse shadow-md">
               <i class="fas fa-location-crosshairs text-base animate-spin"></i>
             </div>
             <div>
@@ -197,7 +197,7 @@
         <!-- STEP 4: Severity Selection -->
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
           <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-            <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">3</span>
+            <span class="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center font-bold mr-2">3</span>
             Hazard Severity Level <span class="text-red-500 ml-1">*</span>
           </label>
 
@@ -209,7 +209,7 @@
               ["critical", "Critical", "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border-red-300 font-black", "Emergency / Impassable"]
             ].each do |val, label, badge_styling, desc| %>
               <% is_checked = (@incident.severity == val) || (val == "medium" && @incident.severity.blank?) %>
-              <label class="relative flex flex-col p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 cursor-pointer transition-all active:scale-95 has-[:checked]:border-indigo-600 has-[:checked]:bg-indigo-50/50 dark:has-[:checked]:bg-indigo-950/50 has-[:checked]:shadow-md"
+              <label class="relative flex flex-col p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-accent cursor-pointer transition-all active:scale-95 has-[:checked]:border-accent has-[:checked]:bg-accent/10 dark:has-[:checked]:bg-accent/10 has-[:checked]:shadow-md"
                      data-action="click->incident-form#selectSeverity"
                      data-severity-value="<%= val %>"
                      data-severity-label="<%= label %>"
@@ -235,7 +235,7 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
           <div class="flex items-center justify-between">
             <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">4</span>
+              <span class="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center font-bold mr-2">4</span>
               Additional Field Observations <span class="text-red-500 ml-1">*</span>
             </label>
             <span data-incident-form-target="descriptionCount" class="text-[10px] font-mono text-slate-400">0 / 2000 chars</span>
@@ -258,10 +258,10 @@
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <label class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-              <span class="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] flex items-center justify-center font-bold mr-2">5</span>
+              <span class="w-5 h-5 rounded-full bg-accent text-white text-[10px] flex items-center justify-center font-bold mr-2">5</span>
               Photo Evidence
             </label>
-            <span data-incident-form-target="photoCountBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-mono"></span>
+            <span data-incident-form-target="photoCountBadge" class="hidden px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent border border-accent/20 dark:border-accent/20 font-mono"></span>
           </div>
 
           <!-- Hidden File Inputs -->
@@ -283,8 +283,8 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <!-- 1. Native Mobile Camera -->
             <label for="mobile_camera_lens_input"
-                   class="p-4 rounded-2xl border-2 border-dashed border-indigo-400 dark:border-indigo-700 bg-indigo-50/50 dark:bg-indigo-950/30 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 cursor-pointer transition-all flex flex-col items-center justify-center text-center space-y-2 active:scale-95">
-              <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-base shadow-md">
+                   class="p-4 rounded-2xl border-2 border-dashed border-accent dark:border-accent/25 bg-accent/10 dark:bg-accent/10 hover:bg-accent/10 dark:hover:bg-accent/10 cursor-pointer transition-all flex flex-col items-center justify-center text-center space-y-2 active:scale-95">
+              <div class="w-10 h-10 rounded-2xl bg-accent text-white flex items-center justify-center text-base shadow-md">
                 <i class="fas fa-camera"></i>
               </div>
               <div>
@@ -318,7 +318,7 @@
         <!-- STEP 6: Live Incident Summary Card (Verification before submission) -->
         <div class="bg-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-800 space-y-4">
           <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <span class="text-[10px] font-black uppercase text-indigo-400 tracking-wider flex items-center">
+            <span class="text-[10px] font-black uppercase text-accent tracking-wider flex items-center">
               <i class="fas fa-clipboard-check mr-1.5 text-xs"></i>
               Incident Summary
             </span>

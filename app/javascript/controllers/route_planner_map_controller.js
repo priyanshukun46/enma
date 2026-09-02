@@ -16,6 +16,8 @@ export default class extends Controller {
     "originSelect",
     "destinationSelect",
     "vehicleInput",
+    "priorityInput",
+    "cargoInput",
     "voiceToggle",
     "searchForm",
     "originLat",
@@ -46,6 +48,8 @@ export default class extends Controller {
     this.initializeMap()
     if (this.hasOriginValue && this.hasDestinationValue && this.hasRoutesValue) {
       this.renderMapElements()
+      const initialRoute = this.activeRouteValue || Object.keys(this.routesValue)[0] || "safest"
+      this.selectRoute(initialRoute)
     }
 
     setTimeout(() => { if (this.map) this.map.invalidateSize() }, 50)
@@ -80,11 +84,18 @@ export default class extends Controller {
       scrollWheelZoom: true
     }).setView(defaultCenter, defaultZoom)
 
+    // CartoDB Dark Matter base layer for high-contrast dark mode
+    const darkLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      subdomains: 'abcd',
+      attribution: '&copy; OpenStreetMap &copy; CARTO'
+    }).addTo(this.map)
+
     // Standard OpenStreetMap base layer
     const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map)
+    })
 
     // Topo Terrain layer
     const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
@@ -94,7 +105,8 @@ export default class extends Controller {
 
     // Base Maps Layer Controller
     const baseMaps = {
-      "Google OSM Style": osmLayer,
+      "ENMA Dark Radar": darkLayer,
+      "Standard Street": osmLayer,
       "Topographic Terrain": topoLayer
     }
     L.control.layers(baseMaps, null, { position: 'topright' }).addTo(this.map)
@@ -272,6 +284,15 @@ export default class extends Controller {
     }
   }
 
+  // Switch Priority Mode
+  selectPriority(event) {
+    const pmode = event.currentTarget.dataset.priorityMode
+    if (this.hasPriorityInputTarget) {
+      this.priorityInputTarget.value = pmode
+      this.priorityInputTarget.form.submit()
+    }
+  }
+
   // Switch Active Route
   selectRoute(eventOrTypeKey) {
     let typeKey = (typeof eventOrTypeKey === 'string') ? eventOrTypeKey : null
@@ -285,33 +306,77 @@ export default class extends Controller {
 
     this.activeRouteValue = typeKey
 
+    const config = {
+      fastest:   { color: '#2563eb', label: 'Fastest' },
+      safest:    { color: '#059669', label: 'Safest' },
+      efficient: { color: '#E95420', label: 'Balanced' },
+      balanced:  { color: '#E95420', label: 'Balanced' }
+    }
+
+    // 1. Highlight Polylines on Leaflet Map
     if (this.polylines) {
       Object.entries(this.polylines).forEach(([key, poly]) => {
+        const cfg = config[key] || { color: '#6366f1' }
         if (key === typeKey) {
-          poly.setStyle({ weight: 9, opacity: 1.0, dashArray: null })
+          poly.setStyle({
+            color: cfg.color,
+            weight: 10,
+            opacity: 1.0,
+            dashArray: null,
+            lineCap: 'round',
+            lineJoin: 'round'
+          })
           poly.bringToFront()
-          if (this.map) {
-            this.map.fitBounds(poly.getBounds(), { padding: [50, 50] })
+          if (this.map && poly.getBounds && poly.getBounds().isValid()) {
+            this.map.fitBounds(poly.getBounds(), { padding: [60, 60], maxZoom: 14 })
           }
         } else {
-          poly.setStyle({ weight: 4, opacity: 0.30, dashArray: '6, 6' })
+          poly.setStyle({
+            color: cfg.color,
+            weight: 4,
+            opacity: 0.28,
+            dashArray: '6, 8',
+            lineCap: 'round',
+            lineJoin: 'round'
+          })
+          if (poly.bringToBack) {
+            poly.bringToBack()
+          }
         }
       })
     }
 
+    // 2. Highlight Selected Route Card in Left Sidebar
     if (this.hasRouteCardTargets) {
       this.routeCardTargets.forEach(card => {
-        const isMatch = card.dataset.routeType === typeKey
+        const isMatch = (card.dataset.routeType === typeKey)
+        // Clean all possible active styling
+        card.classList.remove(
+          "border-indigo-600", "dark:border-indigo-500",
+          "bg-indigo-50/20", "bg-indigo-50/30", "bg-indigo-50/40", "bg-indigo-50/60",
+          "dark:bg-indigo-950/20", "dark:bg-indigo-950/30", "dark:bg-indigo-950/40", "dark:bg-indigo-950/60",
+          "ring-2", "ring-indigo-500/20", "ring-indigo-500/30", "ring-indigo-500", "ring-indigo-600",
+          "shadow-md", "shadow-lg", "opacity-50", "opacity-60", "border-slate-200", "dark:border-slate-800"
+        )
+
         if (isMatch) {
-          card.classList.add("border-indigo-600", "bg-indigo-50/30", "dark:bg-indigo-950/40", "ring-2", "ring-indigo-500/30", "shadow-md")
-          card.classList.remove("opacity-60", "border-slate-200", "dark:border-slate-800")
+          card.classList.add(
+            "border-indigo-600", "dark:border-indigo-500",
+            "bg-indigo-50/40", "dark:bg-indigo-950/60",
+            "ring-2", "ring-indigo-500",
+            "shadow-md",
+            "scale-[1.01]"
+          )
         } else {
-          card.classList.remove("border-indigo-600", "bg-indigo-50/30", "dark:bg-indigo-950/40", "ring-2", "ring-indigo-500/30", "shadow-md")
-          card.classList.add("opacity-60", "border-slate-200", "dark:border-slate-800")
+          card.classList.add(
+            "border-slate-200", "dark:border-slate-800",
+            "opacity-60", "hover:opacity-100"
+          )
         }
       })
     }
 
+    // 3. Update Turn-by-Turn Maneuver List
     this.renderTurnListFor(typeKey)
   }
 

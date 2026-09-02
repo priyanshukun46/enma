@@ -1,0 +1,72 @@
+<div class="space-y-6 max-w-3xl mx-auto pb-12">
+  <!-- Breadcrumb -->
+  <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-200 dark:border-slate-800">
+    <%= link_to shipments_path, class: "text-accent dark:text-accent hover:underline font-bold flex items-center" do %>
+      <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
+      <span>Logistics Monitoring</span>
+    <% end %>
+    <span>/</span>
+    <span class="text-slate-900 dark:text-white font-black">Dispatch New Shipment</span>
+  </div>
+
+  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-6">
+    <div>
+      <h1 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Dispatch Supply Convoy</h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Initiate a live tracked shipment with risk-aware corridor routing and automated GPS monitoring.</p>
+    </div>
+
+    <%= form_with model: @shipment, url: shipments_path, local: true, class: "space-y-4" do |f| %>
+      <% if @shipment.errors.any? %>
+        <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300">
+          <p class="font-bold">Please fix the following errors:</p>
+          <ul class="list-disc pl-5 mt-1 space-y-0.5">
+            <% @shipment.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :cargo_type, "Cargo Type", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1" %>
+          <%= f.select :cargo_type,
+                       options_for_select(Shipment::CARGO_TYPES.map { |c| [Shipment::CARGO_METADATA[c][:label], c] }, @shipment.cargo_type),
+                       {},
+                       class: "w-full px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500" %>
+        </div>
+
+        <div>
+          <%= f.label :priority, "Priority Level", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1" %>
+          <%= f.select :priority,
+                       options_for_select([["Normal Priority", "normal"], ["High Priority", "high"], ["Critical Priority", "critical"], ["🚨 Emergency Relief", "emergency"]], @shipment.priority),
+                       {},
+                       class: "w-full px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500" %>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :origin_id, "Origin Dispatch Hub", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1" %>
+          <%= f.collection_select :origin_id, @locations, :id, :name, { prompt: "-- Select Origin Hub --" }, class: "w-full px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500", required: true %>
+        </div>
+
+        <div>
+          <%= f.label :destination_id, "Destination Relief Base", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1" %>
+          <%= f.collection_select :destination_id, @locations, :id, :name, { prompt: "-- Select Destination --" }, class: "w-full px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500", required: true %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :vehicle_id, "Assign Convoy Vehicle", class: "block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1" %>
+        <%= f.collection_select :vehicle_id, @vehicles, :id, ->(v) { "#{v.registration_number} (#{v.vehicle_type}) - #{v.driver_name || 'Driver TBD'}" }, { prompt: "-- Select Available Vehicle --" }, class: "w-full px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500" %>
+        <p class="text-[11px] text-slate-400 mt-1">Leave blank to auto-assign when telemetry initiates.</p>
+      </div>
+
+      <div class="pt-4 flex items-center justify-end space-x-3 border-t border-slate-100 dark:border-slate-800">
+        <%= link_to "Cancel", shipments_path, class: "px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:underline" %>
+        <%= f.submit "Dispatch & Start Tracking", class: "px-5 py-2.5 bg-accent hover:opacity-90 text-white font-black text-xs rounded-xl shadow-md cursor-pointer transition-all" %>
+      </div>
+    <% end %>
+  </div>
+</div>

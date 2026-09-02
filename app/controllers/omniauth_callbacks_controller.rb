@@ -25,7 +25,7 @@ class OmniauthCallbacksController < ApplicationController
       if user.present?
         login(user)
         flash[:notice] = "Signed in successfully with #{user.provider_label}! Welcome, #{user.name}."
-        redirect_to(session.delete(:return_to) || root_path)
+        redirect_to(session.delete(:return_to) || dashboard_path)
       else
         flash[:alert] = "Unable to authenticate with #{auth.provider}. Please ensure your account has a verified email address."
         redirect_to login_path

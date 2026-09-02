@@ -19,13 +19,14 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "unauthenticated user cannot access admin users" do
     get admin_users_url
-    assert_redirected_to root_url
+    # require_admin redirects to dashboard_path, which will then redirect to login
+    assert_redirected_to dashboard_url
   end
 
   test "operator cannot access admin users" do
     post login_url, params: { email_address: @operator.email_address, password: "password123" }
     get admin_users_url
-    assert_redirected_to root_url
+    assert_redirected_to dashboard_url
     follow_redirect!
     assert_select "div", text: /Access denied/
   end

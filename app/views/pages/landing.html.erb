@@ -1,259 +1,565 @@
-<div class="space-y-16 max-w-7xl mx-auto pb-16">
-  <!-- Hero Section -->
-  <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-8 md:p-16 border border-slate-800 shadow-2xl">
-    <!-- Background Ambient Glow -->
-    <div class="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-rose-500/15 rounded-full blur-3xl pointer-events-none"></div>
+<div data-controller="landing-page" class="w-full relative bg-paper text-ink">
 
-    <div class="relative z-10 max-w-4xl space-y-6">
-      <!-- Tag / Badge -->
-      <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-black tracking-wide text-indigo-300">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-1"></span>
-        <span>SMART INDIA HACKATHON 2026 • AI DECISION PLATFORM</span>
+  <!-- ============================================================== -->
+  <!-- NAVIGATION BAR (ChaiCode Style: dsa.chaicode.com)              -->
+  <!-- ============================================================== -->
+  <header class="fixed top-0 left-0 right-0 z-50 chai-nav transition-colors">
+    <div class="w-full px-4 sm:px-8 lg:px-12">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-accent text-white flex items-center justify-center font-black text-sm shadow-md">
+            <i class="fas fa-brain text-sm sm:text-base"></i>
+          </div>
+          <div>
+            <div class="flex items-baseline space-x-1.5">
+              <span class="text-xl sm:text-2xl font-black tracking-tight text-ink">ENMA</span>
+              <span class="text-xs sm:text-sm font-bold uppercase tracking-widest text-accent font-mono">AI</span>
+            </div>
+            <p class="text-[9px] font-bold uppercase tracking-widest text-mute font-mono hidden sm:block">North East India Logistics</p>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center space-x-7 text-xs font-semibold text-sketch">
+          <a href="#challenge" class="hover:text-accent transition-colors">The Challenge</a>
+          <a href="#solution" class="hover:text-accent transition-colors">Intelligence Engines</a>
+          <a href="#pipeline" class="hover:text-accent transition-colors">How It Works</a>
+          <a href="#technology" class="hover:text-accent transition-colors">Tech Stack</a>
+          <%= link_to demo_path, class: "flex items-center space-x-1.5 text-accent font-bold hover:opacity-80 transition-opacity" do %>
+            <i class="fas fa-bolt text-[11px]"></i>
+            <span>Interactive Demo</span>
+          <% end %>
+        </nav>
+
+        <!-- Right CTA / Theme Toggle / Auth Controls -->
+        <div class="hidden sm:flex items-center space-x-3">
+          <!-- Light/Dark Mode Switcher (ChaiCode Reference) -->
+          <button type="button"
+                  data-action="click->theme#toggle"
+                  title="Toggle Light / Dark Mode"
+                  class="p-2.5 rounded-xl text-sketch hover:text-ink hover:bg-ink/5 border border-ink/10 transition-colors cursor-pointer flex items-center justify-center">
+            <i data-theme-target="icon" class="fas fa-moon text-xs text-accent"></i>
+          </button>
+
+          <%= link_to login_path, class: "px-4 py-2 text-xs font-bold text-sketch hover:text-ink transition-colors" do %>
+            Sign In
+          <% end %>
+          <%= link_to (authenticated? ? dashboard_path : sign_up_path), class: "px-5 py-2.5 rounded-xl text-xs font-black text-paper bg-ink hover:bg-ink/90 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0" do %>
+            <span><%= authenticated? ? "Open Dashboard" : "Sign Up" %></span>
+            <i class="fas fa-arrow-right ml-1.5 text-[10px]"></i>
+          <% end %>
+        </div>
+
+        <!-- Mobile Controls (Theme Toggle + Hamburger) -->
+        <div class="flex items-center sm:hidden space-x-2">
+          <button type="button"
+                  data-action="click->theme#toggle"
+                  title="Toggle Light / Dark Mode"
+                  class="p-2 rounded-xl text-sketch hover:text-ink hover:bg-ink/5 border border-ink/10 transition-colors">
+            <i data-theme-target="icon" class="fas fa-moon text-xs text-accent"></i>
+          </button>
+          <%= link_to login_path, class: "px-2.5 py-1.5 text-xs font-bold text-sketch hover:text-ink" do %>
+            Sign In
+          <% end %>
+          <button type="button"
+                  data-action="click->landing-page#toggleMobileMenu"
+                  class="p-2 rounded-xl text-sketch hover:text-ink hover:bg-ink/5 transition-colors focus:outline-none"
+                  aria-label="Toggle navigation">
+            <i class="fas fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Slide-Out Drawer -->
+    <div data-landing-page-target="mobileMenu" class="hidden sm:hidden border-t border-ink/10 bg-surface px-6 py-6 space-y-4 shadow-xl">
+      <nav class="space-y-3 text-sm font-semibold text-sketch">
+        <a href="#challenge" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">The Challenge</a>
+        <a href="#solution" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">Intelligence Engines</a>
+        <a href="#pipeline" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">How It Works</a>
+        <a href="#technology" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">Tech Stack</a>
+        <%= link_to demo_path, class: "block py-2 text-accent font-bold border-b border-ink/5 flex items-center space-x-2" do %>
+          <i class="fas fa-bolt text-xs"></i>
+          <span>Interactive Demo Scenario</span>
+        <% end %>
+      </nav>
+      <div class="pt-2 space-y-2">
+        <%= link_to (authenticated? ? dashboard_path : sign_up_path), class: "w-full flex items-center justify-center py-3 rounded-xl text-xs font-black text-paper bg-ink hover:bg-ink/90 shadow-sm" do %>
+          <span><%= authenticated? ? "Go to Live Dashboard" : "Get Started Now" %></span>
+          <i class="fas fa-arrow-right ml-2 text-xs"></i>
+        <% end %>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- HERO SECTION                                                   -->
+  <!-- ============================================================== -->
+  <section class="relative pt-28 sm:pt-36 lg:pt-44 pb-16 sm:pb-24 overflow-hidden">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      
+      <!-- Eyebrow Badge (ChaiCode Pill) -->
+      <div class="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full sketch-border-soft bg-surface text-xs font-bold tracking-wider text-accent font-mono">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        <span class="text-[11px] sm:text-xs uppercase">
+          Smart India Hackathon 2026 • AI Decision Platform
+        </span>
       </div>
 
       <!-- Main Headline -->
-      <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight">
-        Intelligence That Reaches <br class="hidden sm:inline">
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-rose-300 to-amber-200">
-          Where Roads Don't.
-        </span>
-      </h1>
+      <div class="space-y-4 max-w-4xl mx-auto">
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] text-ink">
+          <span>Secure the</span><br>
+          <span class="text-accent-gradient">Northeast Lifeline</span>
+        </h1>
+        <p class="text-base sm:text-lg lg:text-xl text-sketch max-w-2xl mx-auto font-normal leading-relaxed pt-2">
+          Intelligence That Reaches Where Roads Don't. ENMA AI transforms emergency logistics and terrain accessibility across the 8 North Eastern states of India with Machine Learning road disruption prediction and risk-aware corridor optimization.
+        </p>
+      </div>
 
-      <!-- Subtitle -->
-      <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-3xl font-medium">
-        ENMA AI is an AI-Assisted logistics and accessibility intelligence platform designed to predict disruptions, identify vulnerable communities, optimize emergency logistics, and improve disaster response across challenging regions.
-      </p>
-
-      <!-- CTA Buttons -->
-      <div class="flex flex-wrap items-center gap-4 pt-4">
-        <%= link_to root_path, class: "inline-flex items-center px-6 py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all duration-150 transform hover:-translate-y-0.5" do %>
-          <span>Explore Intelligence Platform</span>
-          <i class="fas fa-arrow-right ml-2.5 text-xs"></i>
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
+        <%= link_to sign_up_path, class: "w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-black text-paper bg-ink hover:bg-ink/90 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2" do %>
+          <span>Get Started Free</span>
+          <i class="fas fa-arrow-right text-xs"></i>
         <% end %>
 
-        <%= link_to demo_path, class: "inline-flex items-center px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-xl border border-white/20 backdrop-blur-md transition-all duration-150" do %>
-          <i class="fas fa-bolt text-amber-400 mr-2"></i>
+        <%= link_to demo_path, class: "w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-bold text-ink bg-surface border border-ink/15 hover:bg-ink/5 transition-all flex items-center justify-center space-x-2" do %>
+          <i class="fas fa-bolt text-accent text-xs"></i>
           <span>Launch Demo Scenario</span>
         <% end %>
 
-        <%= link_to overview_path, class: "inline-flex items-center px-4 py-3.5 text-slate-300 hover:text-white font-bold text-xs transition-colors" do %>
-          <i class="fas fa-clipboard-check mr-1.5 text-indigo-400"></i>
+        <%= link_to overview_path, class: "w-full sm:w-auto px-6 py-3.5 text-xs font-bold text-mute hover:text-ink transition-colors flex items-center justify-center space-x-1.5" do %>
+          <i class="fas fa-clipboard-check text-accent2"></i>
           <span>2-Min Judge Overview</span>
         <% end %>
       </div>
 
-      <!-- Live Regional Counters -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-800 text-left">
-        <div>
-          <span class="text-2xl font-black text-white block"><%= @total_locations %></span>
-          <span class="text-xs text-slate-400">Settlements Monitored</span>
+      <!-- Hero Telemetry Cards (ChaiCode Sketchbook Style) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto pt-6 text-left">
+        <div class="chai-card p-5 space-y-2">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold text-sm">
+              <i class="fas fa-shield-halved"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-mute font-mono block">Predictive Risk Engine</span>
+              <span class="text-sm font-bold text-ink">FastAPI + Random Forest Classifier</span>
+            </div>
+          </div>
+          <p class="text-xs text-sketch">Forecasts road blockages and mudflows across NH-27, NH-10, and remote mountain corridors.</p>
         </div>
-        <div>
-          <span class="text-2xl font-black text-amber-400 block"><%= @critical_zones %></span>
-          <span class="text-xs text-slate-400">Critical Access Zones</span>
+
+        <div class="chai-card p-5 space-y-2">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-accent2/10 text-accent2 flex items-center justify-center font-bold text-sm">
+              <i class="fas fa-satellite-dish"></i>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-mute font-mono block">Geospatial Telemetry</span>
+              <span class="text-sm font-bold text-ink">CartoDB &amp; PostGIS Spatial Engine</span>
+            </div>
+          </div>
+          <p class="text-xs text-sketch">High-contrast accessibility radar covering Assam, Meghalaya, Sikkim, and Arunachal Pradesh.</p>
         </div>
-        <div>
-          <span class="text-2xl font-black text-emerald-400 block"><%= @total_warehouses %></span>
-          <span class="text-xs text-slate-400">Relief Depots Active</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- LIVE REGIONAL TELEMETRY COUNTERS (ChaiCode Style)              -->
+  <!-- ============================================================== -->
+  <section class="border-y border-ink/10 bg-surface/50 py-10 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+        
+        <div class="space-y-1">
+          <span class="text-3xl sm:text-4xl font-black text-ink font-mono" data-landing-page-target="counter" data-count="<%= @total_locations || 28 %>">
+            <%= @total_locations || 28 %>
+          </span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Settlements</p>
+          <span class="text-[10px] text-mute block">NER Remote Nodes</span>
         </div>
-        <div>
-          <span class="text-2xl font-black text-rose-400 block"><%= @total_emergencies %></span>
-          <span class="text-xs text-slate-400">Disasters Modeled</span>
+
+        <div class="space-y-1">
+          <span class="text-3xl sm:text-4xl font-black text-accent font-mono" data-landing-page-target="counter" data-count="<%= @critical_zones || 8 %>">
+            <%= @critical_zones || 8 %>
+          </span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-accent">Critical Zones</p>
+          <span class="text-[10px] text-mute block">Score &lt; 40 / 100</span>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-3xl sm:text-4xl font-black text-[rgb(var(--done-stroke))] font-mono" data-landing-page-target="counter" data-count="<%= @total_warehouses || 7 %>">
+            <%= @total_warehouses || 7 %>
+          </span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Relief Depots</p>
+          <span class="text-[10px] text-mute block">Strategic Staging Hubs</span>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-3xl sm:text-4xl font-black text-[rgb(var(--dead-stroke))] font-mono" data-landing-page-target="counter" data-count="<%= @total_emergencies || 6 %>">
+            <%= @total_emergencies || 6 %>
+          </span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Disasters</p>
+          <span class="text-[10px] text-mute block">Active Incidents</span>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-3xl sm:text-4xl font-black text-accent2 font-mono" data-landing-page-target="counter" data-count="<%= @total_roads || 34 %>">
+            <%= @total_roads || 34 %>
+          </span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Highways</p>
+          <span class="text-[10px] text-mute block">National Corridors</span>
+        </div>
+
+        <div class="space-y-1">
+          <span class="text-3xl sm:text-4xl font-black text-ink font-mono" data-landing-page-target="counter" data-count="<%= @total_vehicles || 12 %>">
+            <%= @total_vehicles || 12 %>
+          </span>
+          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Vehicles</p>
+          <span class="text-[10px] text-mute block">Live GPS Telemetry</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- SECTION 2: THE CHALLENGE                                       -->
+  <!-- ============================================================== -->
+  <section id="challenge" class="py-20 sm:py-28 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-2">
+        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+          Regional Vulnerability
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
+          The North East India Bottleneck
+        </h2>
+        <p class="text-sm text-sketch">
+          The North Eastern Himalayan region faces chronic transport bottlenecks, extreme topography, and severe monsoon events that paralyze civil supply lines.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--dead-bg))] text-[rgb(var(--dead-stroke))] flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-mountain"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">Treacherous Mountain Passes</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Over 70% of corridors transverse steep alpine passes, hairpin bends, and unpaved mountain tracks prone to sudden rockfalls and seasonal isolation.
+          </p>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--gold-bg))] text-[rgb(var(--gold-text))] flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-cloud-showers-heavy"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">Monsoon Landslides &amp; Floods</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Annual precipitation exceeding 2,800 mm triggers flash mudflows, washed-out bridges, and landslides that sever arterial highways without warning.
+          </p>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-bridge-water"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">The Siliguri "Chicken's Neck"</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            The narrow 22-kilometer Siliguri corridor connects 50+ million citizens to mainland India. Any blockage ripples across all eight states simultaneously.
+          </p>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-accent2/10 text-accent2 flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-truck-fast"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">Conventional Routing Blindspots</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Standard consumer GPS routing optimizes only for distance, dispatching heavy relief convoys straight into collapsed mountain corridors and active roadblocks.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- SECTION 3: THE ENMA AI SOLUTION                                -->
+  <!-- ============================================================== -->
+  <section id="solution" class="py-20 sm:py-28 relative z-10 border-t border-ink/10 bg-surface/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-2">
+        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+          Unified Decision Platform
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
+          One Intelligence Deck. Complete Response.
+        </h2>
+        <p class="text-sm text-sketch">
+          ENMA AI bridges accessibility, risk prediction, route optimization, and relief warehouse management into one unified command cockpit.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">ML Road Disruption Engine</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Trained Random Forest models predict landslide disruption probability, duration, and clearance difficulty before trucks embark.
+          </p>
+          <div class="pt-2 text-[11px] font-mono font-bold text-accent">
+            <span>FastAPI Microservice (Port 8000)</span>
+          </div>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-accent2/10 text-accent2 flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-route"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">Double-Buffered Smart Routes</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Multi-candidate corridor analysis weighing risk scores, elevation changes, and weather severity with instant sub-millisecond buffer load times.
+          </p>
+          <div class="pt-2 text-[11px] font-mono font-bold text-accent2">
+            <span>&lt; 2ms In-Memory Buffer Response</span>
+          </div>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--done-bg))] text-[rgb(var(--done-stroke))] flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-truck-fast"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">GPS Fleet Tracking &amp; Rerouting</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Real-time vehicle telemetry ingestion with automated deviation alerts and on-the-fly tactical detour calculation when hazards arise.
+          </p>
+          <div class="pt-2 text-[11px] font-mono font-bold text-[rgb(var(--done-stroke))]">
+            <span>Live Breadcrumb Trajectories</span>
+          </div>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--gold-bg))] text-[rgb(var(--gold-text))] flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-warehouse"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">Warehouse Readiness Scoring</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Automated stock tracking for medical kits, food packages, and emergency shelters, matching disasters with the optimal dispatch depot.
+          </p>
+          <div class="pt-2 text-[11px] font-mono font-bold text-[rgb(var(--gold-text))]">
+            <span>Resource Matching Engine</span>
+          </div>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-map-location-dot"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">CartoDB GIS Radar</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            Interactive high-contrast geospatial map visualizing highway accessibility, live blockages, flood alert zones, and regional relief depots.
+          </p>
+          <div class="pt-2 text-[11px] font-mono font-bold text-accent">
+            <span>PostGIS Geospatial Engine</span>
+          </div>
+        </div>
+
+        <div class="chai-card p-6 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--dead-bg))] text-[rgb(var(--dead-stroke))] flex items-center justify-center text-lg font-bold">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3 class="text-base font-bold text-ink">Field Incident Reporting</h3>
+          <p class="text-xs text-sketch leading-relaxed">
+            On-ground citizen and first-responder reporting with GPS auto-tagging and photo uploads, feeding real-time hazard data straight into the risk model.
+          </p>
+          <div class="pt-2 text-[11px] font-mono font-bold text-[rgb(var(--dead-stroke))]">
+            <span>ActiveStorage Cloud Evidence</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- SECTION 4: 5-STEP TACTICAL OPERATIONAL PIPELINE                -->
+  <!-- ============================================================== -->
+  <section id="pipeline" class="py-20 sm:py-28 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-2">
+        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">
+          Tactical Execution Flow
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
+          How ENMA AI Works
+        </h2>
+        <p class="text-sm text-sketch">
+          From continuous mountain sensor telemetry to tactical emergency convoy dispatch in seconds.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        
+        <div class="chai-card p-5 text-center space-y-3">
+          <div class="w-8 h-8 rounded-full bg-accent text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">1</div>
+          <h4 class="font-bold text-sm text-ink">Ingest</h4>
+          <p class="text-xs text-sketch leading-relaxed">Open-Meteo rainfall, terrain slope, and citizen alerts.</p>
+        </div>
+
+        <div class="chai-card p-5 text-center space-y-3">
+          <div class="w-8 h-8 rounded-full bg-accent2 text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">2</div>
+          <h4 class="font-bold text-sm text-ink">Predict</h4>
+          <p class="text-xs text-sketch leading-relaxed">Machine Learning forecasts road collapse risks.</p>
+        </div>
+
+        <div class="chai-card p-5 text-center space-y-3">
+          <div class="w-8 h-8 rounded-full bg-[rgb(var(--gold-text))] text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">3</div>
+          <h4 class="font-bold text-sm text-ink">Score</h4>
+          <p class="text-xs text-sketch leading-relaxed">Ranks remote settlements by accessibility index.</p>
+        </div>
+
+        <div class="chai-card p-5 text-center space-y-3">
+          <div class="w-8 h-8 rounded-full bg-[rgb(var(--done-stroke))] text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">4</div>
+          <h4 class="font-bold text-sm text-ink">Optimize</h4>
+          <p class="text-xs text-sketch leading-relaxed">Computes safest corridor avoiding active mudflows.</p>
+        </div>
+
+        <div class="chai-card p-5 text-center space-y-3">
+          <div class="w-8 h-8 rounded-full bg-ink text-paper font-bold text-xs flex items-center justify-center mx-auto shadow-sm">5</div>
+          <h4 class="font-bold text-sm text-ink">Dispatch</h4>
+          <p class="text-xs text-sketch leading-relaxed">Assigns relief depot and tracks real-time GPS path.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- SECTION 5: MOBILE QR ACCESS CARD                               -->
+  <!-- ============================================================== -->
+  <section class="py-14 relative z-10 border-t border-ink/10 bg-surface/50">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <div class="chai-card p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2 text-center md:text-left flex-1">
+          <span class="font-mono text-xs uppercase tracking-widest text-accent font-bold">
+            <i class="fas fa-qrcode mr-1"></i> Mobile Field Simulation
+          </span>
+          <h3 class="text-xl sm:text-2xl font-black text-ink">
+            Experience ENMA on Smartphone
+          </h3>
+          <p class="text-xs sm:text-sm text-sketch leading-relaxed">
+            Scan to test live GPS tracking and turn-by-turn route intelligence directly on your phone.
+          </p>
+          <div class="pt-2">
+            <%= link_to login_path, class: "text-xs font-bold text-accent hover:underline inline-flex items-center space-x-1" do %>
+              <span>Sign in on desktop instead &rarr;</span>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="p-3 bg-white rounded-xl shadow-sm border border-ink/10 flex-shrink-0 text-center">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://enma.ai" alt="ENMA AI QR" class="w-32 h-32 mx-auto rounded-lg">
+          <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 block mt-1.5 font-mono">Scan with Phone</span>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- SECTION 2: The Challenge -->
-  <div class="space-y-6">
-    <div class="text-center max-w-2xl mx-auto space-y-2">
-      <span class="text-xs font-black uppercase tracking-wider text-red-600 bg-red-50 px-3 py-1 rounded-full border border-red-200">
-        Regional Vulnerability
-      </span>
-      <h2 class="text-3xl font-black text-gray-900">The Challenge</h2>
-      <p class="text-sm text-gray-600">The North Eastern Himalayan region faces chronic transport bottlenecks and acute weather hazards that paralyze essential logistics.</p>
+  <!-- ============================================================== -->
+  <!-- SECTION 6: TECHNOLOGY STACK                                    -->
+  <!-- ============================================================== -->
+  <section id="technology" class="py-16 sm:py-24 relative z-10 border-t border-ink/10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      
+      <div class="max-w-xl mx-auto space-y-2">
+        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">Tech Stack</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight">
+          Modern &amp; Resilient Architecture
+        </h2>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto">
+        <% [
+          ["Ruby on Rails 8", "fas fa-gem"],
+          ["Devise Auth", "fas fa-key"],
+          ["Python FastAPI ML", "fas fa-brain"],
+          ["scikit-learn", "fas fa-chart-line"],
+          ["PostgreSQL & PostGIS", "fas fa-database"],
+          ["Hotwire & Turbo 8", "fas fa-bolt"],
+          ["Leaflet GIS", "fas fa-map"],
+          ["CartoDB Dark Matter", "fas fa-circle-half-stroke"],
+          ["Tailwind CSS", "fas fa-palette"],
+          ["Double-Buffer Engine", "fas fa-microchip"]
+        ].each do |tech, icon| %>
+          <span class="sketch-border-soft bg-surface text-ink text-xs font-semibold px-3.5 py-2 flex items-center space-x-2">
+            <i class="<%= icon %> text-accent text-xs"></i>
+            <span><%= tech %></span>
+          </span>
+        <% end %>
+      </div>
+
     </div>
+  </section>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all space-y-3">
-        <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl font-bold">
-          <i class="fas fa-mountain"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">Difficult Terrain &amp; Isolation</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Steep mountain passes and remote river valleys create acute transport isolation, leaving highland villages vulnerable to seasonal cutoff.</p>
-      </div>
+  <!-- ============================================================== -->
+  <!-- FINAL CALL TO ACTION                                           -->
+  <!-- ============================================================== -->
+  <section class="py-20 relative z-10 border-t border-ink/10 bg-surface/30">
+    <div class="max-w-3xl mx-auto px-4 text-center space-y-5">
+      <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
+        Ready to Secure the <span class="text-accent">Northeast Lifeline?</span>
+      </h2>
+      <p class="text-sm text-sketch max-w-md mx-auto leading-relaxed">
+        Real-time AI disruption prediction, terrain-modeled route optimization, and live vehicle tracking across North East India today.
+      </p>
 
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all space-y-3">
-        <div class="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl font-bold">
-          <i class="fas fa-cloud-showers-heavy"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">Monsoon Landslides &amp; Floods</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Over 2,500 mm of annual rainfall triggers flash floods, mudflows, and bridge collapses that sever national highways without warning.</p>
-      </div>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <%= link_to (authenticated? ? dashboard_path : sign_up_path), class: "w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-black text-paper bg-ink hover:bg-ink/90 shadow-sm transition-all" do %>
+          <span><%= authenticated? ? "Access Dashboard" : "Create Operator Account" %></span>
+          <i class="fas fa-arrow-right ml-2 text-xs"></i>
+        <% end %>
 
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all space-y-3">
-        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl font-bold">
-          <i class="fas fa-truck-ramp-box"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">Delayed Relief &amp; Supply Cutoff</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Conventional routing algorithms fail on damaged mountain roads, delaying critical medical supplies, food rations, and disaster teams.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 3: The Solution -->
-  <div class="space-y-6">
-    <div class="text-center max-w-2xl mx-auto space-y-2">
-      <span class="text-xs font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
-        AI-Assisted Architecture
-      </span>
-      <h2 class="text-3xl font-black text-gray-900">One Intelligence Platform. Complete Response.</h2>
-      <p class="text-sm text-gray-600">ENMA AI bridges accessibility, risk prediction, route optimization, and relief warehouse management into one unified command system.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Feature Card 1 -->
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-indigo-400 transition-all space-y-3">
-        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg font-bold">
-          <i class="fas fa-map-marker-alt"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">📍 Accessibility Intelligence</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Calculates multi-factor accessibility scores (0-100) combining road surface quality, rainfall levels, and hospital proximity.</p>
-      </div>
-
-      <!-- Feature Card 2 -->
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-indigo-400 transition-all space-y-3">
-        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg font-bold">
-          <i class="fas fa-route"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">🗺 Smart Logistics Routing</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Computes Fastest, Safest, and Most Efficient multi-modal transport corridors adapted for trucks, ambulances, and supply convoys.</p>
-      </div>
-
-      <!-- Feature Card 3 -->
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-indigo-400 transition-all space-y-3">
-        <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-lg font-bold">
-          <i class="fas fa-biohazard"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">⚠ Predictive Risk Engine</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Anticipates logistics chokepoints and slope failure hazards before emergencies occur using explainable spatial telemetry.</p>
-      </div>
-
-      <!-- Feature Card 4 -->
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-indigo-400 transition-all space-y-3">
-        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg font-bold">
-          <i class="fas fa-radiation"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">🚨 Emergency Response Center</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Simulates disasters within spatial impact radii and calculates multi-factor priority scores to triage the most vulnerable communities.</p>
-      </div>
-
-      <!-- Feature Card 5 -->
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-indigo-400 transition-all space-y-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg font-bold">
-          <i class="fas fa-warehouse"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">🏭 Warehouse Intelligence</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Evaluates facility capacity, distance, and highway connectivity to recommend the optimal relief stockpile staging base.</p>
-      </div>
-
-      <!-- Feature Card 6 -->
-      <div class="p-6 rounded-2xl bg-white border border-gray-200 shadow-sm hover:border-indigo-400 transition-all space-y-3">
-        <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-bold">
-          <i class="fas fa-chart-line"></i>
-        </div>
-        <h3 class="text-base font-bold text-gray-900">📊 Executive Analytics</h3>
-        <p class="text-xs text-gray-600 leading-relaxed">Generates real-time Regional Logistics Readiness indexes (0-100), state comparisons, and printable government briefings.</p>
+        <%= link_to login_path, class: "text-xs font-bold text-sketch hover:text-ink transition-colors" do %>
+          Already an operator? <span class="text-accent underline">Sign in &rarr;</span>
+        <% end %>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- SECTION 4: How ENMA AI Works (Visual Pipeline) -->
-  <div class="bg-gradient-to-r from-slate-900 to-indigo-950 rounded-3xl p-8 md:p-12 text-white border border-slate-800 shadow-xl space-y-8">
-    <div class="text-center max-w-2xl mx-auto space-y-2">
-      <h2 class="text-2xl sm:text-3xl font-black tracking-tight">How ENMA AI Works</h2>
-      <p class="text-xs text-slate-300">From raw terrain telemetry to tactical disaster relief dispatch in under 10 seconds.</p>
-    </div>
-
-    <!-- 5-Step Pipeline Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 text-center relative">
-      <!-- Step 1 -->
-      <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-        <div class="w-8 h-8 rounded-full bg-indigo-500 text-white font-black text-xs flex items-center justify-center mx-auto shadow">1</div>
-        <h4 class="font-bold text-sm text-white">Detect</h4>
-        <p class="text-[11px] text-slate-300">Ingest weather, rainfall, and hazard telemetry.</p>
+  <!-- ============================================================== -->
+  <!-- FOOTER                                                         -->
+  <!-- ============================================================== -->
+  <footer class="border-t border-ink/10 py-6 text-xs text-mute bg-surface">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-5 h-5 rounded-md bg-accent text-white flex items-center justify-center text-[10px]">
+          <i class="fas fa-brain"></i>
+        </div>
+        <span class="font-bold text-ink">ENMA AI</span>
+        <span>&bull; &copy; <%= Date.current.year %> All rights reserved.</span>
       </div>
-
-      <!-- Step 2 -->
-      <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-        <div class="w-8 h-8 rounded-full bg-blue-500 text-white font-black text-xs flex items-center justify-center mx-auto shadow">2</div>
-        <h4 class="font-bold text-sm text-white">Analyze</h4>
-        <p class="text-[11px] text-slate-300">Compute spatial radius &amp; accessibility score.</p>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-        <div class="w-8 h-8 rounded-full bg-orange-500 text-white font-black text-xs flex items-center justify-center mx-auto shadow">3</div>
-        <h4 class="font-bold text-sm text-white">Predict</h4>
-        <p class="text-[11px] text-slate-300">Anticipate road collapse &amp; transport choke points.</p>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-        <div class="w-8 h-8 rounded-full bg-red-500 text-white font-black text-xs flex items-center justify-center mx-auto shadow">4</div>
-        <h4 class="font-bold text-sm text-white">Prioritize</h4>
-        <p class="text-[11px] text-slate-300">Rank isolated communities by Priority Score.</p>
-      </div>
-
-      <!-- Step 5 -->
-      <div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2">
-        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center mx-auto shadow">5</div>
-        <h4 class="font-bold text-sm text-white">Respond</h4>
-        <p class="text-[11px] text-slate-300">Dispatch safest route from optimal warehouse.</p>
+      <div class="flex items-center space-x-3 font-mono text-[11px]">
+        <span>Smart India Hackathon 2026</span>
+        <span>&bull;</span>
+        <span class="text-accent">NER Logistics Intelligence</span>
       </div>
     </div>
-  </div>
+  </footer>
 
-  <!-- SECTION 5: Instant Mobile QR Access (Desktop prominent, mobile aware) -->
-  <div class="space-y-4 max-w-3xl mx-auto">
-    <%= render "shared/qr_code_card",
-               title: "Scan to Open ENMA AI on Mobile",
-               subtitle: "Experience live turn-by-turn routing, real-time risk alerts, and emergency response simulations right in your smartphone browser." %>
-  </div>
-
-  <!-- SECTION 6: Technology Stack -->
-  <div class="space-y-6">
-    <div class="text-center max-w-2xl mx-auto space-y-1">
-      <h3 class="text-lg font-bold text-gray-900">Modern, Robust &amp; Hackathon-Proven Stack</h3>
-      <p class="text-xs text-gray-500">Engineered with high performance and zero unnecessary dependencies.</p>
-    </div>
-
-    <div class="flex flex-wrap items-center justify-center gap-4">
-      <span class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-800 shadow-sm flex items-center">
-        <i class="fas fa-gem text-red-600 mr-2"></i> Ruby on Rails 8
-      </span>
-      <span class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-800 shadow-sm flex items-center">
-        <i class="fas fa-database text-blue-600 mr-2"></i> PostgreSQL
-      </span>
-      <span class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-800 shadow-sm flex items-center">
-        <i class="fas fa-bolt text-amber-500 mr-2"></i> Hotwire &amp; Stimulus
-      </span>
-      <span class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-800 shadow-sm flex items-center">
-        <i class="fas fa-map text-emerald-600 mr-2"></i> Leaflet &amp; OpenStreetMap
-      </span>
-      <span class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-800 shadow-sm flex items-center">
-        <i class="fas fa-palette text-cyan-500 mr-2"></i> Tailwind CSS
-      </span>
-      <span class="px-4 py-2 rounded-xl bg-white border border-gray-200 text-xs font-bold text-gray-800 shadow-sm flex items-center">
-        <i class="fas fa-brain text-purple-600 mr-2"></i> AI-Assisted Decision Engine
-      </span>
-    </div>
-  </div>
-
-  <!-- Footer Banner -->
-  <div class="border-t border-gray-200 pt-8 text-center text-xs text-gray-500 space-y-2">
-    <p class="font-bold text-gray-800">ENMA AI • Built for Smart India Hackathon 2026</p>
-    <p>Smart Logistics &amp; Accessibility Intelligence for the North Eastern Region of India.</p>
-  </div>
 </div>

@@ -1,0 +1,136 @@
+<div class="space-y-6">
+  
+  <!-- Header with Branding (Chai Visual Style) -->
+  <div class="text-center space-y-1.5">
+    <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-accent text-white shadow-sm mb-1">
+      <span class="text-xl font-black">⚡</span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight">ENMA AI</h2>
+    <p class="text-xs text-mute font-medium">Smart Logistics, Risk Intelligence &amp; Emergency Mobility</p>
+  </div>
+
+  <!-- Main Auth Card -->
+  <div class="sketch-border bg-surface rounded-2xl p-6 sm:p-8 space-y-5 shadow-sm">
+    
+    <div class="space-y-1">
+      <h3 class="text-xl font-black text-ink tracking-tight">Sign in to your account</h3>
+      <p class="text-xs text-sketch">Enter your credentials or choose Single Sign-On.</p>
+    </div>
+
+    <% google_configured = ENV["GOOGLE_CLIENT_ID"].present? && ENV["GOOGLE_CLIENT_ID"] != "placeholder_google_client_id" %>
+    <% github_configured = ENV["GITHUB_CLIENT_ID"].present? && ENV["GITHUB_CLIENT_ID"] != "placeholder_github_client_id" %>
+
+    <!-- OAuth SSO Buttons (Google & GitHub) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full">
+      <!-- Google SSO -->
+      <% if google_configured %>
+        <%= button_to user_google_oauth2_omniauth_authorize_path, method: :post, data: { turbo: false }, class: "w-full flex items-center justify-center py-2.5 px-3 sketch-border-soft bg-paper hover:bg-ink/5 rounded-xl font-sketch text-xs font-bold text-ink transition-all cursor-pointer" do %>
+          <i class="fab fa-google text-red-500 mr-2 text-sm"></i>
+          <span>Continue with Google</span>
+        <% end %>
+      <% else %>
+        <%= form_with url: demo_sso_login_path(provider: "google"), method: :post, local: true, data: { turbo: false }, class: "w-full" do |f| %>
+          <button type="submit" title="Sign in with your Google account (pkfb46@gmail.com)" class="w-full flex items-center justify-center py-2.5 px-3 sketch-border-soft bg-paper hover:bg-ink/5 rounded-xl font-sketch text-xs font-bold text-ink transition-all cursor-pointer">
+            <i class="fab fa-google text-red-500 mr-2 text-sm"></i>
+            <span>Continue with Google</span>
+          </button>
+        <% end %>
+      <% end %>
+
+      <!-- GitHub SSO -->
+      <% if github_configured %>
+        <%= button_to user_github_omniauth_authorize_path, method: :post, data: { turbo: false }, class: "w-full flex items-center justify-center py-2.5 px-3 bg-ink hover:bg-ink/90 text-paper rounded-xl font-sketch text-xs font-bold transition-all cursor-pointer" do %>
+          <i class="fab fa-github mr-2 text-sm text-paper"></i>
+          <span>Continue with GitHub</span>
+        <% end %>
+      <% else %>
+        <%= form_with url: demo_sso_login_path(provider: "github"), method: :post, local: true, data: { turbo: false }, class: "w-full" do |f| %>
+          <button type="submit" title="Sign in with your GitHub account (priyanshukun46)" class="w-full flex items-center justify-center py-2.5 px-3 bg-ink hover:bg-ink/90 text-paper rounded-xl font-sketch text-xs font-bold transition-all cursor-pointer">
+            <i class="fab fa-github mr-2 text-sm text-paper"></i>
+            <span>Continue with GitHub</span>
+          </button>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Symmetrical Center Divider -->
+    <div class="relative flex items-center justify-center my-3">
+      <div class="flex-grow border-t border-[var(--line)]"></div>
+      <span class="flex-shrink mx-3 text-[10px] font-black uppercase text-mute tracking-wider">or sign in with credentials</span>
+      <div class="flex-grow border-t border-[var(--line)]"></div>
+    </div>
+
+    <!-- Email / Username & Password Form -->
+    <%= form_with url: login_path, local: true, data: { turbo: false }, class: "space-y-4" do |f| %>
+      <div>
+        <label for="login" class="block text-xs font-bold text-ink uppercase tracking-wider mb-1.5">Username or Email</label>
+        <input type="text"
+               name="login"
+               id="login"
+               required
+               autofocus
+               placeholder="admin, operator, or officer@enma.ai"
+               value="<%= params[:login] %>"
+               class="w-full px-4 py-2.5 bg-paper text-ink border border-[var(--line)] rounded-xl focus:ring-2 focus:ring-accent focus:outline-none text-xs sm:text-sm transition-all placeholder:text-mute">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="password" class="block text-xs font-bold text-ink uppercase tracking-wider">Password</label>
+          <%= link_to "Forgot Password?", new_password_path, class: "text-xs font-bold text-accent hover:underline" %>
+        </div>
+        <input type="password"
+               name="password"
+               id="password"
+               required
+               placeholder="••••••••"
+               class="w-full px-4 py-2.5 bg-paper text-ink border border-[var(--line)] rounded-xl focus:ring-2 focus:ring-accent focus:outline-none text-xs sm:text-sm transition-all placeholder:text-mute">
+      </div>
+
+      <div class="pt-1">
+        <button type="submit"
+                class="w-full py-3 px-4 bg-ink hover:bg-ink/90 text-paper font-black text-xs sm:text-sm rounded-xl shadow-sm transition-all cursor-pointer flex items-center justify-center space-x-2">
+          <span>Sign In to Platform</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </button>
+      </div>
+    <% end %>
+
+    <!-- SIH 2026 Fast Access Pill -->
+    <div class="p-3.5 rounded-xl bg-accent/10 border border-accent/25 space-y-2.5">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-black uppercase text-accent tracking-wider flex items-center">
+          <i class="fas fa-bolt mr-1"></i> Quick Demo Access
+        </span>
+        <span class="text-[10px] text-accent font-bold">1-Click</span>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-2 w-full">
+        <%= form_with url: login_path, local: true, data: { turbo: false }, class: "w-full" do |f| %>
+          <%= f.hidden_field :login, value: "admin" %>
+          <%= f.hidden_field :password, value: "password123" %>
+          <button type="submit" class="w-full py-1.5 px-2 bg-accent hover:opacity-90 text-white font-bold text-xs rounded-lg shadow-sm cursor-pointer transition-opacity text-center">
+            Admin Access
+          </button>
+        <% end %>
+
+        <%= form_with url: login_path, local: true, data: { turbo: false }, class: "w-full" do |f| %>
+          <%= f.hidden_field :login, value: "operator" %>
+          <%= f.hidden_field :password, value: "password123" %>
+          <button type="submit" class="w-full py-1.5 px-2 bg-surface hover:bg-ink/5 text-ink border border-[var(--line)] font-bold text-xs rounded-lg shadow-sm cursor-pointer transition-colors text-center">
+            Operator Access
+          </button>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Link to Sign Up -->
+    <div class="text-center pt-3 border-t border-[var(--line)]">
+      <p class="text-xs text-sketch">
+        Don't have an operational account?
+        <%= link_to "Create your account", sign_up_path, class: "font-black text-accent hover:underline ml-1" %>
+      </p>
+    </div>
+
+  </div>
+</div>

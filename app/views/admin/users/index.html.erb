@@ -24,8 +24,8 @@
       <span class="text-3xl font-black text-slate-900 dark:text-white mt-1 block"><%= @admin_count %></span>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-l-4 border-blue-500 border-t border-r border-b border-slate-200 dark:border-slate-800 p-5">
-      <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider block">Field Operators</span>
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-l-4 border-accent/20 border-t border-r border-b border-slate-200 dark:border-slate-800 p-5">
+      <span class="text-xs font-bold text-accent dark:text-accent uppercase tracking-wider block">Field Operators</span>
       <span class="text-3xl font-black text-slate-900 dark:text-white mt-1 block"><%= @operator_count %></span>
     </div>
   </div>
@@ -56,7 +56,7 @@
           <% @users.each do |user| %>
             <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
               <td class="px-5 py-3.5 flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center text-xs overflow-hidden flex-shrink-0">
+                <div class="w-8 h-8 rounded-lg bg-accent text-white font-bold flex items-center justify-center text-xs overflow-hidden flex-shrink-0">
                   <% if user.avatar_url.present? %>
                     <img src="<%= user.avatar_url %>" alt="" class="w-full h-full object-cover">
                   <% else %>

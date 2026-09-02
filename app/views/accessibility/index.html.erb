@@ -10,12 +10,12 @@
     <div class="flex items-center space-x-2.5">
       <%= form_with url: recalculate_accessibility_path, method: :post, local: true do |f| %>
         <%= f.button class: "inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all cursor-pointer" do %>
-          <i class="fas fa-sync-alt mr-1.5 text-xs text-indigo-600 dark:text-indigo-400"></i>
+          <i class="fas fa-sync-alt mr-1.5 text-xs text-accent dark:text-accent"></i>
           <span>Recalculate</span>
         <% end %>
       <% end %>
 
-      <%= link_to analytics_report_path, target: "_blank", class: "inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition-all" do %>
+      <%= link_to analytics_report_path, target: "_blank", class: "inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black bg-accent hover:opacity-90 text-white shadow-sm transition-all" do %>
         <i class="fas fa-file-alt mr-1.5 text-xs"></i>
         <span>Generate Report</span>
       <% end %>
@@ -40,8 +40,8 @@
         </div>
       </div>
 
-      <!-- Predictive Risk Trend Visualization Canvas (Google Stitch High-Fidelity Chart) -->
-      <div class="w-full rounded-2xl bg-slate-900 dark:bg-slate-950 p-4 sm:p-5 text-white border border-slate-800 shadow-inner relative overflow-hidden space-y-3">
+      <!-- Predictive Risk Trend Visualization Canvas (High-Fidelity Telemetry Chart) -->
+      <div class="w-full rounded-2xl bg-[#16120E] p-4 sm:p-5 text-[#ECE5D6] border border-[#2D2319] shadow-md relative overflow-hidden space-y-3">
         <div class="flex items-center justify-between text-xs">
           <div class="flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
@@ -126,7 +126,7 @@
         <!-- Telemetry Indicators Strip -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-slate-800/80 text-[11px] font-mono">
           <div class="flex items-center space-x-2 text-slate-300">
-            <i class="fas fa-cloud-showers-heavy text-cyan-400"></i>
+            <i class="fas fa-cloud-showers-heavy text-accent"></i>
             <span>Precipitation: <strong class="text-white">86.4 mm</strong> <span class="text-rose-400">(+14%)</span></span>
           </div>
           <div class="flex items-center space-x-2 text-slate-300">
@@ -134,7 +134,7 @@
             <span>Slope Saturation: <strong class="text-amber-300">High Risk</strong></span>
           </div>
           <div class="flex items-center space-x-2 text-slate-300">
-            <i class="fas fa-wave-square text-indigo-400"></i>
+            <i class="fas fa-wave-square text-accent"></i>
             <span>Soil Pore Pressure: <strong class="text-white">4.8 kPa</strong></span>
           </div>
         </div>
@@ -144,19 +144,19 @@
       <div class="grid grid-cols-3 gap-3">
         
         <!-- Box 1: Overall Risk Score -->
-        <div class="p-3.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60">
+        <div class="p-3.5 rounded-xl bg-accent/10 dark:bg-accent/10 border border-accent/25 dark:border-accent/20">
           <span class="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider block">Overall Risk Score</span>
           <span class="text-xl font-black text-red-600 dark:text-red-400 mt-1 block">78/100</span>
         </div>
 
         <!-- Box 2: Impacted Nodes -->
-        <div class="p-3.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60">
+        <div class="p-3.5 rounded-xl bg-accent/10 dark:bg-accent/10 border border-accent/25 dark:border-accent/20">
           <span class="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider block">Impacted Nodes</span>
           <span class="text-xl font-black text-slate-900 dark:text-white mt-1 block"><%= @critical_zones_count + @difficult_access_count %></span>
         </div>
 
         <!-- Box 3: Confidence Level -->
-        <div class="p-3.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60">
+        <div class="p-3.5 rounded-xl bg-accent/10 dark:bg-accent/10 border border-accent/25 dark:border-accent/20">
           <span class="text-[9px] font-black uppercase text-slate-500 dark:text-slate-400 tracking-wider block">Confidence Level</span>
           <span class="text-xl font-black text-slate-900 dark:text-white mt-1 block">94%</span>
         </div>
@@ -199,7 +199,7 @@
 
       <!-- Gap Item 3 (Blue) -->
       <div class="flex items-start space-x-3 text-xs">
-        <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+        <div class="w-8 h-8 rounded-full bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent flex items-center justify-center flex-shrink-0 mt-0.5">
           <i class="fas fa-info text-xs"></i>
         </div>
         <div>
@@ -246,7 +246,7 @@
         </div>
         <div>
           <span class="font-black text-xs text-slate-900 dark:text-white block">Optimization</span>
-          <span class="text-[11px] text-indigo-600 dark:text-indigo-400 font-bold">In Progress</span>
+          <span class="text-[11px] text-accent dark:text-accent font-bold">In Progress</span>
         </div>
       </div>
 
@@ -304,7 +304,7 @@
                 <%= loc.primary_risk_factor %>
               </td>
               <td class="px-5 py-3.5 text-right">
-                <%= link_to accessibility_location_path(loc), class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+                <%= link_to accessibility_location_path(loc), class: "text-xs font-bold text-accent dark:text-accent hover:underline" do %>
                   <span>Report &rarr;</span>
                 <% end %>
               </td>

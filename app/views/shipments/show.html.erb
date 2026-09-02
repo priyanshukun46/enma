@@ -1,0 +1,330 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12"
+     data-controller="shipment-map"
+     data-shipment-map-planned-route-value="<%= @shipment.planned_geometry.to_json %>"
+     data-shipment-map-current-position-value="<%= @vehicle&.current_position.to_json %>"
+     data-shipment-map-origin-value="<%= { name: @shipment.origin_name, lat: @shipment.origin_latitude, lon: @shipment.origin_longitude }.to_json %>"
+     data-shipment-map-destination-value="<%= { name: @shipment.destination_name, lat: @shipment.destination_latitude, lon: @shipment.destination_longitude }.to_json %>"
+     data-shipment-map-locations-value="<%= @recent_locations.map { |l| { lat: l.latitude, lon: l.longitude, recorded_at: l.recorded_at.strftime('%H:%M:%S'), speed: l.speed } }.to_json %>">
+
+  <!-- Breadcrumbs & Header -->
+  <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-200 dark:border-slate-800">
+    <%= link_to shipments_path, class: "text-accent dark:text-accent hover:underline font-bold flex items-center" do %>
+      <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
+      <span>Logistics Monitoring</span>
+    <% end %>
+    <span>/</span>
+    <span class="text-slate-900 dark:text-white font-mono font-black"><%= @shipment.tracking_number %></span>
+  </div>
+
+  <!-- Simulated Notice Banner if applicable -->
+  <% if @shipment.is_simulated %>
+    <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-700 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <i class="fas fa-flask text-amber-600 dark:text-amber-400 text-base"></i>
+        <div>
+          <h4 class="text-xs font-black text-amber-900 dark:text-amber-200">DEMO SIMULATION ACTIVE</h4>
+          <p class="text-[11px] text-amber-700 dark:text-amber-300">This shipment is running in telemetry simulation mode for SIH validation.</p>
+        </div>
+      </div>
+      <span class="text-[10px] font-mono font-black uppercase text-amber-800 dark:text-amber-300 bg-amber-200 dark:bg-amber-900 px-2 py-0.5 rounded">SIMULATED DATA</span>
+    </div>
+  <% end %>
+
+  <!-- Shipment & Vehicle Intelligence Header Card -->
+  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 space-y-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div class="space-y-2 flex-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border <%= @shipment.status_badge_class %>">
+            <i class="fas fa-truck-fast mr-1 text-[10px]"></i>
+            <%= @shipment.status.humanize %>
+          </span>
+
+          <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border <%= @shipment.priority_badge_class %>">
+            <%= @shipment.priority %> PRIORITY
+          </span>
+
+          <% if @shipment.deviation_detected %>
+            <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800 animate-bounce">
+              ⚠️ ROUTE DEVIATION (<%= @shipment.deviation_distance_meters&.round(0) %>m)
+            </span>
+          <% end %>
+        </div>
+
+        <div class="flex items-baseline space-x-3">
+          <h1 class="text-2xl sm:text-3xl font-mono font-black tracking-tight text-slate-900 dark:text-white"><%= @shipment.tracking_number %></h1>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+          <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+            <i class="fas <%= @shipment.cargo_meta[:icon] %> <%= @shipment.cargo_meta[:color] %> mr-1.5"></i>
+            <%= @shipment.cargo_meta[:label] %>
+          </span>
+          <span>&bull;</span>
+          <span>Vehicle: <%= link_to @vehicle&.registration_number || "Unassigned", @vehicle ? vehicle_path(@vehicle) : "#", class: "font-mono font-bold text-accent dark:text-accent hover:underline" %> (<%= @vehicle&.vehicle_type %>)</span>
+          <% if @vehicle&.driver_name.present? %>
+            <span>&bull;</span>
+            <span>Driver: <strong><%= @vehicle.driver_name %></strong> (<%= @vehicle.driver_phone %>)</span>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Live Speed & Heading Gauge -->
+      <div class="flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 text-center min-w-[180px]">
+        <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">Telemetry Speed</span>
+        <div class="text-3xl font-black mt-0.5 text-accent dark:text-accent font-mono">
+          <%= @vehicle&.current_speed || 0.0 %> <span class="text-sm text-slate-400 font-normal">km/h</span>
+        </div>
+        <span class="text-[10px] text-slate-500 dark:text-slate-400 font-mono block mt-1">
+          Heading: <%= @vehicle&.current_heading || 0 %>° &bull; <%= @vehicle&.last_location_at ? time_ago_in_words(@vehicle.last_location_at) + " ago" : "No GPS" %>
+        </span>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+      <div class="flex items-center justify-between text-xs">
+        <span class="font-bold text-slate-900 dark:text-white flex items-center">
+          <i class="fas fa-map-pin text-emerald-500 mr-1.5"></i> <%= @shipment.origin_name %>
+        </span>
+        <span class="font-mono font-black text-accent dark:text-accent text-sm">
+          <%= @shipment.progress_percentage&.round(0) || 0 %>% Completed
+        </span>
+        <span class="font-bold text-slate-900 dark:text-white flex items-center">
+          <%= @shipment.destination_name %> <i class="fas fa-flag-checkered text-rose-500 ml-1.5"></i>
+        </span>
+      </div>
+      
+      <div class="w-full h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div class="h-full rounded-full transition-all duration-500 <%= @shipment.progress_percentage.to_f >= 95 ? 'bg-emerald-500' : 'bg-accent' %>" style="width: <%= [@shipment.progress_percentage.to_f, 100].min %>%"></div>
+      </div>
+
+      <div class="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+        <span>Covered: <%= @shipment.distance_traveled_km&.round(1) || 0 %> km</span>
+        <span>Total: <%= @shipment.total_distance_km&.round(1) || 0 %> km</span>
+        <span>Remaining: <%= [(@shipment.total_distance_km.to_f - @shipment.distance_traveled_km.to_f), 0.0].max.round(1) %> km</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Rerouting Recommendation Alert (If Hazard Detected Ahead) -->
+  <% if @reroute_rec.present? && @reroute_rec[:coordinates].present? %>
+    <div class="bg-purple-50 dark:bg-purple-950/90 border-2 border-purple-500 rounded-3xl p-6 shadow-md space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-start space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fas fa-route text-lg"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-purple-900 dark:text-purple-200 uppercase tracking-wider">
+              🚨 Hazard Rerouting Recommendation Generated
+            </h3>
+            <p class="text-xs text-purple-700 dark:text-purple-300 mt-0.5 font-medium">
+              <%= @reroute_rec[:tradeoff_summary] %>
+            </p>
+          </div>
+        </div>
+
+        <%= button_to confirm_reroute_shipment_path(@shipment), method: :post, class: "px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center cursor-pointer flex-shrink-0" do %>
+          <i class="fas fa-check-double mr-1.5"></i>
+          <span>Confirm &amp; Apply Bypass</span>
+        <% end %>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-purple-200 dark:border-purple-800 text-xs font-mono">
+        <div class="bg-white/80 dark:bg-slate-900/60 p-2.5 rounded-xl">
+          <span class="text-slate-400 block text-[9px] uppercase">Detour Distance</span>
+          <strong class="text-purple-700 dark:text-purple-300">+<%= @reroute_rec[:additional_distance_km] %> km</strong>
+        </div>
+        <div class="bg-white/80 dark:bg-slate-900/60 p-2.5 rounded-xl">
+          <span class="text-slate-400 block text-[9px] uppercase">Additional Time</span>
+          <strong class="text-purple-700 dark:text-purple-300">+<%= @reroute_rec[:additional_time_minutes] %> mins</strong>
+        </div>
+        <div class="bg-white/80 dark:bg-slate-900/60 p-2.5 rounded-xl">
+          <span class="text-slate-400 block text-[9px] uppercase">Risk Reduction</span>
+          <strong class="text-emerald-600 dark:text-emerald-400">-<%= @reroute_rec[:risk_reduction_percentage] %>% hazard risk</strong>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Intelligence Cards Grid (ETA, Corridor Risk, Telemetry) -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <!-- ETA Intelligence Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center">
+          <i class="fas fa-clock text-accent mr-1.5"></i> ETA Intelligence
+        </span>
+        <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded <%= @shipment.delay_minutes.to_i > 0 ? 'bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300' : 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' %>">
+          <%= @shipment.formatted_delay %>
+        </span>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">Planned Target ETA:</span>
+          <strong class="font-mono text-slate-700 dark:text-slate-300"><%= @shipment.provider_planned_eta&.strftime("%l:%M %p") || "—" %></strong>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">Current Speed ETA:</span>
+          <strong class="font-mono text-slate-700 dark:text-slate-300"><%= @shipment.current_estimated_eta&.strftime("%l:%M %p") || "—" %></strong>
+        </div>
+        <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+          <span class="font-bold text-accent dark:text-accent">ENMA AI Adjusted ETA:</span>
+          <strong class="font-mono text-lg font-black text-slate-900 dark:text-white"><%= @shipment.enma_adjusted_eta&.strftime("%l:%M %p") || "—" %></strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Corridor Risk Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center">
+          <i class="fas fa-shield-alt text-amber-500 mr-1.5"></i> Corridor Threat Analysis
+        </span>
+        <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          Live Threat
+        </span>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">Segment Risk Score:</span>
+          <strong class="font-mono <%= @shipment.current_corridor_risk.to_f > 50 ? 'text-rose-600' : 'text-emerald-600' %>">
+            <%= @shipment.current_corridor_risk&.round(0) || 20 %>/100
+          </strong>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-slate-400">ML Disruption Risk:</span>
+          <strong class="font-mono text-accent dark:text-accent">
+            <%= (@shipment.ml_disruption_probability.to_f * 100).round(1) %>%
+          </strong>
+        </div>
+        <div class="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800">
+          <span class="text-slate-400">Hazard Bypass:</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-bold">Monitored</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Simulation Control Toolbar -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center">
+          <i class="fas fa-gamepad text-accent mr-1.5"></i> Simulation Controls
+        </span>
+        <span class="text-[9px] font-mono uppercase bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded font-black">
+          SIH Demo
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <%= button_to simulate_shipment_path(@shipment, scenario: "normal_movement"), method: :post, class: "w-full py-1.5 px-2 bg-accent/10 dark:bg-accent/10 hover:bg-accent/15 dark:hover:bg-accent/15 text-accent dark:text-accent rounded-xl font-bold text-[10px] text-center border border-accent/20 dark:border-accent/20 cursor-pointer" do %>
+          <i class="fas fa-play mr-1 text-[9px]"></i> Step Forward
+        <% end %>
+
+        <%= button_to simulate_shipment_path(@shipment, scenario: "vehicle_stop"), method: :post, class: "w-full py-1.5 px-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 rounded-xl font-bold text-[10px] text-center border border-slate-200 dark:border-slate-700 cursor-pointer" do %>
+          <i class="fas fa-pause mr-1 text-[9px]"></i> Simulate Stop
+        <% end %>
+
+        <%= button_to simulate_shipment_path(@shipment, scenario: "route_deviation"), method: :post, class: "w-full py-1.5 px-2 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 text-amber-800 dark:text-amber-300 rounded-xl font-bold text-[10px] text-center border border-amber-200 dark:border-amber-800 cursor-pointer" do %>
+          <i class="fas fa-code-fork mr-1 text-[9px]"></i> Deviate Track
+        <% end %>
+
+        <%= button_to simulate_shipment_path(@shipment, scenario: "landslide_reroute"), method: :post, class: "w-full py-1.5 px-2 bg-red-50 dark:bg-red-950/60 hover:bg-red-100 text-red-700 dark:text-red-300 rounded-xl font-black text-[10px] text-center border border-red-200 dark:border-red-800 cursor-pointer" do %>
+          <i class="fas fa-mountain mr-1 text-[9px]"></i> Hazard Ahead
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet GIS Map Canvas -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-map-location-dot text-accent"></i>
+        <span class="text-xs font-black uppercase text-slate-800 dark:text-slate-200 tracking-wider">
+          Live Vehicle Corridor Map
+        </span>
+      </div>
+      <span class="text-[11px] font-mono text-slate-400">
+        GPS updates synchronized
+      </span>
+    </div>
+
+    <div data-shipment-map-target="container"
+         style="min-height: 380px; width: 100%;"
+         class="w-full h-[400px] lg:h-[500px]">
+    </div>
+  </div>
+
+  <!-- Breadcrumb Location History & Alerts Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Breadcrumb Location Table -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex items-center justify-between">
+        <h4 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+          <i class="fas fa-shoe-prints text-accent mr-2 text-[10px]"></i>
+          GPS Breadcrumb History
+        </h4>
+        <span class="text-[10px] text-slate-400 font-mono"><%= @recent_locations.size %> pings</span>
+      </div>
+
+      <div class="max-h-72 overflow-y-auto">
+        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800 text-left text-xs">
+          <thead class="bg-slate-50 dark:bg-slate-800/40 text-[9px] font-bold uppercase text-slate-500">
+            <tr>
+              <th class="px-4 py-2">Timestamp</th>
+              <th class="px-4 py-2">Coordinates</th>
+              <th class="px-4 py-2">Speed</th>
+              <th class="px-4 py-2">Source</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+            <% @recent_locations.each do |loc| %>
+              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                <td class="px-4 py-2 text-slate-900 dark:text-white font-bold"><%= loc.recorded_at.strftime("%H:%M:%S") %></td>
+                <td class="px-4 py-2"><%= loc.latitude.round(4) %>°, <%= loc.longitude.round(4) %>°</td>
+                <td class="px-4 py-2"><%= loc.speed&.round(1) || 0 %> km/h</td>
+                <td class="px-4 py-2 uppercase text-[9px]"><%= loc.source %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Active Logistics Alerts -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div class="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex items-center justify-between">
+        <h4 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+          <i class="fas fa-bell text-accent mr-2 text-[10px]"></i>
+          Telemetry &amp; Threat Alerts
+        </h4>
+        <span class="text-[10px] text-slate-400 font-mono"><%= @recent_alerts.size %> alerts</span>
+      </div>
+
+      <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 p-2 space-y-2">
+        <% if @recent_alerts.any? %>
+          <% @recent_alerts.each do |alt| %>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded border <%= alt.severity_badge_class %>">
+                  <%= alt.severity %>
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono"><%= time_ago_in_words(alt.created_at) %> ago</span>
+              </div>
+              <h5 class="text-xs font-bold text-slate-900 dark:text-white"><%= alt.title %></h5>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400"><%= alt.message %></p>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="p-6 text-center text-xs text-slate-400">
+            No active threat alerts for this shipment.
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

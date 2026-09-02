@@ -1,0 +1,102 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+    <div>
+      <div class="flex items-center space-x-2.5">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+          <i class="fas fa-bell mr-1 text-[10px]"></i> Logistics Threat Intelligence
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Supply Chain Alert Center</h1>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Automated detection of route deviations, high-hazard mountain cuts, road blockages, and severe delivery delays.</p>
+    </div>
+
+    <%= link_to shipments_path, class: "px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all flex items-center" do %>
+      <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
+      <span>Back to Shipments</span>
+    <% end %>
+  </div>
+
+  <!-- Alert Severity Metrics -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Critical Alerts</p>
+      <div class="mt-2"><span class="text-3xl font-black text-rose-600 dark:text-rose-400"><%= @critical_count %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Severe roadblocks &amp; critical hazards.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">High Alerts</p>
+      <div class="mt-2"><span class="text-3xl font-black text-amber-600 dark:text-amber-400"><%= @high_count %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">High-risk corridor entries.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-accent dark:text-accent uppercase tracking-wider">Warnings &amp; Deviations</p>
+      <div class="mt-2"><span class="text-3xl font-black text-accent dark:text-accent"><%= @warning_count %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Minor off-route tracking events.</p>
+    </div>
+  </div>
+
+  <!-- Alerts Feed -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-shield-halved text-accent mr-2"></i>
+        Active Logistics Alerts
+      </h3>
+      <span class="text-[11px] text-slate-400 font-mono"><%= @alerts.size %> alerts total</span>
+    </div>
+
+    <% if @alerts.any? %>
+      <div class="divide-y divide-slate-100 dark:divide-slate-800">
+        <% @alerts.each do |alt| %>
+          <div class="p-5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors space-y-2">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div class="flex items-center space-x-2.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border <%= alt.severity_badge_class %>">
+                  <%= alt.severity %>
+                </span>
+                <h4 class="text-sm font-black text-slate-900 dark:text-white flex items-center">
+                  <i class="fas <%= alt.icon_class %> text-accent mr-1.5"></i>
+                  <%= alt.title %>
+                </h4>
+              </div>
+
+              <div class="flex items-center space-x-2 text-xs">
+                <span class="text-slate-400 font-mono text-[11px]"><%= time_ago_in_words(alt.created_at) %> ago</span>
+                <% if alt.status == "active" %>
+                  <%= button_to "Acknowledge", acknowledge_logistics_alert_path(alt), method: :patch, class: "px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 rounded-lg text-[10px] font-bold cursor-pointer" %>
+                  <%= button_to "Resolve", resolve_logistics_alert_path(alt), method: :patch, class: "px-2.5 py-1 bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 rounded-lg text-[10px] font-bold cursor-pointer" %>
+                <% else %>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 uppercase"><%= alt.status %></span>
+                <% end %>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600 dark:text-slate-300"><%= alt.message %></p>
+
+            <% if alt.recommended_action.present? %>
+              <div class="p-2.5 rounded-xl bg-accent/10 dark:bg-accent/10 border border-accent/25 dark:border-accent/20 text-[11px] text-accent dark:text-accent">
+                <strong>Recommended Action:</strong> <%= alt.recommended_action %>
+              </div>
+            <% end %>
+
+            <div class="flex items-center space-x-4 text-[10px] text-slate-400 font-mono pt-1">
+              <% if alt.vehicle %>
+                <span>Vehicle: <%= link_to alt.vehicle.registration_number, vehicle_path(alt.vehicle), class: "text-accent hover:underline" %></span>
+              <% end %>
+              <% if alt.shipment %>
+                <span>Shipment: <%= link_to alt.shipment.tracking_number, shipment_path(alt.shipment), class: "text-accent hover:underline" %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="p-12 text-center text-xs text-slate-400">
+        Zero active logistics alerts. Supply lines operating smoothly.
+      </div>
+    <% end %>
+  </div>
+</div>

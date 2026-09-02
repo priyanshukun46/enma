@@ -2,7 +2,7 @@
   <!-- Navigation Breadcrumb & Quick Actions -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
     <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
-      <%= link_to emergencies_path, class: "text-indigo-600 dark:text-indigo-400 hover:underline font-bold flex items-center" do %>
+      <%= link_to emergencies_path, class: "text-accent dark:text-accent hover:underline font-bold flex items-center" do %>
         <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
         <span>Disaster Registry</span>
       <% end %>
@@ -13,7 +13,7 @@
     <!-- Status Change & Plan Trigger Actions -->
     <div class="flex flex-wrap items-center gap-2">
       <%= form_with url: generate_plan_emergency_path(@emergency), method: :post, local: true do %>
-        <button type="submit" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer transition-colors flex items-center space-x-1.5">
+        <button type="submit" class="px-3.5 py-1.5 bg-accent hover:opacity-90 text-white font-black text-xs rounded-xl shadow-sm cursor-pointer transition-colors flex items-center space-x-1.5">
           <i class="fas fa-sync-alt text-[10px]"></i>
           <span>Regenerate AI Plan</span>
         </button>
@@ -66,7 +66,7 @@
           <span class="flex items-center"><i class="fas fa-bullseye mr-1.5 text-amber-500"></i> Radius: <%= @emergency.affected_radius %> km</span>
           <% if @emergency.simulated_at %>
             <span>&bull;</span>
-            <span class="flex items-center"><i class="far fa-clock mr-1.5 text-indigo-500"></i> Triggered: <%= @emergency.simulated_at.strftime("%b %d, %H:%M") %></span>
+            <span class="flex items-center"><i class="far fa-clock mr-1.5 text-accent"></i> Triggered: <%= @emergency.simulated_at.strftime("%b %d, %H:%M") %></span>
           <% end %>
         </div>
       </div>
@@ -88,7 +88,7 @@
       <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Affected Communities</p>
       <div class="mt-2 flex items-baseline justify-between">
         <span class="text-3xl font-black text-slate-900 dark:text-white"><%= @analysis[:affected_count] %></span>
-        <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded">Within <%= @emergency.affected_radius %> km</span>
+        <span class="text-xs font-bold text-accent dark:text-accent bg-accent/10 dark:bg-accent/10 px-2 py-0.5 rounded">Within <%= @emergency.affected_radius %> km</span>
       </div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Populated settlements under hazard exposure.</p>
     </div>
@@ -124,11 +124,11 @@
   </div>
 
   <!-- STRUCTURED AI EMERGENCY RESPONSE PLAN CARD -->
-  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border-2 border-indigo-500 dark:border-indigo-600 space-y-6">
+  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border-2 border-accent dark:border-accent space-y-6">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-800 pb-4 gap-3">
       <div>
         <div class="flex items-center space-x-2">
-          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-300 dark:border-indigo-800 flex items-center">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-accent/15 dark:bg-accent/10 text-accent dark:text-accent border border-accent/20 dark:border-accent/20 flex items-center">
             <i class="fas fa-brain mr-1"></i> ENMA AI DECISION SUPPORT SYSTEM
           </span>
           <span class="text-[10px] font-mono text-slate-400">Plan #<%= @response_plan.id %> &bull; <%= @response_plan.generated_at&.strftime("%H:%M:%S UTC") || "Active" %></span>
@@ -140,8 +140,8 @@
         <% if @analysis[:recommended_warehouse] && @analysis[:affected_communities].first %>
           <% wh = @analysis[:recommended_warehouse] %>
           <% comm = @analysis[:affected_communities].first %>
-          <%= link_to calculate_routes_path(origin_id: wh[:id], destination_id: comm[:id], vehicle_type: "Emergency Vehicle"), method: :post, class: "px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs rounded-xl transition-colors flex items-center space-x-1.5" do %>
-            <i class="fas fa-route text-xs"></i>
+          <%= button_to calculate_routes_path(origin_id: wh[:id], destination_id: comm[:id], vehicle_type: "Emergency Vehicle"), method: :post, class: "px-3.5 py-1.5 bg-accent/10 hover:bg-accent/15 dark:bg-accent/10 dark:hover:bg-accent/15 text-accent dark:text-accent font-bold text-xs rounded-xl transition-colors flex items-center cursor-pointer border border-accent/20 dark:border-accent/20" do %>
+            <i class="fas fa-route text-xs mr-1.5"></i>
             <span>Open in Route Planner</span>
           <% end %>
         <% end %>
@@ -170,7 +170,7 @@
 
       <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
         <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block">4. Est. Response ETA</span>
-        <div class="text-base font-black text-indigo-600 dark:text-indigo-400 mt-1"><%= @analysis.dig(:emergency_route, :estimated_time) || "3.5 hrs" %></div>
+        <div class="text-base font-black text-accent dark:text-accent mt-1"><%= @analysis.dig(:emergency_route, :estimated_time) || "3.5 hrs" %></div>
         <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1"><%= @analysis.dig(:emergency_route, :distance_km) %> km via <%= @analysis.dig(:emergency_route, :route_title) %>.</p>
       </div>
     </div>
@@ -196,7 +196,7 @@
       <!-- Tactical Directives -->
       <div class="space-y-3">
         <h4 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-          <i class="fas fa-tasks text-indigo-600 mr-2"></i>
+          <i class="fas fa-tasks text-accent mr-2"></i>
           Tactical Action Directives
         </h4>
         <div class="space-y-2">
@@ -376,7 +376,7 @@
         <span class="flex items-center text-red-600 dark:text-red-400"><span class="w-2.5 h-2.5 rounded-full bg-red-600 inline-block mr-1.5"></span> Epicenter</span>
         <span class="flex items-center text-orange-600 dark:text-orange-400"><span class="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block mr-1.5"></span> Affected</span>
         <span class="flex items-center text-emerald-600 dark:text-emerald-400"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600 inline-block mr-1.5"></span> Relief Hub</span>
-        <span class="flex items-center text-indigo-600 dark:text-indigo-400"><span class="w-3.5 h-1 bg-indigo-600 inline-block mr-1.5"></span> Convoy Route</span>
+        <span class="flex items-center text-accent dark:text-accent"><span class="w-3.5 h-1 bg-accent inline-block mr-1.5"></span> Convoy Route</span>
       </div>
     </div>
 
@@ -473,7 +473,7 @@
               <td class="px-5 py-3.5 text-[11px] text-slate-500 font-medium"><%= comm[:spatial_status] %></td>
               <td class="px-5 py-3.5 text-right">
                 <% if comm[:location] %>
-                  <%= link_to accessibility_location_path(comm[:location]), class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+                  <%= link_to accessibility_location_path(comm[:location]), class: "text-xs font-bold text-accent dark:text-accent hover:underline" do %>
                     <span>Profile &rarr;</span>
                   <% end %>
                 <% end %>

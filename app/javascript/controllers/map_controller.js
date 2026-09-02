@@ -28,6 +28,13 @@ export default class extends Controller {
     "detailLocation",
     "detailUpdated",
     "detailActionLink",
+    "detailMlProbability",
+    "detailMlRiskLevel",
+    "detailMlRiskBadge",
+    "detailMlBar",
+    "detailMlFactors",
+    "detailMlNarrative",
+    "detailMlAlgorithm",
     "stateFilter",
     "statusFilter",
     "riskRange",
@@ -104,10 +111,16 @@ export default class extends Controller {
       scrollWheelZoom: true
     }).setView(centerLatLng, defaultZoom)
 
-    // Base OSM tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // High-contrast dark GIS radar tiles
+    const isDark = document.documentElement.classList.contains("dark") || true
+    const tileUrl = isDark
+      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+    L.tileLayer(tileUrl, {
       maxZoom: 18,
-      attribution: '© OpenStreetMap contributors | ENMA AI GIS'
+      subdomains: 'abcd',
+      attribution: '© OpenStreetMap & CARTO | ENMA AI GIS'
     }).addTo(this.map)
 
     // Layer groups
@@ -307,6 +320,56 @@ export default class extends Controller {
 
     if (this.hasDetailReasonTarget) {
       this.detailReasonTarget.textContent = `"${road.summary_reason || road.reason}"`
+    }
+
+    // 🤖 ML Road Disruption Prediction Card Population
+    const ml = road.ml_prediction
+    if (ml) {
+      const probPct = ml.probability_percentage || (ml.disruption_probability * 100).toFixed(1)
+      if (this.hasDetailMlProbabilityTarget) {
+        this.detailMlProbabilityTarget.textContent = `${probPct}%`
+      }
+
+      if (this.hasDetailMlRiskLevelTarget) {
+        this.detailMlRiskLevelTarget.textContent = `${ml.risk_level_display || ml.risk_level?.toUpperCase()} DISRUPTION RISK`
+      }
+
+      if (this.hasDetailMlRiskBadgeTarget) {
+        this.detailMlRiskBadgeTarget.className = `px-2 py-0.5 rounded-full text-[9px] font-black uppercase border ${ml.risk_badge_class}`
+        this.detailMlRiskBadgeTarget.textContent = ml.risk_level_display || ml.risk_level?.toUpperCase()
+      }
+
+      if (this.hasDetailMlBarTarget) {
+        this.detailMlBarTarget.style.width = `${Math.min(probPct, 100)}%`
+        this.detailMlBarTarget.className = `h-2 rounded-full ${probPct >= 75 ? 'bg-red-500' : (probPct >= 50 ? 'bg-orange-500' : (probPct >= 25 ? 'bg-amber-500' : 'bg-emerald-500'))}`
+      }
+
+      if (this.hasDetailMlAlgorithmTarget) {
+        this.detailMlAlgorithmTarget.textContent = `${ml.algorithm || 'ML Classifier'} v${ml.model_version || '1.0.0'} • 24h Window`
+      }
+
+      if (this.hasDetailMlNarrativeTarget) {
+        this.detailMlNarrativeTarget.textContent = ml.narrative_explanation || "Continuous predictive telemetry active."
+      }
+
+      if (this.hasDetailMlFactorsTarget) {
+        const topFactors = ml.top_factors || []
+        if (topFactors.length > 0) {
+          this.detailMlFactorsTarget.innerHTML = topFactors.slice(0, 3).map(f => `
+            <div class="flex items-start space-x-2 p-1.5 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60">
+              <span class="text-xs flex-shrink-0">${f.label?.split(" ")[0] || "⚡"}</span>
+              <div class="min-w-0 flex-1">
+                <span class="font-bold text-slate-900 dark:text-white block text-[10px]">${f.label || f.feature}</span>
+                <span class="text-slate-500 dark:text-slate-400 text-[9px] block leading-tight">${f.description || `Impact: ${f.importance}`}</span>
+              </div>
+            </div>
+          `).join("")
+        } else {
+          this.detailMlFactorsTarget.innerHTML = `
+            <div class="text-[10px] text-slate-400 italic">No disruptive anomalies detected.</div>
+          `
+        }
+      }
     }
 
     if (this.hasDetailActionLinkTarget) {

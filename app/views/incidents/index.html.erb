@@ -14,7 +14,7 @@
 
     <div class="flex flex-wrap items-center gap-2.5">
       <%= link_to map_path, class: "inline-flex items-center px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all" do %>
-        <i class="fas fa-map-location-dot text-indigo-600 mr-1.5"></i>
+        <i class="fas fa-map-location-dot text-accent mr-1.5"></i>
         <span>GIS Map View</span>
       <% end %>
 
@@ -40,9 +40,9 @@
     </div>
 
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
-      <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">Verified</span>
-      <div class="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 font-mono"><%= @verified_count %></div>
-      <span class="text-[10px] text-indigo-700 dark:text-indigo-300">Active GIS hazards</span>
+      <span class="text-[10px] font-bold text-accent dark:text-accent uppercase tracking-wider block">Verified</span>
+      <div class="text-2xl sm:text-3xl font-black text-accent dark:text-accent font-mono"><%= @verified_count %></div>
+      <span class="text-[10px] text-accent dark:text-accent">Active GIS hazards</span>
     </div>
 
     <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-1">
@@ -56,7 +56,7 @@
   <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between">
       <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-        <i class="fas fa-list-ul text-indigo-600 mr-2"></i>
+        <i class="fas fa-list-ul text-accent mr-2"></i>
         Incident Telemetry Registry
       </h3>
       <span class="text-[11px] text-slate-400 font-mono"><%= @incidents.size %> reports</span>
@@ -89,12 +89,12 @@
                 </p>
 
                 <div class="flex flex-wrap items-center gap-3 text-[10px] text-slate-400 font-mono pt-0.5">
-                  <span><i class="fas fa-crosshairs mr-1 text-indigo-500"></i> <%= inc.latitude.round(4) %>°N, <%= inc.longitude.round(4) %>°E</span>
+                  <span><i class="fas fa-crosshairs mr-1 text-accent"></i> <%= inc.latitude.round(4) %>°N, <%= inc.longitude.round(4) %>°E</span>
                   <span>&bull;</span>
                   <span><i class="fas fa-clock mr-1"></i> <%= inc.formatted_reported_time %></span>
                   <% if inc.photos.attached? && inc.photos.any? %>
                     <span>&bull;</span>
-                    <span class="text-indigo-600 dark:text-indigo-400 font-bold"><i class="fas fa-camera mr-1"></i> <%= inc.photos.count %> photo(s)</span>
+                    <span class="text-accent dark:text-accent font-bold"><i class="fas fa-camera mr-1"></i> <%= inc.photos.count %> photo(s)</span>
                   <% end %>
                 </div>
               </div>
@@ -102,7 +102,7 @@
 
             <!-- Right Action -->
             <div class="flex items-center space-x-2 flex-shrink-0 self-end sm:self-center">
-              <%= link_to incident_path(inc), class: "px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors flex items-center space-x-1" do %>
+              <%= link_to incident_path(inc), class: "px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-accent hover:text-white text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors flex items-center space-x-1" do %>
                 <span>Details</span>
                 <i class="fas fa-arrow-right text-[10px] ml-1"></i>
               <% end %>

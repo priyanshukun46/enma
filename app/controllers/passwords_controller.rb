@@ -1,4 +1,6 @@
 class PasswordsController < ApplicationController
+  layout "auth"
+
   before_action :set_user_by_token, only: [:edit, :update]
 
   def new
@@ -36,7 +38,7 @@ class PasswordsController < ApplicationController
     if @user.update(password: params[:password], password_confirmation: params[:password_confirmation])
       login(@user)
       flash[:notice] = "Password reset successfully. Welcome back, #{@user.name}!"
-      redirect_to root_path
+      redirect_to dashboard_path
     else
       flash.now[:alert] = @user.errors.full_messages.to_sentence
       render :edit, status: :unprocessable_entity

@@ -1,0 +1,43 @@
+<div class="space-y-4 max-w-7xl mx-auto pb-12"
+     data-controller="fleet-map"
+     data-fleet-map-vehicles-value="<%= @active_vehicles.map { |v| { id: v.id, reg: v.registration_number, type: v.vehicle_type, status: v.status, lat: v.current_latitude, lon: v.current_longitude, speed: v.current_speed, heading: v.current_heading, driver: v.driver_name, shipment: v.active_shipment&.tracking_number, cargo: v.active_shipment&.cargo_type, progress: v.active_shipment&.progress_percentage } }.to_json %>"
+     data-fleet-map-shipments-value="<%= @active_shipments.map { |s| { id: s.id, tracking: s.tracking_number, origin: s.origin_name, destination: s.destination_name, progress: s.progress_percentage, eta: s.enma_adjusted_eta&.strftime('%l:%M %p'), geometry: s.planned_geometry } }.to_json %>"
+     data-fleet-map-incidents-value="<%= @incidents.map { |i| { id: i.id, type: i.incident_type, severity: i.severity, lat: i.latitude, lon: i.longitude, desc: i.description.truncate(60) } }.to_json %>">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-2 border-b border-slate-200 dark:border-slate-800 gap-2">
+    <div>
+      <div class="flex items-center space-x-2.5">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping mr-1.5"></span> Live Fleet Radar
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Live Logistics Fleet Map</h1>
+      </div>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time GPS vehicle positions, active convoy corridors, and live hazard overlays across the North East.</p>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <%= link_to shipments_path, class: "px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all flex items-center" do %>
+        <i class="fas fa-list text-slate-500 mr-1.5"></i>
+        <span>Shipments List</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Live Map Card -->
+  <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden relative">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="text-xs font-black uppercase text-slate-800 dark:text-slate-200 flex items-center">
+          <i class="fas fa-satellite text-accent mr-1.5"></i> GPS Telemetry Active
+        </span>
+        <span class="text-[11px] font-mono text-slate-400">&bull; <%= @active_vehicles.size %> vehicles online &bull; <%= @active_shipments.size %> active corridors</span>
+      </div>
+    </div>
+
+    <div data-fleet-map-target="container"
+         style="min-height: 600px; width: 100%;"
+         class="w-full h-[650px]">
+    </div>
+  </div>
+</div>

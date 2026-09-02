@@ -4,8 +4,10 @@ require "uri"
 
 class WeatherService
   BASE_URL = "https://api.open-meteo.com/v1/forecast".freeze
-  TIMEOUT_SECONDS = 2.0
-  CACHE_EXPIRATION = 15.minutes
+  TIMEOUT_SECONDS = 0.8
+  CACHE_EXPIRATION = 30.minutes
+
+  @@memory_cache = {}
 
   WMO_CODES = {
     0 => "Clear Sky",
@@ -54,13 +56,11 @@ class WeatherService
     coords = Array(coordinates)
     return fallback_corridor_weather(fallback_location) if coords.empty?
 
-    # Sample 3 to 5 representative points along the route geometry
+    # Sample 3 representative points (origin, midpoint, destination) to balance GIS fidelity and speed
     sample_indices = if coords.size <= 3
                        (0...coords.size).to_a
-                     elsif coords.size <= 8
-                       [0, (coords.size / 2), coords.size - 1]
                      else
-                       [0, (coords.size * 0.25).round, (coords.size * 0.50).round, (coords.size * 0.75).round, coords.size - 1].uniq
+                       [0, (coords.size / 2).round, coords.size - 1].uniq
                      end
 
     samples = sample_indices.map do |idx|
@@ -131,18 +131,30 @@ class WeatherService
 
     cache_key = "enma_weather_v1_#{latitude.round(3)}_#{longitude.round(3)}"
 
+    # In-memory instant cache check
+    if !force_refresh && @@memory_cache[cache_key].present?
+      cached_item = @@memory_cache[cache_key]
+      if cached_item[:cached_at] && cached_item[:cached_at] > 30.minutes.ago
+        d = cached_item[:data]
+        return d[:source] == "live" ? d.merge(source: "cached_live") : d
+      end
+    end
+
     if force_refresh
       Rails.cache.delete(cache_key)
+      @@memory_cache.delete(cache_key)
     else
       cached = Rails.cache.read(cache_key)
       if cached.present?
-        return cached.merge(source: "cached_live") if cached[:source] == "live"
-        return cached
+        data = cached[:source] == "live" ? cached.merge(source: "cached_live") : cached
+        @@memory_cache[cache_key] = { data: data, cached_at: Time.current }
+        return data
       end
     end
 
     data = fetch_from_api
     Rails.cache.write(cache_key, data, expires_in: CACHE_EXPIRATION)
+    @@memory_cache[cache_key] = { data: data, cached_at: Time.current }
     data
   rescue StandardError => e
     Rails.logger.warn("[WeatherService] API error for (#{latitude}, #{longitude}): #{e.message}. Using demo fallback.")
@@ -152,6 +164,8 @@ class WeatherService
   private
 
   def fetch_from_api
+    return fallback_data if Rails.env.test?
+
     uri = URI(BASE_URL)
     params = {
       latitude: latitude,

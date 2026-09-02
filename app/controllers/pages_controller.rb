@@ -1,9 +1,18 @@
 class PagesController < ApplicationController
+  layout "landing", only: [:landing]
+
   def landing
+    # If already logged in, send them straight to the dashboard
+    if authenticated?
+      redirect_to dashboard_path and return
+    end
+
     @total_locations = Location.count
     @total_warehouses = Warehouse.count
     @total_emergencies = Emergency.count
     @critical_zones = Location.critical_accessibility.count
+    @total_roads = Road.count
+    @total_vehicles = Vehicle.count
   end
 
   def demo

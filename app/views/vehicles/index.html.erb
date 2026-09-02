@@ -1,0 +1,108 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white">Fleet Registry &amp; Vehicles</h1>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Fleet units, real-time telemetry keys, driver details, and current statuses.</p>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <%= link_to shipments_path, class: "px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all flex items-center" do %>
+        <i class="fas fa-boxes-stacked text-slate-500 mr-1.5"></i>
+        <span>Shipments</span>
+      <% end %>
+
+      <%= link_to new_vehicle_path, class: "px-4 py-2 bg-accent hover:opacity-90 text-white text-xs font-black rounded-xl shadow-md transition-all flex items-center" do %>
+        <i class="fas fa-plus mr-1.5"></i>
+        <span>Register Vehicle</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Top Metrics Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Fleet</p>
+      <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= @total_vehicles %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Registered transit units.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-accent dark:text-accent uppercase tracking-wider">In Transit</p>
+      <div class="mt-2"><span class="text-3xl font-black text-accent dark:text-accent"><%= @in_transit_count %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Active delivery missions.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Available</p>
+      <div class="mt-2"><span class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @available_count %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Ready for dispatch.</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+      <p class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Delayed / Stopped</p>
+      <div class="mt-2"><span class="text-3xl font-black text-amber-600 dark:text-amber-400"><%= @delayed_count %></span></div>
+      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Under risk monitoring.</p>
+    </div>
+  </div>
+
+  <!-- Vehicle Registry Table -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+    <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-truck text-accent mr-2"></i>
+        Fleet Vehicle Directory
+      </h3>
+      <span class="text-[11px] text-slate-400 font-mono"><%= @vehicles.size %> units</span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-left text-xs">
+        <thead class="bg-slate-50 dark:bg-slate-800/60 font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[10px]">
+          <tr>
+            <th class="px-5 py-3">Registration</th>
+            <th class="px-5 py-3">Type</th>
+            <th class="px-5 py-3">Status</th>
+            <th class="px-5 py-3">Current Location</th>
+            <th class="px-5 py-3">Speed</th>
+            <th class="px-5 py-3">Driver</th>
+            <th class="px-5 py-3 text-right">Details</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-medium text-slate-700 dark:text-slate-300">
+          <% @vehicles.each do |v| %>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+              <td class="px-5 py-3.5">
+                <div class="font-mono font-bold text-slate-900 dark:text-white text-sm"><%= v.registration_number %></div>
+                <div class="text-[10px] text-slate-400 font-mono">Cap: <%= number_with_delimiter(v.capacity&.to_i || 5000) %> kg</div>
+              </td>
+              <td class="px-5 py-3.5 font-bold"><%= v.vehicle_type %></td>
+              <td class="px-5 py-3.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border <%= v.status_badge_class %>">
+                  <%= v.status.humanize %>
+                </span>
+              </td>
+              <td class="px-5 py-3.5 font-mono text-[11px]">
+                <% if v.current_latitude && v.current_longitude %>
+                  <%= v.current_latitude.round(4) %>°N, <%= v.current_longitude.round(4) %>°E
+                <% else %>
+                  <span class="text-slate-400">No GPS data</span>
+                <% end %>
+              </td>
+              <td class="px-5 py-3.5 font-mono font-bold"><%= v.current_speed || 0 %> km/h</td>
+              <td class="px-5 py-3.5">
+                <div class="font-bold text-slate-900 dark:text-white"><%= v.driver_name.presence || "Unassigned" %></div>
+                <div class="text-[11px] text-slate-400"><%= v.driver_phone %></div>
+              </td>
+              <td class="px-5 py-3.5 text-right">
+                <%= link_to vehicle_path(v), class: "text-xs font-bold text-accent dark:text-accent hover:underline" do %>
+                  View &rarr;
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

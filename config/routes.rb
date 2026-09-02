@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # Defines the root path route ("/")
-  root "dashboard#index"
+  root "pages#landing"
+  match "/", to: "pages#landing", via: [:post]
+
+  # Authenticated Dashboard
+  get "dashboard", to: "dashboard#index", as: :dashboard
 
   # Public Presentation & Landing Pages (SIH 2026 Ready)
   get "landing", to: "pages#landing", as: :landing
@@ -13,23 +17,30 @@ Rails.application.routes.draw do
   get "overview", to: "pages#overview", as: :overview
   get "about", to: "pages#about", as: :about
 
-  # Global Search
+  # Global Search & Live Auto-Suggestions
+  get "search/suggestions", to: "search#suggestions", as: :search_suggestions
   get "search", to: "search#index", as: :search
 
-  # Authentication & Session Routes
-  get "login", to: "sessions#new", as: :login
-  post "login", to: "sessions#create"
-  delete "logout", to: "sessions#destroy", as: :logout
+  # Authentication with Devise
+  devise_for :users,
+             path: "",
+             path_names: { sign_in: "login", sign_out: "logout", sign_up: "sign_up" },
+             controllers: {
+               sessions: "users/sessions",
+               registrations: "users/registrations",
+               omniauth_callbacks: "users/omniauth_callbacks"
+             }
 
-  # Sign Up / Registration Routes
-  get "sign_up", to: "registrations#new", as: :sign_up
-  post "sign_up", to: "registrations#create"
-
-  # OmniAuth OAuth Callback Routes
-  match "auth/:provider/callback", to: "omniauth_callbacks#callback", via: [:get, :post], as: :omniauth_callback
-  get "auth/failure", to: "omniauth_callbacks#failure", as: :omniauth_failure
-
-  post "demo_sso_login", to: "sessions#demo_sso_login", as: :demo_sso_login
+  devise_scope :user do
+    get "login", to: "users/sessions#new", as: :login
+    post "login", to: "users/sessions#create"
+    match "logout", to: "users/sessions#destroy", via: [:get, :delete], as: :logout
+    get "sign_up", to: "users/registrations#new", as: :sign_up
+    post "sign_up", to: "users/registrations#create"
+    get "signup", to: "users/registrations#new"
+    post "signup", to: "users/registrations#create"
+    post "demo_sso_login", to: "users/sessions#demo_sso_login", as: :demo_sso_login
+  end
 
   # User Profile & Settings
   resource :profile, only: [:show, :update]
@@ -80,6 +91,31 @@ Rails.application.routes.draw do
 
   # Phase 8: Warehouse & Resource Intelligence
   resources :warehouses, only: [:index, :show]
+
+  # Live Logistics, Fleet Tracking & Delivery Intelligence
+  resources :vehicles
+  resources :shipments do
+    member do
+      post :simulate
+      post :confirm_reroute
+    end
+    collection do
+      get :live_map
+    end
+  end
+  resources :logistics_alerts, only: [:index] do
+    member do
+      patch :acknowledge
+      patch :resolve
+    end
+  end
+
+  # GPS Telemetry Ingestion API
+  namespace :api do
+    namespace :v1 do
+      resources :vehicle_locations, only: [:create]
+    end
+  end
 
   # Field Incident Reporting (Geo-tagged Photo Reports)
   resources :incidents, only: [:index, :new, :create, :show]

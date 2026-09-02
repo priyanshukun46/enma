@@ -1,7 +1,7 @@
 <div class="space-y-6 max-w-7xl mx-auto pb-12">
   <!-- Breadcrumb -->
   <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-200 dark:border-slate-800">
-    <%= link_to warehouses_path, class: "text-indigo-600 dark:text-indigo-400 hover:underline font-bold flex items-center" do %>
+    <%= link_to warehouses_path, class: "text-accent dark:text-accent hover:underline font-bold flex items-center" do %>
       <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
       <span>Warehouse Intelligence</span>
     <% end %>
@@ -27,7 +27,7 @@
         <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white"><%= @warehouse.name %></h1>
 
         <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
-          <span class="flex items-center"><i class="fas fa-crosshairs mr-1.5 text-indigo-500"></i> <%= @warehouse.latitude&.round(4) %>°N, <%= @warehouse.longitude&.round(4) %>°E</span>
+          <span class="flex items-center"><i class="fas fa-crosshairs mr-1.5 text-accent"></i> <%= @warehouse.latitude&.round(4) %>°N, <%= @warehouse.longitude&.round(4) %>°E</span>
           <% if @warehouse.address.present? %>
             <span>&bull;</span>
             <span><%= @warehouse.address %></span>
@@ -85,7 +85,7 @@
   <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60">
       <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-        <i class="fas fa-boxes-stacked text-indigo-600 mr-2"></i>
+        <i class="fas fa-boxes-stacked text-accent mr-2"></i>
         Resource Inventory
       </h3>
     </div>
@@ -94,7 +94,7 @@
       <% Warehouse::RESOURCE_CATEGORIES.each do |key, meta| %>
         <% count = @warehouse.resource_count(key) %>
         <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 flex items-center space-x-4">
-          <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+          <div class="w-11 h-11 rounded-xl bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent flex items-center justify-center flex-shrink-0">
             <i class="fas <%= meta[:icon] %> text-lg"></i>
           </div>
           <div class="flex-1">
@@ -122,7 +122,7 @@
               <span class="text-xs font-bold text-slate-900 dark:text-white"><%= em.title.truncate(50) %></span>
               <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5"><%= em.emergency_type %> &bull; <%= em.severity %></div>
             </div>
-            <%= link_to emergency_path(em), class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+            <%= link_to emergency_path(em), class: "text-xs font-bold text-accent dark:text-accent hover:underline" do %>
               View &rarr;
             <% end %>
           </div>

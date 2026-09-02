@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <title><%= content_for(:title) || "Sign In — ENMA AI Emergency Intelligence" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <!-- Fonts: Inter, Nunito (handwritten editorial), JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN with ChaiCode Tokens -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              paper: 'rgb(var(--paper) / <alpha-value>)',
+              surface: 'rgb(var(--surface) / <alpha-value>)',
+              ink: 'rgb(var(--ink) / <alpha-value>)',
+              sketch: 'rgb(var(--sketch) / <alpha-value>)',
+              mute: 'rgb(var(--mute) / <alpha-value>)',
+              accent: 'rgb(var(--accent) / <alpha-value>)',
+              accent2: 'rgb(var(--accent2) / <alpha-value>)',
+            },
+            fontFamily: {
+              sans: ['"Inter"', 'system-ui', 'sans-serif'],
+              hand: ['"Nunito"', 'system-ui', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <!-- Instant Theme Bootstrap (Prevents FOUC) -->
+    <script>
+      (function() {
+        var theme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+
+    <style>
+      /* ChaiCode (dsa.chaicode.com) Design System Tokens */
+      :root, [data-theme=light] {
+        color-scheme: light;
+        --paper: 250 246 238;          /* #FAF6EE warm parchment */
+        --surface: 255 252 247;        /* #FFFCF7 warm surface */
+        --ink: 24 18 14;               /* #18120E high-contrast espresso ink */
+        --sketch: 76 62 50;            /* #4C3E32 warm charcoal text */
+        --mute: 118 104 90;            /* #76685A deep legible taupe (>4.5:1 ratio) */
+        --accent: 226 84 56;           /* #E25438 rich warm reddish terracotta */
+        --accent2: 200 60 45;          /* #C83C2D deep rust red */
+        --line: rgba(38, 30, 24, 0.15);
+        --line-hi: rgba(38, 30, 24, 0.30);
+      }
+
+      [data-theme=dark], .dark {
+        color-scheme: dark;
+        --paper: 20 16 12;             /* #14100C dark espresso */
+        --surface: 27 22 17;           /* #1B1611 dark roasted surface */
+        --ink: 236 229 214;            /* #ECE5D6 warm cream ivory */
+        --sketch: 184 176 160;         /* #B8B0A0 warm parchment */
+        --mute: 146 138 123;           /* #928A7B muted cocoa */
+        --accent: 236 94 66;           /* #EC5E42 warm glowing reddish coral */
+        --accent2: 216 74 46;          /* #D84A2E rich terracotta red */
+        --line: rgba(236, 229, 214, 0.12);
+        --line-hi: rgba(236, 229, 214, 0.22);
+      }
+
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background-color: rgb(var(--paper));
+        color: rgb(var(--ink));
+        min-height: 100vh;
+      }
+
+      .sketch-border {
+        border: 1px solid var(--line);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      }
+
+      .sketch-border-soft {
+        border: 1px solid var(--line);
+      }
+    </style>
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" if defined?(stylesheet_link_tag) %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-paper text-ink flex flex-col min-h-screen antialiased select-none" data-controller="theme">
+    
+    <!-- Top Full-Width Navigation (Brand + Back + Theme Toggle) -->
+    <header class="w-full border-b border-[var(--line)] bg-surface/80 backdrop-blur-md sticky top-0 z-30 transition-colors">
+      <div class="w-full px-4 sm:px-8 lg:px-12 py-3.5 sm:py-4 flex items-center justify-between">
+        <!-- Logo linking back to root -->
+        <%= link_to root_path, class: "inline-flex items-center space-x-2.5 text-ink hover:opacity-90 transition-opacity" do %>
+          <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-accent text-white flex items-center justify-center font-black text-sm shadow-sm">
+            ⚡
+          </span>
+          <span class="font-hand text-2xl sm:text-3xl font-black tracking-tight text-ink">
+            ENMA <span class="text-accent">AI</span>
+          </span>
+        <% end %>
+
+        <!-- Right Controls: Back Link + Theme Toggle -->
+        <div class="flex items-center space-x-3 sm:space-x-5">
+          <%= link_to root_path, class: "text-xs sm:text-sm font-sketch text-mute hover:text-ink transition-colors flex items-center space-x-1.5" do %>
+            <span>&larr;</span>
+            <span>Back to home</span>
+          <% end %>
+
+          <button type="button"
+                  data-action="click->theme#toggle"
+                  title="Toggle Light / Dark Mode"
+                  class="p-2 sm:p-2.5 rounded-full sketch-border-soft bg-surface text-accent hover:opacity-80 transition-all cursor-pointer">
+            <i data-theme-target="icon" class="fas fa-moon text-xs sm:text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Auth Content Area (Centered Card, No Sidebar) -->
+    <main class="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-6 sm:py-10">
+      <div class="w-full max-w-[460px] space-y-4">
+        
+        <!-- Global Flash Notifications -->
+        <% if notice.present? %>
+          <div data-controller="flash"
+               data-flash-timeout-value="3500"
+               data-action="mouseenter->flash#pause mouseleave->flash#resume"
+               class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center justify-between shadow-sm transition-all">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-circle-check text-emerald-600 dark:text-emerald-400"></i>
+              <span><%= notice %></span>
+            </div>
+            <button type="button"
+                    data-action="click->flash#dismiss"
+                    title="Dismiss"
+                    class="ml-2 text-emerald-700/60 dark:text-emerald-300/60 hover:text-emerald-900 dark:hover:text-white transition-colors cursor-pointer p-0.5">
+              <i class="fas fa-times text-xs"></i>
+            </button>
+          </div>
+        <% end %>
+
+        <% if alert.present? %>
+          <div data-controller="flash"
+               data-flash-timeout-value="5000"
+               data-action="mouseenter->flash#pause mouseleave->flash#resume"
+               class="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-red-800 dark:text-red-300 text-xs font-semibold flex items-center justify-between shadow-sm transition-all">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-circle-exclamation text-red-600 dark:text-red-400"></i>
+              <span><%= alert %></span>
+            </div>
+            <button type="button"
+                    data-action="click->flash#dismiss"
+                    title="Dismiss"
+                    class="ml-2 text-red-700/60 dark:text-red-300/60 hover:text-red-900 dark:hover:text-white transition-colors cursor-pointer p-0.5">
+              <i class="fas fa-times text-xs"></i>
+            </button>
+          </div>
+        <% end %>
+
+        <!-- Yield Auth Card Content -->
+        <%= yield %>
+
+        <!-- Sub-card Links -->
+        <div class="pt-4 text-center">
+          <p class="text-xs text-mute">
+            ENMA AI &bull; Smart Logistics &amp; Emergency Mobility System
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Minimal Footer -->
+    <footer class="w-full py-5 text-center text-xs text-mute/80 border-t border-[var(--line)]">
+      <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span>&copy; <%= Time.current.year %> ENMA AI. SIH 2026 Ready.</span>
+        <div class="flex items-center space-x-4 text-xs">
+          <%= link_to "Judge Overview", overview_path, class: "hover:text-ink transition-colors" %>
+          <%= link_to "Live Demo", demo_path, class: "hover:text-ink transition-colors" %>
+          <%= link_to "Privacy", root_path, class: "hover:text-ink transition-colors" %>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+</html>

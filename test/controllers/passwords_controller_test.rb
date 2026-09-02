@@ -35,7 +35,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
       password_confirmation: "newpassword123"
     }
 
-    assert_redirected_to root_url
+    assert_redirected_to dashboard_url
     assert_equal @user.id, session[:user_id]
 
     @user.reload

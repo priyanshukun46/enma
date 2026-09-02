@@ -32,7 +32,7 @@
         <span>Report Incident</span>
       <% end %>
 
-      <%= link_to routes_path, class: "inline-flex items-center px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl shadow-sm transition-all" do %>
+      <%= link_to routes_path, class: "inline-flex items-center px-4 py-1.5 bg-accent hover:opacity-90 text-white text-xs font-black rounded-xl shadow-sm transition-all" do %>
         <i class="fas fa-route mr-1.5 text-xs"></i>
         <span>Smart Route Planner</span>
       <% end %>
@@ -91,10 +91,10 @@
     <!-- Card 6: Active Incidents -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-1">
       <div class="flex items-center justify-between">
-        <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Incidents</span>
-        <i class="fas fa-radiation text-xs text-indigo-600"></i>
+        <span class="text-[10px] font-bold text-accent dark:text-accent uppercase tracking-wider">Incidents</span>
+        <i class="fas fa-radiation text-xs text-accent"></i>
       </div>
-      <div class="text-2xl sm:text-3xl font-black text-indigo-600 dark:text-indigo-400 font-mono"><%= @active_incidents_count %></div>
+      <div class="text-2xl sm:text-3xl font-black text-accent dark:text-accent font-mono"><%= @active_incidents_count %></div>
       <span class="text-[10px] text-slate-400 font-medium">Disaster coordinates</span>
     </div>
   </div>
@@ -112,7 +112,7 @@
                   data-action="click->map#filterByStatus"
                   data-status="all"
                   data-status-btn
-                  class="px-3 py-1.5 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-sm transition-all cursor-pointer">
+                  class="px-3 py-1.5 rounded-xl text-xs font-black bg-accent text-white shadow-sm transition-all cursor-pointer">
             All Roads (<%= @total_roads %>)
           </button>
 
@@ -154,7 +154,7 @@
         </div>
 
         <div class="text-[11px] text-slate-400 font-mono hidden sm:block">
-          <i class="fas fa-layer-group text-indigo-500 mr-1"></i> Multi-Layer GIS Active
+          <i class="fas fa-layer-group text-accent mr-1"></i> Multi-Layer GIS Active
         </div>
       </div>
 
@@ -169,7 +169,7 @@
         <div class="absolute bottom-4 left-4 z-20 bg-slate-900/90 dark:bg-slate-950/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-xl border border-slate-700/80 text-[11px] space-y-1.5 max-w-[220px]">
           <div class="font-black uppercase tracking-wider text-[9px] text-slate-400 border-b border-slate-800 pb-1 flex items-center justify-between">
             <span>Road Status Legend</span>
-            <i class="fas fa-map-pin text-indigo-400"></i>
+            <i class="fas fa-map-pin text-accent"></i>
           </div>
           <div class="flex items-center space-x-2">
             <span class="w-3.5 h-1 rounded-full bg-emerald-500"></span>
@@ -202,7 +202,7 @@
       <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
-            <i class="fas fa-search-location text-indigo-600 dark:text-indigo-400 mr-2 text-xs"></i>
+            <i class="fas fa-search-location text-accent dark:text-accent mr-2 text-xs"></i>
             <span>Search Map</span>
           </h3>
           <span class="text-[10px] text-slate-400 font-mono">Live GIS Search</span>
@@ -230,7 +230,7 @@
       <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
           <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider flex items-center">
-            <i class="fas fa-sliders text-indigo-600 dark:text-indigo-400 mr-2 text-xs"></i>
+            <i class="fas fa-sliders text-accent dark:text-accent mr-2 text-xs"></i>
             <span>GIS Filters</span>
           </h3>
           <span class="text-[10px] text-slate-400 font-mono">Real-time</span>
@@ -255,7 +255,7 @@
         <div class="space-y-1.5">
           <div class="flex items-center justify-between text-xs">
             <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Max Risk Threshold</label>
-            <span data-map-target="riskRangeDisplay" class="text-xs font-mono font-black text-indigo-600 dark:text-indigo-400">&le; 100/100</span>
+            <span data-map-target="riskRangeDisplay" class="text-xs font-mono font-black text-accent dark:text-accent">&le; 100/100</span>
           </div>
           <input type="range"
                  min="0"
@@ -277,22 +277,22 @@
 
           <div class="grid grid-cols-2 gap-2">
             <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="roads" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="roads" checked class="h-3.5 w-3.5 text-accent rounded">
               <span>Roads</span>
             </label>
 
             <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="locations" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="locations" checked class="h-3.5 w-3.5 text-accent rounded">
               <span>Settlements</span>
             </label>
 
             <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="warehouses" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="warehouses" checked class="h-3.5 w-3.5 text-accent rounded">
               <span>Relief Depots</span>
             </label>
 
             <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="emergencies" checked class="h-3.5 w-3.5 text-indigo-600 rounded">
+              <input type="checkbox" data-action="change->map#toggleLayer" data-layer="emergencies" checked class="h-3.5 w-3.5 text-accent rounded">
               <span>Incidents</span>
             </label>
           </div>
@@ -301,11 +301,11 @@
 
       <!-- 3. Selected Road / Node Intelligence Details Card (Active on click) -->
       <div data-map-target="detailsPanel"
-           class="hidden bg-white dark:bg-slate-900 rounded-3xl shadow-xl border-2 border-indigo-500 dark:border-indigo-600 p-5 space-y-3.5 transition-all animate-fadeIn">
+           class="hidden bg-white dark:bg-slate-900 rounded-3xl shadow-xl border-2 border-accent dark:border-accent p-5 space-y-3.5 transition-all animate-fadeIn">
         <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
           <div class="flex items-center space-x-2">
-            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
-            <span class="text-[10px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">AI Risk Intelligence Dossier</span>
+            <span class="w-2 h-2 rounded-full bg-accent animate-ping"></span>
+            <span class="text-[10px] font-black uppercase text-accent dark:text-accent tracking-wider">AI Risk Intelligence Dossier</span>
           </div>
           <button type="button"
                   data-action="click->map#closeDetails"
@@ -322,10 +322,46 @@
           <p data-map-target="detailSubtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p>
         </div>
 
-        <!-- Risk Level & Overall Meter -->
+        <!-- 🤖 ENMA ML ROAD DISRUPTION PREDICTION CARD -->
+        <div class="p-3.5 rounded-2xl bg-accent/10 dark:bg-accent/10 border-2 border-accent/80 dark:border-accent/80 space-y-2.5 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase tracking-wider text-accent dark:text-accent flex items-center">
+              <i class="fas fa-brain mr-1.5 text-accent"></i>
+              ENMA ML Prediction (24h Window)
+            </span>
+            <span data-map-target="detailMlRiskBadge" class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full border"></span>
+          </div>
+
+          <div class="flex items-baseline justify-between pt-0.5">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">Disruption Probability</span>
+              <span data-map-target="detailMlProbability" class="text-2xl font-black font-mono text-slate-900 dark:text-white"></span>
+            </div>
+            <div class="text-right">
+              <span data-map-target="detailMlRiskLevel" class="text-[11px] font-black text-accent dark:text-accent block"></span>
+              <span data-map-target="detailMlAlgorithm" class="text-[9px] font-mono text-slate-400"></span>
+            </div>
+          </div>
+
+          <!-- ML Probability Bar -->
+          <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 overflow-hidden">
+            <div data-map-target="detailMlBar" class="h-2 rounded-full transition-all duration-500"></div>
+          </div>
+
+          <!-- Top Contributing Factors -->
+          <div class="space-y-1 pt-1">
+            <span class="text-[9px] font-black uppercase text-accent dark:text-accent tracking-wider block">ML Key Contributing Factors:</span>
+            <div data-map-target="detailMlFactors" class="space-y-1"></div>
+          </div>
+
+          <!-- Narrative Reasoning -->
+          <p data-map-target="detailMlNarrative" class="text-[10px] text-slate-600 dark:text-slate-300 italic border-t border-accent/20/60 dark:border-accent/20 pt-1.5 leading-snug"></p>
+        </div>
+
+        <!-- ⚖️ RULE-BASED HYBRID RISK SCORE (Current Baseline) -->
         <div class="space-y-1.5 pt-1 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-700">
           <div class="flex items-center justify-between text-xs">
-            <span class="text-slate-600 dark:text-slate-300 font-bold text-[11px]">Composite Risk Score:</span>
+            <span class="text-slate-600 dark:text-slate-300 font-bold text-[11px]">Rule-Based Hybrid Risk:</span>
             <div class="flex items-center space-x-1.5">
               <span data-map-target="detailRiskScore" class="font-mono font-black text-sm text-slate-900 dark:text-white"></span>
               <span data-map-target="detailRiskLevel" class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded"></span>
@@ -348,7 +384,7 @@
                 <span data-map-target="detailWeatherRisk" class="font-mono"></span>
               </div>
               <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                <div data-map-target="detailWeatherBar" class="h-1.5 bg-blue-500 rounded-full"></div>
+                <div data-map-target="detailWeatherBar" class="h-1.5 bg-accent rounded-full"></div>
               </div>
             </div>
 
@@ -413,7 +449,7 @@
         <div class="pt-1">
           <a data-map-target="detailActionLink"
              href="#"
-             class="inline-flex items-center justify-center w-full py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition-all">
+             class="inline-flex items-center justify-center w-full py-2.5 px-3 bg-accent hover:opacity-90 text-white font-black text-xs rounded-xl shadow-md transition-all">
             <span>Analyze Tactical Corridors &rarr;</span>
           </a>
         </div>
@@ -426,7 +462,7 @@
             <i class="fas fa-satellite-dish text-red-600 mr-2 text-xs"></i>
             <span>Live Field Hazard Reports</span>
           </h3>
-          <%= link_to "View All (#{Incident.count})", incidents_path, class: "text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline" %>
+          <%= link_to "View All (#{Incident.count})", incidents_path, class: "text-[10px] font-bold text-accent dark:text-accent hover:underline" %>
         </div>
 
         <div class="space-y-2 max-h-56 overflow-y-auto">
@@ -472,7 +508,7 @@
                    data-road-id="<%= road.id %>">
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center space-x-1.5">
-                    <span class="font-black text-xs text-indigo-600 dark:text-indigo-400 font-mono"><%= road.road_number %></span>
+                    <span class="font-black text-xs text-accent dark:text-accent font-mono"><%= road.road_number %></span>
                     <span class="text-xs font-bold text-slate-900 dark:text-white truncate"><%= road.name %></span>
                   </div>
                   <span class="text-[10px] text-slate-500 dark:text-slate-400"><%= road.district %>, <%= road.state %></span>

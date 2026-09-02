@@ -50,7 +50,7 @@
   <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
       <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
-        <i class="fas fa-warehouse text-indigo-600 mr-2"></i>
+        <i class="fas fa-warehouse text-accent mr-2"></i>
         Warehouse Network Registry
       </h3>
       <span class="text-[11px] text-slate-400 font-mono"><%= @total_warehouses %> staging bases</span>
@@ -104,7 +104,7 @@
                 <span class="font-black font-mono <%= wh.readiness_color_class %>"><%= wh.readiness_score&.round(1) || '—' %>/100</span>
               </td>
               <td class="px-5 py-3.5 text-right">
-                <%= link_to warehouse_path(wh), class: "text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline" do %>
+                <%= link_to warehouse_path(wh), class: "text-xs font-bold text-accent dark:text-accent hover:underline" do %>
                   Details &rarr;
                 <% end %>
               </td>

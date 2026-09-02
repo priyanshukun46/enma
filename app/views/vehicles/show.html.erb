@@ -1,0 +1,119 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  <!-- Breadcrumb -->
+  <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-200 dark:border-slate-800">
+    <%= link_to vehicles_path, class: "text-accent dark:text-accent hover:underline font-bold flex items-center" do %>
+      <i class="fas fa-arrow-left mr-1.5 text-xs"></i>
+      <span>Fleet Registry</span>
+    <% end %>
+    <span>/</span>
+    <span class="text-slate-900 dark:text-white font-mono font-black"><%= @vehicle.registration_number %></span>
+  </div>
+
+  <!-- Vehicle Header Card -->
+  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div class="space-y-3 flex-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border <%= @vehicle.status_badge_class %>">
+            <%= @vehicle.status.humanize %>
+          </span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            <i class="fas fa-truck mr-1"></i> <%= @vehicle.vehicle_type %>
+          </span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-mono font-black tracking-tight text-slate-900 dark:text-white"><%= @vehicle.registration_number %></h1>
+
+        <div class="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
+          <span>Capacity: <strong><%= number_with_delimiter(@vehicle.capacity&.to_i || 5000) %> kg</strong></span>
+          <span>&bull;</span>
+          <span>Driver: <strong><%= @vehicle.driver_name || "Unassigned" %></strong> (<%= @vehicle.driver_phone || "No phone" %>)</span>
+        </div>
+      </div>
+
+      <!-- Telemetry Speed Gauge -->
+      <div class="flex-shrink-0 bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 text-center min-w-[200px]">
+        <span class="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">Current Velocity</span>
+        <div class="text-4xl font-black mt-1 text-accent dark:text-accent font-mono">
+          <%= @vehicle.current_speed || 0.0 %> <span class="text-sm font-bold text-slate-400">km/h</span>
+        </div>
+        <span class="text-xs font-bold block mt-1 text-slate-500">Heading: <%= @vehicle.current_heading || 0 %>°</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Integration Key Card for GPS Telemetry Transponders -->
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800 space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-black uppercase text-slate-800 dark:text-slate-200 flex items-center">
+        <i class="fas fa-key text-accent mr-2"></i> GPS Device API Authentication Token
+      </span>
+      <span class="text-[10px] text-slate-400 font-mono">For OBD-II / Mobile GPS Unit</span>
+    </div>
+    <div class="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-100 dark:border-slate-700 font-mono text-xs text-accent dark:text-accent select-all">
+      <code><%= @vehicle.api_auth_token %></code>
+    </div>
+  </div>
+
+  <!-- Active Shipment & Recent Location History -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Active Shipment Card -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-box-open text-accent mr-2"></i> Active Assigned Shipment
+      </h3>
+
+      <% if @active_shipment %>
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono font-bold text-slate-900 dark:text-white text-xs"><%= @active_shipment.tracking_number %></span>
+            <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase border <%= @active_shipment.status_badge_class %>">
+              <%= @active_shipment.status.humanize %>
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-300">
+            <%= @active_shipment.origin_name %> &rarr; <%= @active_shipment.destination_name %>
+          </p>
+          <div class="pt-2 flex items-center justify-between text-xs">
+            <span class="font-mono font-bold text-accent"><%= @active_shipment.progress_percentage&.round(0) || 0 %>% completed</span>
+            <%= link_to shipment_path(@active_shipment), class: "font-bold text-accent hover:underline" do %>
+              Track Shipment &rarr;
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <div class="p-6 text-center text-xs text-slate-400">
+          No active shipment assigned to this vehicle.
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Location History Table -->
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+      <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
+        <i class="fas fa-location-arrow text-accent mr-2"></i> Recent GPS Pings
+      </h3>
+
+      <div class="max-h-60 overflow-y-auto">
+        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800 text-left text-xs font-mono">
+          <thead class="text-[9px] font-bold uppercase text-slate-400">
+            <tr>
+              <th class="py-1">Time</th>
+              <th class="py-1">Coordinates</th>
+              <th class="py-1">Speed</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-[11px] text-slate-600 dark:text-slate-400">
+            <% @recent_locations.each do |loc| %>
+              <tr>
+                <td class="py-1.5 text-slate-900 dark:text-white font-bold"><%= loc.recorded_at.strftime("%H:%M:%S") %></td>
+                <td class="py-1.5"><%= loc.latitude.round(4) %>°, <%= loc.longitude.round(4) %>°</td>
+                <td class="py-1.5"><%= loc.speed&.round(1) || 0 %> km/h</td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

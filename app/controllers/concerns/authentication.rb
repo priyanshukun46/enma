@@ -2,51 +2,49 @@ module Authentication
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_current_user
-    helper_method :current_user, :authenticated?, :logged_in?
+    helper_method :authenticated?, :logged_in?, :current_user
   end
 
-  private
-
-  def set_current_user
-    Current.user = find_current_user
-  end
-
-  def find_current_user
-    return nil unless session[:user_id].present?
-    User.find_by(id: session[:user_id])
-  end
-
-  def current_user
-    Current.user ||= find_current_user
-  end
-
+  # Helper method check whether user is signed in
   def authenticated?
-    current_user.present?
+    user_signed_in?
   end
   alias_method :logged_in?, :authenticated?
 
+  # Sign in user via Devise warden
   def login(user)
-    reset_session
+    sign_in(:user, user)
     session[:user_id] = user.id
-    Current.user = user
   end
 
+  # Sign out user via Devise warden
   def logout
-    reset_session
-    Current.user = nil
+    session.delete(:user_id)
+    sign_out(:user)
   end
 
+  # Filter to protect authenticated pages
   def require_authentication
-    unless authenticated?
-      session[:return_to] = request.fullpath if request.get?
-      redirect_to login_path, alert: "Please sign in to access ENMA AI intelligence platform."
+    unless user_signed_in?
+      session[:user_return_to] = request.fullpath if request.get?
+      redirect_to new_user_session_path, alert: "Please sign in to access ENMA AI intelligence platform."
     end
   end
 
+  # Filter to restrict admin-only pages
   def require_admin
-    unless authenticated? && current_user.admin?
-      redirect_to root_path, alert: "Access denied. Administrator privileges required."
+    unless user_signed_in? && current_user.admin?
+      redirect_to dashboard_path, alert: "Access denied. Administrator privileges required."
     end
+  end
+
+  # Devise redirect after sign in
+  def after_sign_in_path_for(resource)
+    stored_location_for(resource) || dashboard_path
+  end
+
+  # Devise redirect after sign out
+  def after_sign_out_path_for(resource_or_scope)
+    root_path
   end
 end

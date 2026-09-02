@@ -3,7 +3,7 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b-2 border-gray-900 gap-4">
     <div>
       <div class="flex items-center space-x-2">
-        <span class="text-2xl font-black text-indigo-600">⚡ ENMA AI</span>
+        <span class="text-2xl font-black text-accent">⚡ ENMA AI</span>
         <span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-800 font-bold uppercase tracking-wider">Official Intelligence Briefing</span>
       </div>
       <h1 class="text-3xl font-black text-gray-900 mt-2">Executive Logistics &amp; Disaster Readiness Report</h1>
@@ -19,7 +19,7 @@
         <span>Back to Analytics</span>
       <% end %>
 
-      <button type="button" onclick="window.print()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center">
+      <button type="button" onclick="window.print()" class="px-5 py-2 bg-accent hover:opacity-90 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center">
         <i class="fas fa-print mr-2"></i>
         <span>Print Report</span>
       </button>
@@ -29,15 +29,15 @@
   <!-- 1. Executive Summary & Readiness Score -->
   <div class="space-y-4">
     <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
-      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      <span class="w-2.5 h-2.5 bg-accent rounded-full mr-2"></span>
       1. Executive Summary &amp; Regional Readiness Score
     </h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
       <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
         <span class="text-[10px] font-bold text-gray-500 uppercase block">Logistics Readiness</span>
-        <span class="text-3xl font-black text-indigo-600 mt-1 block"><%= @readiness_score %> <span class="text-xs text-gray-500 font-normal">/ 100</span></span>
-        <span class="text-xs font-black uppercase text-indigo-900 mt-1 block"><%= @readiness_category %></span>
+        <span class="text-3xl font-black text-accent mt-1 block"><%= @readiness_score %> <span class="text-xs text-gray-500 font-normal">/ 100</span></span>
+        <span class="text-xs font-black uppercase text-accent mt-1 block"><%= @readiness_category %></span>
       </div>
 
       <div class="p-4 rounded-xl bg-gray-50 border border-gray-200">
@@ -67,7 +67,7 @@
   <!-- 2. Readiness Breakdown Components -->
   <div class="space-y-4">
     <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
-      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      <span class="w-2.5 h-2.5 bg-accent rounded-full mr-2"></span>
       2. Logistics Readiness Formula Breakdown
     </h2>
 
@@ -85,27 +85,27 @@
           <td class="px-4 py-2.5 font-bold text-gray-900">Regional Average Accessibility</td>
           <td class="px-4 py-2.5">30%</td>
           <td class="px-4 py-2.5"><%= @readiness[:breakdown][:accessibility_percentage] %>%</td>
-          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:accessibility_percentage] * 0.30).round(1) %> pts</td>
+          <td class="px-4 py-2.5 font-black text-accent"><%= (@readiness[:breakdown][:accessibility_percentage] * 0.30).round(1) %> pts</td>
         </tr>
         <tr>
           <td class="px-4 py-2.5 font-bold text-gray-900">Strategic Warehouse Coverage</td>
           <td class="px-4 py-2.5">25%</td>
           <td class="px-4 py-2.5"><%= @readiness[:breakdown][:warehouse_coverage_percentage] %>%</td>
-          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:warehouse_coverage_percentage] * 0.25).round(1) %> pts</td>
+          <td class="px-4 py-2.5 font-black text-accent"><%= (@readiness[:breakdown][:warehouse_coverage_percentage] * 0.25).round(1) %> pts</td>
         </tr>
         <tr>
           <td class="px-4 py-2.5 font-bold text-gray-900">Emergency Response Containment</td>
           <td class="px-4 py-2.5">20%</td>
           <td class="px-4 py-2.5"><%= @readiness[:breakdown][:emergency_preparedness_percentage] %>%</td>
-          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:emergency_preparedness_percentage] * 0.20).round(1) %> pts</td>
+          <td class="px-4 py-2.5 font-black text-accent"><%= (@readiness[:breakdown][:emergency_preparedness_percentage] * 0.20).round(1) %> pts</td>
         </tr>
         <tr>
           <td class="px-4 py-2.5 font-bold text-gray-900">Terrain Risk Resilience (Inverse)</td>
           <td class="px-4 py-2.5">25%</td>
           <td class="px-4 py-2.5"><%= @readiness[:breakdown][:risk_resilience_percentage] %>%</td>
-          <td class="px-4 py-2.5 font-black text-indigo-700"><%= (@readiness[:breakdown][:risk_resilience_percentage] * 0.25).round(1) %> pts</td>
+          <td class="px-4 py-2.5 font-black text-accent"><%= (@readiness[:breakdown][:risk_resilience_percentage] * 0.25).round(1) %> pts</td>
         </tr>
-        <tr class="bg-indigo-50 font-black text-indigo-900">
+        <tr class="bg-accent/10 font-black text-accent">
           <td class="px-4 py-3" colspan="3">Total Aggregated Readiness Index</td>
           <td class="px-4 py-3 text-sm"><%= @readiness_score %> / 100</td>
         </tr>
@@ -167,7 +167,7 @@
   <!-- 4. Critical Intelligence Watchlist -->
   <div class="space-y-4">
     <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
-      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      <span class="w-2.5 h-2.5 bg-accent rounded-full mr-2"></span>
       4. Critical Watchlist Locations (Top Priority Interventions)
     </h2>
 
@@ -202,14 +202,14 @@
   <!-- 5. Key Strategic Directives -->
   <div class="space-y-4">
     <h2 class="text-lg font-black text-gray-900 uppercase tracking-wider border-b pb-1 flex items-center">
-      <span class="w-2.5 h-2.5 bg-indigo-600 rounded-full mr-2"></span>
+      <span class="w-2.5 h-2.5 bg-accent rounded-full mr-2"></span>
       5. ENMA AI Strategic Logistics Directives
     </h2>
 
     <div class="space-y-3">
       <% @insights.each do |ins| %>
         <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-xs">
-          <span class="font-black text-indigo-900 uppercase">[<%= ins[:badge] %>]</span>
+          <span class="font-black text-accent uppercase">[<%= ins[:badge] %>]</span>
           <strong class="text-gray-900 block mt-0.5"><%= ins[:title] %></strong>
           <p class="text-gray-600 mt-1 leading-relaxed"><%= ins[:detail] %></p>
         </div>

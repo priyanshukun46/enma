@@ -1,202 +1,130 @@
-# ⚡ ENMA AI — Smart Logistics, Accessibility Intelligence & Disaster Response Platform
+# ENMA AI ⚡
+### Smart Logistics, Terrain Intelligence & Disaster Dispatch for North East India
 
-> **"Intelligence That Reaches Where Roads Don't."**  
-> *Built for Smart India Hackathon 2026 — North Eastern Region Smart Logistics & Disaster Management Challenge.*
+[![Rails Tests](https://img.shields.io/badge/Rails%20Tests-213%20Passing-emerald?style=flat-square&logo=ruby)](test/)
+[![FastAPI ML](https://img.shields.io/badge/ML%20Service-FastAPI%20%7C%20XGBoost-orange?style=flat-square&logo=python)](enma-ml/)
+[![Design](https://img.shields.io/badge/Theme-Warm%20Parchment%20%26%20Espresso-amber?style=flat-square)](app/views/)
 
----
-
-## 📖 Executive Overview
-
-The **North Eastern Region (NER) of India** comprises 8 states characterized by rugged Himalayan terrain, high-altitude passes, extreme monsoon rainfall (>2,500 mm annually), and chronic landslides. During seasonal emergencies, critical transport corridors fail, isolating remote communities and cutting off food, water, and emergency medical convoys.
-
-**ENMA AI** is an AI-assisted smart logistics, accessibility intelligence, and disaster response platform. It autonomously monitors regional settlements, evaluates road hazard telemetry, routes emergency relief convoys along the safest terrain corridors, analyzes warehouse stockpiles, and triages vulnerable populations for rapid humanitarian intervention.
+> *"When a landslide takes out NH-13 or the Sela Pass freezes over, you don't just need a map — you need to know which village is cut off, which depot has insulin and blankets, and which corridor is still safe for a relief convoy."*
 
 ---
 
-## 🌟 System Architecture & Intelligence Engines
+## What is ENMA AI?
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                  ENMA AI ARCHITECTURE                                  │
-├────────────────────────┬───────────────────────────────┬───────────────────────────────┤
-│   1. SENSORY INGEST    │      2. AI DECISION CORE      │      3. TACTICAL ACTION       │
-├────────────────────────┼───────────────────────────────┼───────────────────────────────┤
-│ • GPS Field Incidents  │ • Hybrid Road Risk Engine     │ • Dynamic Corridor Detours    │
-│ • Photo Evidence       │ • Explainable AI Reasoner     │ • Safest Convoy Dispatch      │
-│ • Rainfall & Weather   │ • Settlement Accessibility    │ • Priority Community Triage   │
-│ • Road Degradation     │ • Route Intelligence (OSRM)   │ • Relief Warehouse Staging    │
-│ • Historical Hazards   │ • Logistics Readiness Index   │ • Government Briefings & Maps │
-└────────────────────────┴───────────────────────────────┴───────────────────────────────┘
-```
+Every monsoon, the 8 states of Northeast India face severe environmental isolation. Between cloudbursts in Meghalaya, flash floods in the Brahmaputra valley, and massive rockfalls along high-altitude passes in Arunachal Pradesh, vital road arteries vanish overnight.
+
+We built **ENMA AI** for the **Smart India Hackathon (SIH 2026)** to turn raw weather feeds, field hazard reports, and road condition telemetry into immediate, life-saving logistics decisions.
+
+Rather than giving emergency coordinators a generic map or a simple shortest-path distance, ENMA:
+1. **Predicts corridor disruptions** using an XGBoost ML model trained on precipitation, slope angles, soil saturation, and past slide frequency.
+2. **Calculates settlement isolation** across remote habitations (Tawang, Haflong, Aizawl, Mon, etc.) with an explainable 0–100 Accessibility Score.
+3. **Finds the safest route** (not just the fastest) using multi-criteria OSRM routing with custom vehicle profiles (heavy relief trucks, ambulances, 4x4 convoys).
+4. **Recommends the best warehouse staging depot** by weighing current stock (water, medical kits, shelters), road risk, and realistic travel ETA.
 
 ---
 
-### 1. 🧠 Hybrid Road Risk Intelligence Engine (`/map`, `/`)
-- **Continuous Multi-Factor Evaluation**: Evaluates road corridor disruption probability using a weighted multi-dimensional pipeline:
-  - **🌧 Weather Risk ($30\%$)**: Real-time rainfall surges, cloudburst warnings, and flood inundation.
-  - **🪨 Recent Field Incidents ($25\%$)**: Active landslides, bridge damage, and road collapses reported within $45\text{ km}$.
-  - **📜 Historical Vulnerability ($20\%$)**: Historical disaster frequency, terrain fragility, and seasonal closures.
-  - **🚧 Road Condition ($15\%$)**: Structural pavement status (`excellent`, `good`, `moderate`, `poor`, `critical`).
-  - **⛰ Geographic Vulnerability ($10\%$)**: High-altitude passes, gorge switchbacks, and steep-slope mass wasting zones.
-- **4-Tier Risk Classification**:
-  - `LOW RISK` ($0-25$): 🟢 Stable — Nominal highway logistics flow.
-  - `MODERATE RISK` ($26-50$): 🟡 Attention — Caution advised for heavy freight.
-  - `HIGH RISK` ($51-75$): 🟠 Warning — Active hazard alert, tactical detour recommended.
-  - `CRITICAL RISK` ($76-100$): 🔴 Emergency — Impassable / Blocked corridor.
-- **Explainable AI Reasoner (`Enma::RiskExplanationService`)**: Generates clear, human-readable primary risk driver cards and narrative reasoning explaining *why* a corridor is at risk.
-- **Historical Audit Trail (`RoadRiskAssessment`)**: Tracks snapshot time-series assessments for risk trend analysis.
-- **Future ML Provider Strategy**: Modular architecture (`Enma::MlPredictionProvider`) ready to integrate external Python/FastAPI ML disruption prediction models.
+## Key Features
+
+### 🛣️ Hybrid Road Risk & ML Disruption Prediction
+- **Trained Model**: An external Python/FastAPI microservice (`enma-ml`) running an XGBoost classifier that returns disruption probabilities in under 20ms.
+- **5-Factor Composite Risk Score (0–100)**: Combines real-time rainfall, active field incident reports within 45 km, historical slide frequency, pavement grade, and steepness into a single clear metric.
+- **Corridor Radar**: Color-coded risk telemetry across strategic lifelines like NH-13 (Trans-Arunachal), NH-27 (East-West corridor), and NH-10 (Sikkim lifeline).
+
+### 📍 Accessibility Intelligence (`/accessibility`)
+- Monitors settlements across Arunachal Pradesh, Assam, Sikkim, Nagaland, Manipur, Meghalaya, Mizoram, and Tripura.
+- Dynamic isolation tiers: *Highly Accessible* (80+), *Moderately Accessible* (60–79), *Difficult Access* (40–59), and *Critical Vulnerability* (<40).
+- Detailed drill-down reports showing primary bottlenecks (e.g. single bridge dependency, washed-out culverts, steep slope saturation).
+
+### 🚚 Double-Buffered Smart Route Optimizer (`/routes`)
+- Integrates with Open Source Routing Machine (OSRM) driving engines for turn-by-turn navigation over actual road networks.
+- 3 distinct routing strategies:
+  - **🛡️ Safest Route**: Actively avoids high-risk mountain passes and flash-flood zones.
+  - **⚡ Fastest Route**: Optimizes purely for minimal transit time when emergencies demand speed.
+  - **⚖️ Most Efficient**: Balanced compromise for heavy supply convoys.
+
+### 🏢 Warehouse Depot Network & Triage (`/warehouses`)
+- Real-time stockpile visibility across strategic hubs (Guwahati Central, Tezpur, Silchar, Itanagar, Shillong, Dimapur).
+- Tracks critical resources: medical kits, potable water, food rations, shelters, fuel, and rescue equipment.
+- Automatically calculates facility readiness and recommends the ideal dispatch depot when a regional emergency is declared.
+
+### 🔍 Spotlight ⌘K Search & Live Auto-Suggestions
+- Global instant search overlay (`⌘K` / `Ctrl+K`) that pops open without navigating away from your active dashboard.
+- Live debounced autocomplete matching settlements, highways, depots, and disaster incidents.
+- Dedicated `/search` page with clickable suggestion chips (*Tawang Outpost, NH-13 Corridor, Relief Warehouses, Landslide Detours*).
+
+### 📱 Field Hazard Reporting & Mobile QR Sharing
+- Mobile-friendly incident reporting with 1-tap hazard selectors (Landslide, Flood, Bridge Collapse, Road Blockage).
+- GPS coordinate capture with browser geolocation fallback.
+- Camera-ready photo attachments with live client-side previews.
+- Instant mobile QR code modal for scanning and handing off field operations to smartphones or tablets.
 
 ---
 
-### 2. 📱 Mobile-First Field Incident Reporting (`/incidents`, `/incidents/new`)
-- **Designed for Field Officers**: Enables rapid reporting of road hazards, landslides, and floods in **under 60 seconds** from smartphones or laptops.
-- **1-Tap Visual Hazard Selector**: Touch-friendly cards (🪨 Landslide, 🌊 Flood, 🚧 Road Damage, 🌉 Bridge Damage, 🚗 Traffic Blockage, 💥 Accident, 🌧 Weather Disruption).
-- **3-State GPS Location Capture**:
-  - **Loading**: Radar pulse acquisition via browser Geolocation API (`navigator.geolocation`).
-  - **Success**: Auto-tagged latitude, longitude, and $\pm\text{accuracy}$ badge with "Refresh GPS".
-  - **Failed / Fallback**: Graceful manual coordinate and landmark input accordion.
-  - *Hotwire Native Bridge Ready* for native iOS CoreLocation / Android LocationServices.
-- **Photographic Evidence Gallery**:
-  - Direct mobile camera lens trigger (`capture="environment"`).
-  - Multi-file gallery picker with Active Storage validation (JPG, PNG, WebP $\le 10\text{ MB}$, max 5 photos).
-  - Instant client-side thumbnail previews with deletion via `DataTransfer`.
-- **Live Verification Summary**: Dynamic card summarizing Hazard Type, Severity, Coordinates, and Photos before submission.
-- **Automatic Recalculation Hook**: Submitting an incident immediately recalculates risk scores of all road corridors within proximity.
-- **Evidence Dossier & Lightbox (`/incidents/:id`)**: High-res incident view with photo modal zoom.
+## Design System
+
+ENMA's interface is inspired by the clean, readable editorial aesthetic of **ChaiCode** (`dsa.chaicode.com`):
+- **Light Mode**: Warm cream parchment canvas (`#FAF6EE`), soft surface cards (`#FFFCF7`), deep espresso ink text (`#18120E`), and terracotta accents (`#E25438`).
+- **Dark Mode**: Roasted dark espresso canvas (`#14100C`), dark surface tiles (`#1B1611`), warm ivory typography (`#ECE5D6`), and glowing coral highlights (`#EC5E42`).
+- **No eye-straining blues or generic templates**: Designed for long operational hours in field control rooms.
 
 ---
 
-### 3. 🗺 Interactive GIS Accessibility & Corridor Intelligence Map (`/map`)
-- **Geospatial Polylines**: Visualizes major North Eastern national highways (NH-27, NH-13, NH-229 Sela Pass, NH-10 Teesta, NH-06, NH-02, etc.) dynamically color-coded by calculated risk (Green, Yellow, Orange, Red dashed).
-- **AI Risk Dossier Panel**: Inspects any selected road corridor showing composite risk meters, 5-factor percentage bars, and explainable AI primary factors.
-- **Live Field Incident Pins**: Interactive hazard markers with photo previews, severity badges, and direct dossier links.
-- **Multi-Layer Controls**: Toggle settlements, relief depots, road corridors, and field incidents with State, Status, and Risk sliders.
+## Tech Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| **Backend** | Ruby on Rails 8.1.3 (Ruby 3.3+), Devise, OmniAuth (Google & GitHub) |
+| **Database** | PostgreSQL 14+ |
+| **Frontend** | Hotwire (Turbo 8 + Stimulus), Tailwind CSS, Custom ChaiCode theme tokens |
+| **Machine Learning** | Python 3.12+, FastAPI, XGBoost, Scikit-learn, Uvicorn |
+| **Mapping & GIS** | Leaflet.js, OpenStreetMap, OSRM (Open Source Routing Machine) |
+| **File Storage** | Active Storage (local disk in development, S3-compatible in production) |
+| **Testing** | Rails Minitest (213 tests, 100% passing), Pytest (7 tests, 100% passing) |
 
 ---
 
-### 4. 📍 Accessibility Intelligence Engine (`/accessibility`)
-- Calculates a multi-factor **Accessibility Score ($0-100$)** for every settlement across all 8 NER states.
-- **6 Explainable Deduction Factors**: Road Surface Quality, Monsoon Rainfall Intensity, Slope Landslide Hazard, Hospital Reachability, Warehouse Proximity, and Mountain Isolation.
-- 4-Tier Categorization: *Highly Accessible* ($80-100$), *Moderately Accessible* ($60-79$), *Difficult Access* ($40-59$), and *Critical Vulnerability* ($0-39$).
-
----
-
-### 5. 🛣 Smart Multi-Route Navigation & Tactical Detours (`/routes`)
-- **OSRM Road Routing Integration**: Real navigable road geometries, distances, durations, and turn-by-turn maneuvers via OpenStreetMap.
-- **6-Dimension Multi-Criteria Scoring**: Safety Score, Travel Time Score, Accessibility Score, Distance Score, Environmental Score, and Overall Intelligence Score.
-- **Vehicle Profile Adaptation**: Custom weightings for Ambulances, Disaster Response Units, Freight Trucks, Relief Supply Convoys, and Personal Vehicles.
-- **3-Strategy Classification**: `⚡ Fastest Route`, `🛡 Safest Route`, and `⚖ Most Efficient Route`.
-- **Turn-by-Turn HUD Navigation Mode**: Interactive navigation mode with maneuver icons, next turn distance, ETA, and live GPS tracking.
-
----
-
-### 6. 🚨 Disaster Response Command Center (`/emergencies`)
-- **Spatial Radius Buffering**: Computes disaster impact zones using the Haversine formula to detect isolated communities.
-- **Emergency Priority Score ($0-100$)**: Prioritizes isolated villages combining baseline accessibility deficit ($50\%$), population exposure ($30\%$), and epicenter proximity ($20\%$).
-- **Optimal Warehouse Selection**: Multi-criteria ranking (Stock Capacity $35\%$, Distance $35\%$, Route Reliability $30\%$) with transparent justification.
-- **Autonomous Tactical Directives**: Generates a 6-step multi-agency response timeline for NDRF, SDRF, and district collectors.
-
----
-
-### 7. 🏬 Warehouse & Resource Intelligence (`/warehouses`)
-- **Strategic Staging Bases**: Detailed readiness analysis for major relief hubs across Guwahati, Itanagar, Shillong, Imphal, Agartala, and Gangtok.
-- **Inventory Tracking**: Stock levels for Medical Kits, Food Packages, Water Supply, Emergency Shelters, Fuel Reserves, and Rescue Equipment.
-- **Dynamic Operational Status**: Real-time capacity utilization tracking (`OPERATIONAL`, `LIMITED`, `OVERLOADED`).
-
----
-
-### 8. 📊 Intelligence Analytics Center (`/analytics`)
-- **Regional Logistics Readiness Index ($0-100$)**: 4-pillar evaluation across Accessibility, Warehouse Coverage, Response Readiness, and Hazard Mitigation.
-- **Rule-Based AI Insights**: Actionable *Critical*, *Positive*, *Alert*, and *Directive* recommendations.
-- **Printable Briefings (`/analytics/report`)**: Clean, formatted reports for government disaster briefings.
-
----
-
-## 🏛 Dedicated SIH 2026 Presentation Tools
-
-| Route | Page | Purpose |
-| :--- | :--- | :--- |
-| **`/landing`** | **Public Showcase** | High-impact hero page presenting The Challenge, Solution, 5-Stage Pipeline, QR code mobile access, and live telemetry counters. |
-| **`/demo`** | **7-Step Guided Demo** | Interactive evaluation scenario simulating the Tawang Sela Pass Mudslide with step-by-step decision controls. |
-| **`/overview`** | **2-Minute Judge Overview** | Executive briefing summarizing Problem, Solution, AI Engines, and Real-World Impact. |
-| **`/architecture`** | **System Architecture** | Visual 3-tier blueprint from sensor ingestion to tactical action. |
-| **`/search`** | **Global Search** | Instant multi-table fuzzy search querying settlements, warehouses, and disaster records. |
-
----
-
-## 🔐 Authentication & Role-Based Access Control
-
-- **Built with Rails conventions**: `has_secure_password`, thread-safe `Current.user`, and session management.
-- **Single Sign-On (SSO)**: Google OAuth2 and GitHub OAuth support.
-- **Roles**:
-  - `admin` — Full platform access + User Administration console (`/admin/users`) with role management safeguards.
-  - `operator` — Access to Dashboard, Maps, Routes, Field Incidents, Emergencies, and Analytics.
-- **Account Management**: User Profile (`/profile`), Account Security & Password Settings (`/settings`), and signed token Password Reset (`/passwords/new`).
-
-### Default Demo Credentials:
-- **Administrator**: `admin@enma.ai` / `password123`
-- **Field Operator**: `operator@enma.ai` / `password123`
-- *(Or use the 1-Click Fast Login buttons on the `/login` page)*
-
----
-
-## 💻 Tech Stack
-
-- **Backend**: Ruby on Rails 8.1.3, Ruby 3.3+
-- **Database**: PostgreSQL (with PostGIS extensions)
-- **Frontend / Styling**: Tailwind CSS (Dark pitch-black canvas `#000000`, charcoal `#0d0d0f`, Ubuntu orange/indigo accents), Hotwire (Turbo 8 & Stimulus)
-- **Mapping & GIS**: Leaflet.js, OpenStreetMap (OSM)
-- **Road Routing**: Open Source Routing Machine (OSRM) driving API
-- **File Storage**: Active Storage (Disk in dev, cloud S3/GCS in prod)
-- **QR Codes**: `rqrcode` SVG generation for mobile transitions
-- **Authentication**: `bcrypt`, `omniauth`, `omniauth-google-oauth2`, `omniauth-github`
-- **Testing**: Rails Minitest (**173 tests, 808 assertions, 100% passing**)
-
----
-
-## 🚀 Quick Start & Installation
+## Getting Started
 
 ### 1. Prerequisites
-- Ruby `>= 3.2.0`
-- PostgreSQL `>= 14`
-- Node.js / Yarn (optional; Propshaft + Importmap asset pipeline)
+- **Ruby** `>= 3.2.0`
+- **PostgreSQL** `>= 14`
+- **Python** `>= 3.11` (for the ML service)
 
-### 2. Clone and Setup
+### 2. Clone the Repository
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/enma.git
+git clone https://github.com/priyanshukun46/enma.git
 cd enma
+```
 
-# Install Ruby gems
+### 3. Setup the Rails Application
+```bash
+# Install Ruby dependencies
 bundle install
 
-# Setup database and run migrations
+# Setup database, run migrations, and seed mock Northeast India data
 bin/rails db:create
 bin/rails db:migrate
-
-# Seed North East India geospatial data, warehouses, field incidents, and run intelligence engine
 bin/rails db:seed
 ```
 
-### 3. Environment Variables (Optional)
-Copy `.env.example` to `.env`:
+### 4. Setup & Start the Python ML Service
+In a separate terminal window:
 ```bash
-cp .env.example .env
-```
-Key variables:
-```bash
-# Google & GitHub OAuth (Optional for local development)
-GOOGLE_CLIENT_ID=your_client_id
-GOOGLE_CLIENT_SECRET=your_client_secret
-GITHUB_CLIENT_ID=your_client_id
-GITHUB_CLIENT_SECRET=your_client_secret
+cd enma-ml
 
-# Custom OSRM Routing Endpoint (Optional, defaults to public demo endpoint)
-OSRM_API_URL=https://router.project-osrm.org
-```
+# Create virtual environment and install dependencies
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 
-### 4. Start the Application
+# Train model (if needed) and run FastAPI
+python training/train.py
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+The ML service will start at `http://127.0.0.1:8000`. You can test its interactive API docs at `http://127.0.0.1:8000/docs`.
+
+### 5. Start the Rails Server
+Back in the project root:
 ```bash
 bin/rails server
 ```
@@ -207,26 +135,69 @@ http://localhost:3000
 
 ---
 
-## 🧪 Running the Test Suite
+## Demo Credentials & Fast Login
 
-Execute the full automated test suite:
+For judging and testing, the seed script provisions pre-configured accounts:
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Administrator** | `admin@enma.ai` | `password123` |
+| **Field Operator** | `operator@enma.ai` | `password123` |
+
+> 💡 **Tip**: The `/login` page includes 1-click demo login buttons for both roles, as well as adaptive Google/GitHub OAuth sign-in.
+
+---
+
+## Presentation & Judge Shortcuts
+
+If you're evaluating this project for Smart India Hackathon:
+- **`/landing`** — High-level platform intro, challenge statement, and feature showcase.
+- **`/demo`** — 7-step guided interactive walkthrough simulating the *Tawang Sela Pass Monsoon Landslide*.
+- **`/overview`** — 2-minute executive briefing summarizing the architecture, engines, and field impact.
+- **`/map`** — Live interactive GIS radar map with route safety vectors and hazard overlays.
+- **`/routes`** — Test the double-buffered route optimization algorithm between any two Northeast hubs.
+
+---
+
+## Running the Tests
+
+We take reliability seriously in disaster tech. Both the Rails monolith and Python ML services maintain full test coverage:
+
 ```bash
+# 1. Run all 213 Rails model, controller, and integration tests
 bin/rails test
-```
 
-**Test Results**:
-```
-173 runs, 808 assertions, 0 failures, 0 errors, 0 skips (100% passing)
+# 2. Run Python ML microservice tests
+cd enma-ml && .venv/bin/pytest tests
 ```
 
 ---
 
-## 👥 Team & Acknowledgments
+## Project Structure
 
-- **Platform**: ENMA AI (AI-Powered Logistics & Accessibility Intelligence Platform)
-- **Event**: Smart India Hackathon 2026
-- **Focus Region**: North Eastern Region of India (Assam, Arunachal Pradesh, Meghalaya, Manipur, Mizoram, Nagaland, Tripura, Sikkim)
-- **Mission**: Ensuring no remote community is left behind during environmental crises through explainable AI logistics intelligence.
+```
+enma/
+├── app/
+│   ├── controllers/         # Rails controllers (Dashboard, Routes, Search, etc.)
+│   ├── helpers/             # View helpers (QR codes, badges, formatting)
+│   ├── javascript/
+│   │   └── controllers/     # Stimulus controllers (search_modal, flash, map, theme)
+│   ├── models/              # ActiveRecord models (Road, Location, Warehouse, Emergency)
+│   ├── services/            # Pure Ruby domain logic (RouteOptimizer, RiskExplanation)
+│   └── views/               # ERB templates styled with ChaiCode tokens
+├── config/                  # Rails routes, initializers, and Devise auth config
+├── db/                      # Schema and seed scripts with Northeast India GIS data
+├── enma-ml/                 # Standalone Python FastAPI ML disruption service
+│   ├── app/                 # FastAPI routes and prediction schemas
+│   ├── models/              # Serialized XGBoost model artifacts (.joblib)
+│   ├── tests/               # Pytest suite
+│   └── training/            # Synthetic training pipeline based on real weather vectors
+└── test/                    # Full Minitest suite (213 tests, 0 failures)
+```
 
 ---
-*Developed with pride for Smart India Hackathon 2026.*
+
+## License
+
+Built with pride by the team for the **Smart India Hackathon 2026**.  
+Open-source under the MIT License.

@@ -1,0 +1,46 @@
+# ENMA AI Risk-Aware Route Optimization Profiles
+# Each profile defines normalized weights (sum to 1.0) for multi-criteria logistics routing.
+
+fastest:
+  label: "Fastest Transit Priority"
+  description: "Optimizes for minimum travel duration and shortest path with baseline risk screening."
+  weights:
+    travel_time: 0.45
+    distance: 0.20
+    route_risk: 0.15
+    ml_disruption: 0.10
+    incident_penalty: 0.10
+  risk_tolerance: "moderate"
+
+safest:
+  label: "Maximum Safety Priority"
+  description: "Prioritizes hazard and landslide avoidance, low ML disruption risk, and active disaster bypasses."
+  weights:
+    travel_time: 0.10
+    distance: 0.05
+    route_risk: 0.40
+    ml_disruption: 0.30
+    incident_penalty: 0.15
+  risk_tolerance: "strict"
+
+balanced:
+  label: "Balanced Efficiency Priority"
+  description: "Balanced multi-criteria trade-off between fuel efficiency, delivery time, and corridor stability."
+  weights:
+    travel_time: 0.25
+    distance: 0.10
+    route_risk: 0.30
+    ml_disruption: 0.25
+    incident_penalty: 0.10
+  risk_tolerance: "balanced"
+
+emergency:
+  label: "Emergency Disaster Relief"
+  description: "Mission-critical medical and relief supply routing ensuring high corridor reliability and zero roadblock entrapment."
+  weights:
+    travel_time: 0.20
+    distance: 0.05
+    route_risk: 0.35
+    ml_disruption: 0.25
+    incident_penalty: 0.15
+  risk_tolerance: "zero_compromise"

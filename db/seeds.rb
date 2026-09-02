@@ -864,7 +864,82 @@ Road.find_each do |road|
 end
 
 puts "Configured #{RoadRiskAssessment.count} road risk intelligence assessments."
-puts "Seeding complete for ENMA AI Authentication, GIS, Incidents, and Hybrid Risk Intelligence Engine."
+
+# =============================================================================
+# --- Fleet Vehicles & Active Supply Chain Shipments ---
+# =============================================================================
+puts "\nSeeding Fleet Vehicles and Active Logistics Deliveries..."
+vehicles_seed = [
+  { registration_number: "AS-01-EE-4589", vehicle_type: "Truck", status: "in_transit", capacity: 8000.0, current_latitude: 25.8800, current_longitude: 91.8200, current_speed: 44.0, current_heading: 140.0, driver_name: "Rahul Boro", driver_phone: "+91 98640 11223" },
+  { registration_number: "ML-05-AM-9012", vehicle_type: "Ambulance", status: "in_transit", capacity: 1500.0, current_latitude: 25.6800, current_longitude: 91.8700, current_speed: 58.0, current_heading: 160.0, driver_name: "Tenzing Syiem", driver_phone: "+91 94361 44556" },
+  { registration_number: "AS-03-TR-7821", vehicle_type: "Supply Vehicle", status: "available", capacity: 6000.0, current_latitude: 26.1445, current_longitude: 91.7362, current_speed: 0.0, current_heading: 0.0, driver_name: "Anupam Das", driver_phone: "+91 98540 88990" },
+  { registration_number: "AR-01-ER-3411", vehicle_type: "Emergency Vehicle", status: "delayed", capacity: 4500.0, current_latitude: 27.2000, current_longitude: 93.6000, current_speed: 22.0, current_heading: 75.0, driver_name: "Kipa Taba", driver_phone: "+91 94022 77112" }
+]
+
+vehicles_seed.each do |v_attrs|
+  v = Vehicle.find_or_initialize_by(registration_number: v_attrs[:registration_number])
+  v.assign_attributes(v_attrs)
+  v.save!
+  puts "  🚚 Vehicle #{v.registration_number} (#{v.vehicle_type}): Status #{v.status.upcase}"
+end
+
+# Seed active shipments
+guwahati = Location.find_by(name: "Guwahati") || Location.first
+shillong = Location.find_by(name: "Shillong") || Location.second
+itanagar = Location.find_by(name: "Itanagar") || Location.third
+
+v1 = Vehicle.find_by(registration_number: "AS-01-EE-4589")
+if v1 && guwahati && shillong
+  sh1 = Shipment.find_or_initialize_by(tracking_number: "ENMA-TRK-2026-MED01")
+  sh1.assign_attributes(
+    vehicle: v1,
+    cargo_type: "medicine",
+    priority: "critical",
+    origin: guwahati,
+    origin_name: guwahati.name,
+    origin_latitude: guwahati.latitude,
+    origin_longitude: guwahati.longitude,
+    destination: shillong,
+    destination_name: shillong.name,
+    destination_latitude: shillong.latitude,
+    destination_longitude: shillong.longitude,
+    status: "in_transit",
+    planned_route_geometry_json: [
+      [26.1445, 91.7362], [26.0500, 91.7600], [25.9600, 91.7900],
+      [25.8800, 91.8200], [25.7900, 91.8500], [25.7000, 91.8700],
+      [25.6300, 91.8850], [25.5788, 91.8933]
+    ],
+    progress_percentage: 62.0,
+    distance_traveled_km: 62.0,
+    total_distance_km: 100.0,
+    provider_planned_eta: Time.current + 45.minutes,
+    current_estimated_eta: Time.current + 50.minutes,
+    enma_adjusted_eta: Time.current + 55.minutes,
+    delay_minutes: 10,
+    current_corridor_risk: 28.0,
+    ml_disruption_probability: 0.18
+  )
+  sh1.save!
+
+  # Seed location history
+  VehicleLocation.find_or_create_by!(vehicle: v1, recorded_at: 10.minutes.ago) do |l|
+    l.shipment = sh1
+    l.latitude = 25.9600
+    l.longitude = 91.7900
+    l.speed = 46.0
+    l.source = "simulation"
+  end
+  VehicleLocation.find_or_create_by!(vehicle: v1, recorded_at: 2.minutes.ago) do |l|
+    l.shipment = sh1
+    l.latitude = 25.8800
+    l.longitude = 91.8200
+    l.speed = 44.0
+    l.source = "simulation"
+  end
+  puts "  📦 Shipment #{sh1.tracking_number} (Medicines): #{sh1.origin_name} -> #{sh1.destination_name} (62% completed)"
+end
+
+puts "Seeding complete for ENMA AI Logistics Telemetry & GPS Fleet Tracking."
 
 
 
