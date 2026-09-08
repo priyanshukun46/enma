@@ -26,7 +26,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
   end
 
   test "calculates weighted risk score using standard ENMA formula" do
-    service = Enma::RoadRiskIntelligenceService.new(@road)
+    service = ResQWay::RoadRiskIntelligenceService.new(@road)
     result = service.calculate
 
     assert_operator result[:risk_score], :>=, 0.0
@@ -47,7 +47,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
   end
 
   test "classifies risk correctly across all 4 tiers" do
-    service = Enma::RoadRiskIntelligenceService.new(@road)
+    service = ResQWay::RoadRiskIntelligenceService.new(@road)
 
     assert_equal "low", service.classify_risk(15.0)
     assert_equal "low", service.classify_risk(25.0)
@@ -61,7 +61,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
 
   test "critical field incident within proximity significantly elevates road risk" do
     # Initial score
-    service = Enma::RoadRiskIntelligenceService.new(@road)
+    service = ResQWay::RoadRiskIntelligenceService.new(@road)
     initial_res = service.calculate
     assert_equal 0.0, initial_res[:factors][:incidents]
 
@@ -77,7 +77,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
       reported_at: 10.minutes.ago
     )
 
-    recalc_service = Enma::RoadRiskIntelligenceService.new(@road)
+    recalc_service = ResQWay::RoadRiskIntelligenceService.new(@road)
     recalc_res = recalc_service.calculate
 
     assert_operator recalc_res[:factors][:incidents], :>=, 90.0
@@ -97,7 +97,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
       geometry_coordinates: []
     )
 
-    zero_service = Enma::RoadRiskIntelligenceService.new(@road)
+    zero_service = ResQWay::RoadRiskIntelligenceService.new(@road)
     res_zero = zero_service.calculate
     assert_operator res_zero[:risk_score], :>=, 0.0
     assert_operator res_zero[:risk_score], :<=, 30.0
@@ -112,7 +112,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
       road_condition: "critical"
     )
 
-    max_service = Enma::RoadRiskIntelligenceService.new(@road)
+    max_service = ResQWay::RoadRiskIntelligenceService.new(@road)
     res_max = max_service.calculate
     assert_equal 100.0, res_max[:risk_score]
     assert_equal "critical", res_max[:risk_level]

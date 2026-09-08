@@ -46,8 +46,8 @@ class ShipmentsController < ApplicationController
       @shipment.destination_latitude = dest.latitude
       @shipment.destination_longitude = dest.longitude
 
-      # Compute planned route geometry using Enma::RouteRecommendationService
-      rec_res = Enma::RouteRecommendationService.new(
+      # Compute planned route geometry using ResQWay::RouteRecommendationService
+      rec_res = ResQWay::RouteRecommendationService.new(
         origin: orig,
         destination: dest,
         priority_mode: (@shipment.priority == "emergency" ? "emergency" : "balanced"),
@@ -76,7 +76,7 @@ class ShipmentsController < ApplicationController
 
   def simulate
     scenario = params[:scenario].presence || "normal_movement"
-    service = Enma::GpsSimulationService.new(shipment: @shipment, scenario: scenario)
+    service = ResQWay::GpsSimulationService.new(shipment: @shipment, scenario: scenario)
     res = service.simulate_next_step
 
     respond_to do |format|

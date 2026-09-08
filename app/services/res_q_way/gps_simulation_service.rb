@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   class GpsSimulationService
     attr_reader :shipment, :step_index, :scenario
 

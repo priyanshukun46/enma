@@ -2,7 +2,7 @@ require "net/http"
 require "json"
 require "uri"
 
-module Enma
+module ResQWay
   class MlPredictionService
     DEFAULT_SERVICE_URL = "http://127.0.0.1:8000"
     DEFAULT_TIMEOUT_SECONDS = 2.0

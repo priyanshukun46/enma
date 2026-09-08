@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-module Enma
+module ResQWay
   class PredictiveCascadingImpactServiceTest < ActiveSupport::TestCase
     def setup
       LogisticsAlert.delete_all
@@ -144,7 +144,7 @@ module Enma
     # SCENARIO 1: Empty Network Handling
     # =========================================================================
     test "scenario 1: empty network returns safe structured response without errors" do
-      empty_service = Enma::PredictiveCascadingImpactService.new(
+      empty_service = ResQWay::PredictiveCascadingImpactService.new(
         roads: [],
         locations: [],
         warehouses: []
@@ -167,7 +167,7 @@ module Enma
     # =========================================================================
     test "scenario 2: nominal conditions produce low failure probability and limited cascade risk" do
       with_mock_weather({ precipitation_mm: 0.0, rainfall: "none", condition: "Clear", alerts: [] }) do
-        service = Enma::PredictiveCascadingImpactService.new
+        service = ResQWay::PredictiveCascadingImpactService.new
         res = service.analyze(forecast_hours: 12)
 
         assert res[:overall_cascade_risk] < 40.0
@@ -183,7 +183,7 @@ module Enma
     test "scenario 3: elevated road risk and ML probability rank road at top of threat list" do
       @road_nh27.update!(risk_score: 85.0, ml_disruption_probability: 0.90)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       top_threat = res[:threatened_roads].first
@@ -208,7 +208,7 @@ module Enma
         ai_confidence_score: 40.0 # LOW confidence (< 55) -> 0.5 multiplier
       )
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       cand = service.forecast_threatened_roads({}).find { |r| r[:road_id] == @road_nh27.id }
 
       # Critical base (95) * 0.5 = 47.5
@@ -232,7 +232,7 @@ module Enma
         ai_confidence_score: 95.0 # HIGH confidence (>= 90) -> 1.0 multiplier
       )
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       cand = service.forecast_threatened_roads({}).find { |r| r[:road_id] == @road_nh27.id }
 
       # Critical base (95) * 1.0 = 95.0
@@ -251,7 +251,7 @@ module Enma
       }
 
       with_mock_weather(storm) do
-        service = Enma::PredictiveCascadingImpactService.new
+        service = ResQWay::PredictiveCascadingImpactService.new
         res = service.analyze(forecast_hours: 12)
 
         cand = res[:threatened_roads].find { |r| r[:road_id] == @road_nh27.id }
@@ -264,7 +264,7 @@ module Enma
     # =========================================================================
     test "scenario 7: missing weather gracefully falls back to neutral 25.0 score" do
       with_mock_weather(->(*_args) { raise StandardError, "Weather service timeout" }) do
-        service = Enma::PredictiveCascadingImpactService.new
+        service = ResQWay::PredictiveCascadingImpactService.new
         res = service.analyze(forecast_hours: 12)
 
         cand = res[:threatened_roads].first
@@ -279,7 +279,7 @@ module Enma
     test "scenario 8: missing ML disruption probability falls back to road risk score" do
       @road_nh27.update!(ml_disruption_probability: nil, risk_score: 55.0)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       cand = service.forecast_threatened_roads({}).find { |r| r[:road_id] == @road_nh27.id }
 
       assert_equal 55.0, cand[:contributing_factors][:ml_probability]
@@ -292,7 +292,7 @@ module Enma
     test "scenario 9: single-road scenario simulates impact and identifies isolated settlements" do
       @road_nh27.update!(risk_score: 80.0, ml_disruption_probability: 0.85)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       single_scen = res[:scenarios].find { |s| s[:scenario_type] == "single_road" }
@@ -309,7 +309,7 @@ module Enma
       @road_nh27.update!(risk_score: 75.0, ml_disruption_probability: 0.70)
       @road_nh715.update!(risk_score: 70.0, ml_disruption_probability: 0.65)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       pair_scen = res[:scenarios].find { |s| s[:scenario_type] == "pair_road" }
@@ -326,7 +326,7 @@ module Enma
       # Make all roads high risk to test bounding
       Road.update_all(risk_score: 80.0, ml_disruption_probability: 0.80)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12, candidate_limit: 10)
 
       assert res[:metadata][:simulation_calls] <= 6, "Simulation calls exceeded budget: #{res[:metadata][:simulation_calls]}"
@@ -339,7 +339,7 @@ module Enma
     test "scenario 12: population isolation score scales with isolated settlement census" do
       @road_nh27.update!(risk_score: 90.0, ml_disruption_probability: 0.95)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       top_scen = res[:scenarios].first
@@ -353,7 +353,7 @@ module Enma
     test "scenario 13: warehouse disconnection impact reflects depot accessibility loss" do
       @road_nh27.update!(risk_score: 85.0, ml_disruption_probability: 0.85)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       scen = res[:scenarios].first
@@ -366,7 +366,7 @@ module Enma
     test "scenario 14: critical infrastructure impact reflects bridge and depot disruption" do
       @road_nh27.update!(risk_score: 85.0, ml_disruption_probability: 0.85)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       scen = res[:scenarios].first
@@ -379,7 +379,7 @@ module Enma
     test "scenario 15: recommendations contain required structured action fields" do
       @road_nh27.update!(risk_score: 85.0, ml_disruption_probability: 0.85)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       assert res[:recommendations].any?
@@ -398,7 +398,7 @@ module Enma
     test "scenario 16: scenarios generate step-by-step causal chain narrative" do
       @road_nh27.update!(risk_score: 85.0, ml_disruption_probability: 0.85)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       scen = res[:scenarios].first
@@ -411,7 +411,7 @@ module Enma
     # SCENARIO 17: Impact Classification Levels
     # =========================================================================
     test "scenario 17: cascade impact classifies into correct severity tiers" do
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
 
       assert_equal "CATASTROPHIC", service.classify_cascade_level(88.0)[:level]
       assert_equal "CRITICAL", service.classify_cascade_level(75.0)[:level]
@@ -426,13 +426,13 @@ module Enma
     test "scenario 18: alert creation generates deduplicated records over 24h window" do
       @road_nh27.update!(risk_score: 95.0, ml_disruption_probability: 0.95)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       # Run 1 with create_alerts: true
       res1 = service.analyze(forecast_hours: 12, create_alerts: true)
       first_alert_count = LogisticsAlert.count
 
       # Run 2 with create_alerts: true immediately after
-      service2 = Enma::PredictiveCascadingImpactService.new
+      service2 = ResQWay::PredictiveCascadingImpactService.new
       res2 = service2.analyze(forecast_hours: 12, create_alerts: true)
       second_alert_count = LogisticsAlert.count
 
@@ -447,7 +447,7 @@ module Enma
       # Road with high theoretical risk but missing real-time evidence
       @road_nh27.update!(risk_score: 80.0, ml_disruption_probability: 0.80)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       cand = service.forecast_threatened_roads({}).find { |r| r[:road_id] == @road_nh27.id }
 
       assert cand[:failure_probability] >= 45.0
@@ -459,7 +459,7 @@ module Enma
     # SCENARIO 20: Simulation Budget Enforcement
     # =========================================================================
     test "scenario 20: simulation budget is strictly enforced at 6 calls" do
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       # Simulate 6 calls manually
       6.times { service.run_guarded_network_simulation([@road_nh27.id]) }
 
@@ -475,7 +475,7 @@ module Enma
     test "scenario 21: road with nil coordinates does not raise exception" do
       @road_nh27.update!(geometry_coordinates: nil)
 
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
       res = service.analyze(forecast_hours: 12)
 
       assert res[:overall_cascade_risk].is_a?(Numeric)
@@ -486,7 +486,7 @@ module Enma
     # SCENARIO 22: Performance Sanity
     # =========================================================================
     test "scenario 22: complete predictive cascading analysis executes within fast benchmark" do
-      service = Enma::PredictiveCascadingImpactService.new
+      service = ResQWay::PredictiveCascadingImpactService.new
 
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       res = service.analyze(forecast_hours: 12, candidate_limit: 5)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Enma
+module ResQWay
   class PredictiveCascadingImpactService
     EARTH_RADIUS_KM = 6371.0
     MAX_SIMULATION_BUDGET = 6
@@ -32,7 +32,7 @@ module Enma
       @roads = roads || (defined?(Road) ? Road.all.to_a : [])
       @locations = locations || (defined?(Location) ? Location.all.to_a : [])
       @warehouses = warehouses || (defined?(Warehouse) ? Warehouse.all.to_a : [])
-      @network_service = network_service || Enma::NetworkConnectivityService.new(
+      @network_service = network_service || ResQWay::NetworkConnectivityService.new(
         locations: @locations,
         roads: @roads,
         warehouses: @warehouses
@@ -1460,9 +1460,9 @@ module Enma
         return db_score
       end
 
-      if defined?(Enma::RoadRiskIntelligenceService)
+      if defined?(ResQWay::RoadRiskIntelligenceService)
         begin
-          dynamic = Enma::RoadRiskIntelligenceService.new(road).calculate[:risk_score].to_f
+          dynamic = ResQWay::RoadRiskIntelligenceService.new(road).calculate[:risk_score].to_f
           dynamic.positive? ? dynamic : 25.0
         rescue StandardError
           25.0

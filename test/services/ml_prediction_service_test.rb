@@ -19,7 +19,7 @@ class MlPredictionServiceTest < ActiveSupport::TestCase
       length_km: 150.0,
       geometry_coordinates: [[27.0, 93.6], [27.3, 93.7]]
     )
-    @service = Enma::MlPredictionService.new(@road)
+    @service = ResQWay::MlPredictionService.new(@road)
   end
 
   test "build_feature_payload constructs all 16 canonical ML features" do
@@ -89,7 +89,7 @@ class MlPredictionServiceTest < ActiveSupport::TestCase
   end
 
   test "road integrates with MlPredictionProvider" do
-    provider_result = Enma::MlPredictionProvider.predict_for(@road)
+    provider_result = ResQWay::MlPredictionProvider.predict_for(@road)
     assert_not_nil provider_result[:prediction_window_hours]
     assert provider_result.key?(:disruption_probability)
   end

@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-module Enma
+module ResQWay
   class AutonomousResponseOptimizationServiceTest < ActiveSupport::TestCase
     def setup
       LogisticsAlert.delete_all
@@ -156,7 +156,7 @@ module Enma
     # PRIORITY INTELLIGENCE (1-5)
     # =========================================================================
     test "scenario 1: empty network returns safe structured response without crashing" do
-      service = Enma::AutonomousResponseOptimizationService.new(
+      service = ResQWay::AutonomousResponseOptimizationService.new(
         locations: [],
         warehouses: [],
         roads: []
@@ -173,7 +173,7 @@ module Enma
     test "scenario 2: nominal conditions produce low urgency and standard monitoring" do
       Road.update_all(risk_score: 15.0, ml_disruption_probability: 0.10)
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       assert_includes %w[MONITOR PLANNED HIGH], res[:urgency_level]
@@ -181,7 +181,7 @@ module Enma
     end
 
     test "scenario 3: priority zones are deterministically ranked by humanitarian priority score" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       zones = res[:priority_zones]
@@ -192,7 +192,7 @@ module Enma
     end
 
     test "scenario 4: population exposure weighting increases priority for large populations" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
 
       imphal_zone = zones.find { |z| z[:location_id] == @imphal.id }
@@ -216,7 +216,7 @@ module Enma
         description: "Confirmed major landslide blocking arterial corridor"
       )
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
 
       imphal_zone = zones.find { |z| z[:location_id] == @imphal.id }
@@ -228,7 +228,7 @@ module Enma
     # WAREHOUSE OPTIMIZATION (6-8)
     # =========================================================================
     test "scenario 6: warehouse capability score reflects status, capacity, and accessibility" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
       caps = service.evaluate_warehouse_capabilities(zones)
 
@@ -242,7 +242,7 @@ module Enma
     test "scenario 7: overloaded or inactive warehouse has degraded capability and role" do
       @wh_kohima.update!(operational_status: "OVERLOADED", utilized_capacity: 1500)
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
       caps = service.evaluate_warehouse_capabilities(zones)
 
@@ -256,7 +256,7 @@ module Enma
       @wh_kohima.update!(operational_status: "LIMITED", utilized_capacity: 1450)
       @road_direct.update!(status: "blocked", risk_score: 95.0)
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
       caps = service.evaluate_warehouse_capabilities(zones)
 
@@ -272,7 +272,7 @@ module Enma
     test "scenario 9: safe bypass route beats shortest route with high failure risk" do
       @road_direct.update!(risk_score: 90.0, ml_disruption_probability: 0.85)
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
       caps = service.evaluate_warehouse_capabilities(zones)
       routes = service.evaluate_routes_to_priority_zones(caps, zones)
@@ -286,7 +286,7 @@ module Enma
     test "scenario 10: high risk route is classified as HIGH_RISK or LAST_RESORT" do
       @road_direct.update!(risk_score: 85.0, ml_disruption_probability: 0.80)
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
       caps = service.evaluate_warehouse_capabilities(zones)
       routes = service.evaluate_routes_to_priority_zones(caps, zones)
@@ -299,7 +299,7 @@ module Enma
     test "scenario 11: no ground route available is classified as UNAVAILABLE" do
       Road.update_all(status: "blocked")
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones({ scenarios: [] })
       caps = service.evaluate_warehouse_capabilities(zones)
       routes = service.evaluate_routes_to_priority_zones(caps, zones)
@@ -311,7 +311,7 @@ module Enma
     # STRATEGY OPTIMIZATION (12-14)
     # =========================================================================
     test "scenario 12: strategy generation is strictly bounded to at most 10" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12, strategy_limit: 10)
 
       all_strategies = [res[:optimal_strategy]].compact + res[:alternative_strategies]
@@ -320,7 +320,7 @@ module Enma
     end
 
     test "scenario 13: optimal strategy is selected via highest risk adjusted utility" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       opt = res[:optimal_strategy]
@@ -331,7 +331,7 @@ module Enma
     end
 
     test "scenario 14: risk adjusted utility applies correct plan resilience multipliers" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       strat_resilient = service.build_strategy(
         strategy_type: "RESILIENT_DISPATCH",
         name: "Test Resilient",
@@ -349,7 +349,7 @@ module Enma
         allocated_resources: {}
       )
 
-      assert_equal 0.95, Enma::AutonomousResponseOptimizationService::RESILIENCE_MULTIPLIERS["RESILIENT"]
+      assert_equal 0.95, ResQWay::AutonomousResponseOptimizationService::RESILIENCE_MULTIPLIERS["RESILIENT"]
       assert_in_delta (strat_resilient[:response_utility] * 0.95), strat_resilient[:risk_adjusted_utility], 0.2
     end
 
@@ -370,7 +370,7 @@ module Enma
         summary: { overall_cascade_risk: 85.0, prediction_confidence: 90.0 }
       }
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones(mock_pred)
       caps = service.evaluate_warehouse_capabilities(zones)
       preps = service.evaluate_prepositioning_decisions(
@@ -397,7 +397,7 @@ module Enma
         summary: { overall_cascade_risk: 45.0, prediction_confidence: 70.0 }
       }
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       zones = service.identify_priority_zones(mock_pred)
       caps = service.evaluate_warehouse_capabilities(zones)
       preps = service.evaluate_prepositioning_decisions(
@@ -422,7 +422,7 @@ module Enma
         summary: { overall_cascade_risk: 10.0, prediction_confidence: 60.0 }
       }
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       # Set low population to test NOT_REQUIRED threshold
       @imphal.update!(population: 500)
       zones = service.identify_priority_zones(mock_pred)
@@ -442,7 +442,7 @@ module Enma
     test "scenario 18: airlift escalation triggered when ground route is blocked or extreme risk" do
       Road.update_all(status: "blocked")
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       aerial = res[:aerial_response]
@@ -453,7 +453,7 @@ module Enma
     test "scenario 19: UAV reconnaissance recommended when humanitarian priority is high" do
       @imphal.update!(accessibility_score: 20.0)
 
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       aerial = res[:aerial_response]
@@ -464,7 +464,7 @@ module Enma
     # RESILIENCE & CONTINGENCIES (20-22)
     # =========================================================================
     test "scenario 20: alternative route contingency provides fallback action" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       cont = res[:contingency_plans].find { |c| c[:contingency_id] == "CONTINGENCY-A" }
@@ -474,7 +474,7 @@ module Enma
     end
 
     test "scenario 21: warehouse failure contingency activates secondary depot" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       cont = res[:contingency_plans].find { |c| c[:contingency_id] == "CONTINGENCY-B" }
@@ -484,7 +484,7 @@ module Enma
     end
 
     test "scenario 22: secondary cascade contingency evaluates multi-point failure" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       cont = res[:contingency_plans].find { |c| c[:contingency_id] == "CONTINGENCY-C" }
@@ -496,7 +496,7 @@ module Enma
     # EXPLAINABILITY & COUNTERFACTUAL (23-24)
     # =========================================================================
     test "scenario 23: counterfactual analysis calculates population and delay improvements" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       cf = res[:counterfactual_analysis]
@@ -509,7 +509,7 @@ module Enma
     end
 
     test "scenario 24: complete decision explanation explains both winner and rejected alternatives" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       expl = res[:decision_explanation]
@@ -529,7 +529,7 @@ module Enma
     # ENGINEERING & PERFORMANCE (25-27)
     # =========================================================================
     test "scenario 25: complete response optimization executes in under 2 seconds" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
 
       start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       res = service.analyze(forecast_hours: 12)
@@ -540,10 +540,10 @@ module Enma
     end
 
     test "scenario 26: deterministic output consistency across sequential runs" do
-      service1 = Enma::AutonomousResponseOptimizationService.new
+      service1 = ResQWay::AutonomousResponseOptimizationService.new
       res1 = service1.analyze(forecast_hours: 12)
 
-      service2 = Enma::AutonomousResponseOptimizationService.new
+      service2 = ResQWay::AutonomousResponseOptimizationService.new
       res2 = service2.analyze(forecast_hours: 12)
 
       assert_equal res1[:optimal_strategy][:strategy_type], res2[:optimal_strategy][:strategy_type]
@@ -552,7 +552,7 @@ module Enma
     end
 
     test "scenario 27: allocated resources strictly adhere to available warehouse resources" do
-      service = Enma::AutonomousResponseOptimizationService.new
+      service = ResQWay::AutonomousResponseOptimizationService.new
       res = service.analyze(forecast_hours: 12)
 
       alloc = res.dig(:optimal_strategy, :allocated_resources)

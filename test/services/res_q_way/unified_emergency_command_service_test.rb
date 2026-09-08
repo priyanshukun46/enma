@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-module Enma
+module ResQWay
   class UnifiedEmergencyCommandServiceTest < ActiveSupport::TestCase
     def setup
       LogisticsAlert.delete_all
@@ -143,7 +143,7 @@ module Enma
       @warehouses = [@wh_guwahati, @wh_kohima]
       @roads = [@road_arterial, @road_direct, @road_bypass, @road_kang_imphal]
 
-      @service = Enma::UnifiedEmergencyCommandService.new(
+      @service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: @roads
@@ -237,7 +237,7 @@ module Enma
       # Now simulate catastrophic road failure on the direct corridor
       @road_direct.update!(status: "blocked", risk_score: 95.0, ml_disruption_probability: 0.95)
 
-      subsequent_service = Enma::UnifiedEmergencyCommandService.new(
+      subsequent_service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: [@road_arterial, @road_direct, @road_bypass, @road_kang_imphal],
@@ -263,7 +263,7 @@ module Enma
 
       # Block direct corridor and verify health score decreases
       @road_direct.update!(status: "blocked", risk_score: 98.0)
-      degraded_service = Enma::UnifiedEmergencyCommandService.new(
+      degraded_service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: [@road_arterial, @road_direct, @road_bypass, @road_kang_imphal]
@@ -278,7 +278,7 @@ module Enma
     # =========================================================================
     test "category 6: degrades gracefully when weather service is unavailable" do
       dry_locations = @locations.map { |l| l.dup.tap { |loc| loc.rainfall_level = nil } }
-      service = Enma::UnifiedEmergencyCommandService.new(
+      service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: dry_locations,
         warehouses: @warehouses,
         roads: @roads
@@ -300,7 +300,7 @@ module Enma
         raise StandardError, "ML Service RPC Timeout"
       end
 
-      service = Enma::UnifiedEmergencyCommandService.new(
+      service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: @roads,
@@ -337,7 +337,7 @@ module Enma
         raise StandardError, "Service Unavailable"
       end
 
-      service = Enma::UnifiedEmergencyCommandService.new(
+      service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: @roads,
@@ -372,7 +372,7 @@ module Enma
         raise StandardError, "Prediction Failure"
       end
 
-      service = Enma::UnifiedEmergencyCommandService.new(
+      service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: @roads,
@@ -400,7 +400,7 @@ module Enma
         raise StandardError, "Response Failure"
       end
 
-      service = Enma::UnifiedEmergencyCommandService.new(
+      service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: @roads,
@@ -601,7 +601,7 @@ module Enma
         raise StandardError, "Prediction Failure"
       end
 
-      service = Enma::UnifiedEmergencyCommandService.new(
+      service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: @locations,
         warehouses: @warehouses,
         roads: @roads,
@@ -648,7 +648,7 @@ module Enma
     # CATEGORY 26: Graceful Dependency Failure
     # =========================================================================
     test "category 26: handles empty database dependencies gracefully without nil exceptions" do
-      empty_service = Enma::UnifiedEmergencyCommandService.new(
+      empty_service = ResQWay::UnifiedEmergencyCommandService.new(
         locations: [],
         warehouses: [],
         roads: []

@@ -41,7 +41,7 @@ class RouteRecommendationServiceTest < ActiveSupport::TestCase
 
   test "calculates multi-route recommendations with all priority modes" do
     %w[balanced safest fastest emergency].each do |mode|
-      service = Enma::RouteRecommendationService.new(
+      service = ResQWay::RouteRecommendationService.new(
         origin: @origin,
         destination: @destination,
         priority_mode: mode,
@@ -63,7 +63,7 @@ class RouteRecommendationServiceTest < ActiveSupport::TestCase
   end
 
   test "safest priority mode penalizes high risk corridors" do
-    service = Enma::RouteRecommendationService.new(
+    service = ResQWay::RouteRecommendationService.new(
       origin: @origin,
       destination: @destination,
       priority_mode: "safest",
@@ -79,7 +79,7 @@ class RouteRecommendationServiceTest < ActiveSupport::TestCase
   test "excludes blocked road corridors from recommended selection" do
     @road.update!(status: "blocked")
 
-    service = Enma::RouteRecommendationService.new(
+    service = ResQWay::RouteRecommendationService.new(
       origin: @origin,
       destination: @destination,
       priority_mode: "balanced",
@@ -119,12 +119,12 @@ class RouteRecommendationServiceTest < ActiveSupport::TestCase
       reported_at: Time.current
     )
 
-    assert Enma::RouteRecommendationService.check_rerouting_needed(analysis, intersecting_incident)
-    assert_not Enma::RouteRecommendationService.check_rerouting_needed(analysis, far_incident)
+    assert ResQWay::RouteRecommendationService.check_rerouting_needed(analysis, intersecting_incident)
+    assert_not ResQWay::RouteRecommendationService.check_rerouting_needed(analysis, far_incident)
   end
 
   test "gracefully handles offline ML and weather without crashing" do
-    service = Enma::RouteRecommendationService.new(
+    service = ResQWay::RouteRecommendationService.new(
       origin: @origin,
       destination: @destination,
       priority_mode: "emergency",
@@ -151,7 +151,7 @@ class RouteRecommendationServiceTest < ActiveSupport::TestCase
     @road.update!(status: "blocked")
     Rails.cache.clear
 
-    service = Enma::RouteRecommendationService.new(
+    service = ResQWay::RouteRecommendationService.new(
       origin: @origin,
       destination: isolated_dest,
       priority_mode: "balanced",

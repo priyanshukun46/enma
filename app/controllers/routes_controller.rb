@@ -186,8 +186,8 @@ class RoutesController < ApplicationController
     end
 
     begin
-      # 1. Run ENMA AI Risk-Aware Route Recommendation Service
-      recommendation_res = Enma::RouteRecommendationService.new(
+      # 1. Run ResQWay Risk-Aware Route Recommendation Service
+      recommendation_res = ResQWay::RouteRecommendationService.new(
         origin: @origin,
         destination: @destination,
         priority_mode: @selected_priority,

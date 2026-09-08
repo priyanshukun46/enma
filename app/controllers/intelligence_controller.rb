@@ -3,7 +3,7 @@
 class IntelligenceController < ApplicationController
   def predictions
     @horizon = params[:horizon].presence ? params[:horizon].to_i : 12
-    @service = Enma::PredictiveCascadingImpactService.new
+    @service = ResQWay::PredictiveCascadingImpactService.new
     @analysis = @service.analyze(forecast_hours: @horizon)
 
     @roads = Road.order(:road_number)
@@ -19,7 +19,7 @@ class IntelligenceController < ApplicationController
 
   def response_plan
     @horizon = params[:horizon].presence ? params[:horizon].to_i : 12
-    @service = Enma::AutonomousResponseOptimizationService.new
+    @service = ResQWay::AutonomousResponseOptimizationService.new
     @optimization = @service.analyze(forecast_hours: @horizon)
 
     @active_alerts = LogisticsAlert.where(
@@ -80,7 +80,7 @@ class IntelligenceController < ApplicationController
     @horizon = params[:horizon].presence ? params[:horizon].to_i : 12
     @previous_snapshot = session[:last_command_snapshot]
     @command_decision = session[:last_command_decision]
-    @service = Enma::UnifiedEmergencyCommandService.new(
+    @service = ResQWay::UnifiedEmergencyCommandService.new(
       previous_snapshot: @previous_snapshot,
       command_decision: @command_decision,
       session_store: session

@@ -2,7 +2,7 @@
 
 require "digest"
 
-module Enma
+module ResQWay
   class UnifiedEmergencyCommandService
     EARTH_RADIUS_KM = 6371.0
     DEFAULT_FORECAST_HOURS = 12

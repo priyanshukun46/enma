@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   class EtaIntelligenceService
     DEFAULT_SPEED_KMH = 45.0
 

@@ -10,7 +10,7 @@ Rails.application.config.after_initialize do
       s = Location.find_by(name: "Shillong")
       if g && s
         begin
-          Enma::RouteRecommendationService.new(
+          ResQWay::RouteRecommendationService.new(
             origin: g,
             destination: s,
             priority_mode: "balanced",

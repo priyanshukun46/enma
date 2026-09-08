@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   class RouteRecommendationService
     EARTH_RADIUS_KM = 6371.0
     PROFILES_PATH = Rails.root.join("config", "enma_route_profiles.yml")
@@ -539,13 +539,13 @@ module Enma
     end
 
     def check_network_partition(orig, dest)
-      return { disconnected: false } unless defined?(Enma::NetworkConnectivityService)
+      return { disconnected: false } unless defined?(ResQWay::NetworkConnectivityService)
       return { disconnected: false } unless orig.respond_to?(:id) && dest.respond_to?(:id) && orig.id.present? && dest.id.present?
       return { disconnected: false } if options[:skip_network_check]
 
       begin
         net_analysis = Rails.cache.fetch("enma_network_connectivity_clusters", expires_in: 15.seconds) do
-          Enma::NetworkConnectivityService.new.analyze(include_criticalities: false)
+          ResQWay::NetworkConnectivityService.new.analyze(include_criticalities: false)
         end
 
         comps = net_analysis[:components] || []

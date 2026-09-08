@@ -1,13 +1,20 @@
-module Enma
+module ResQWay
   class RoadRiskIntelligenceService
     EARTH_RADIUS_KM = 6371.0
     PROXIMITY_THRESHOLD_KM = 45.0
+    WEIGHTS = {
+      weather: 0.35,
+      history: 0.20,
+      incident: 0.20,
+      condition: 0.15,
+      geography: 0.10
+    }.freeze
 
     attr_reader :road, :ml_provider
 
     def initialize(road, ml_provider: nil)
       @road = road
-      @ml_provider = ml_provider || Enma::MlPredictionProvider.new
+      @ml_provider = ml_provider || ResQWay::MlPredictionProvider.new
     end
 
     def calculate

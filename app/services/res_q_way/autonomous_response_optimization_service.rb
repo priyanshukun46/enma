@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Enma
+module ResQWay
   class AutonomousResponseOptimizationService
     EARTH_RADIUS_KM = 6371.0
     DEFAULT_FORECAST_HOURS = 12
@@ -1322,12 +1322,12 @@ module Enma
           return cached
         end
 
-        pred_service = @predictive_service || Enma::PredictiveCascadingImpactService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+        pred_service = @predictive_service || ResQWay::PredictiveCascadingImpactService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
         result = pred_service.analyze(forecast_hours: forecast_hours)
         Rails.cache.write(cache_key, result, expires_in: 3.minutes)
         result
       else
-        pred_service = @predictive_service || Enma::PredictiveCascadingImpactService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+        pred_service = @predictive_service || ResQWay::PredictiveCascadingImpactService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
         pred_service.analyze(forecast_hours: forecast_hours)
       end
     end

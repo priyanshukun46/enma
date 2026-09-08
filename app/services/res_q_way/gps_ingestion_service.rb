@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   class GpsIngestionService
     attr_reader :params, :vehicle, :shipment
 

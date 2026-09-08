@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   class RiskExplanationService
     attr_reader :road
 

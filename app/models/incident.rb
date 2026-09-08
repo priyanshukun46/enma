@@ -106,7 +106,7 @@ class Incident < ApplicationRecord
         parsed = JSON.parse(ai_classification_json)
         parsed.is_a?(Hash) ? parsed.with_indifferent_access : {}
       else
-        Enma::DataConfidenceService.new(self).calculate.with_indifferent_access
+        ResQWay::DataConfidenceService.new(self).calculate.with_indifferent_access
       end
     rescue StandardError
       {}
@@ -206,7 +206,7 @@ class Incident < ApplicationRecord
   def trigger_risk_recalculation
     # Recalculate road risk for all roads in the affected state or near coordinates
     Road.where(state: state).find_each do |road|
-      Enma::RoadRiskIntelligenceService.new(road).calculate_and_update!(trigger_source: "incident_reported")
+      ResQWay::RoadRiskIntelligenceService.new(road).calculate_and_update!(trigger_source: "incident_reported")
     rescue StandardError => e
       Rails.logger.error("Failed to recalculate road risk for road #{road.id}: #{e.message}")
     end

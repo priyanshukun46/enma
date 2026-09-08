@@ -194,7 +194,7 @@ class AccessibilityScoreService
   def network_isolated?
     return false unless location&.persisted?
 
-    net_svc = @network_service || (defined?(Enma::NetworkConnectivityService) ? Enma::NetworkConnectivityService.new : nil)
+    net_svc = @network_service || (defined?(ResQWay::NetworkConnectivityService) ? ResQWay::NetworkConnectivityService.new : nil)
     return false unless net_svc
 
     analysis = net_svc.analyze

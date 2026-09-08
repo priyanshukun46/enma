@@ -27,7 +27,7 @@ class GpsIngestionServiceTest < ActiveSupport::TestCase
   end
 
   test "successfully ingests GPS and updates vehicle and shipment progress" do
-    service = Enma::GpsIngestionService.new({
+    service = ResQWay::GpsIngestionService.new({
       api_auth_token: @vehicle.api_auth_token,
       latitude: 25.8800,
       longitude: 91.8200,
@@ -53,7 +53,7 @@ class GpsIngestionServiceTest < ActiveSupport::TestCase
 
   test "detects route deviation and creates logistics alert" do
     # Deviate by sending coordinates far off the planned corridor
-    service = Enma::GpsIngestionService.new({
+    service = ResQWay::GpsIngestionService.new({
       api_auth_token: @vehicle.api_auth_token,
       latitude: 26.5000, # ~40km away from corridor
       longitude: 92.5000,
@@ -76,7 +76,7 @@ class GpsIngestionServiceTest < ActiveSupport::TestCase
   end
 
   test "rejects invalid coordinates" do
-    service = Enma::GpsIngestionService.new({
+    service = ResQWay::GpsIngestionService.new({
       api_auth_token: @vehicle.api_auth_token,
       latitude: 195.0, # invalid latitude
       longitude: 91.8200

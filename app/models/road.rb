@@ -108,11 +108,11 @@ class Road < ApplicationRecord
   # Intelligence Engine Integration
   # =========================================================================
   def recalculate_risk!(trigger_source: "manual")
-    Enma::RoadRiskIntelligenceService.new(self).calculate_and_update!(trigger_source: trigger_source)
+    ResQWay::RoadRiskIntelligenceService.new(self).calculate_and_update!(trigger_source: trigger_source)
   end
 
   def risk_explanation
-    Enma::RiskExplanationService.new(self).generate
+    ResQWay::RiskExplanationService.new(self).generate
   end
 
   # =========================================================================
@@ -205,7 +205,7 @@ class Road < ApplicationRecord
   end
 
   def predict_ml_disruption!
-    Enma::MlPredictionService.new(self).predict
+    ResQWay::MlPredictionService.new(self).predict
   end
 
   def latest_ml_prediction_data

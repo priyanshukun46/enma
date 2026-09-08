@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "enma/network_connectivity_service"
+require_relative "res_q_way/network_connectivity_service"
 
-class NetworkConnectivityService < Enma::NetworkConnectivityService
+class NetworkConnectivityService < ResQWay::NetworkConnectivityService
 end

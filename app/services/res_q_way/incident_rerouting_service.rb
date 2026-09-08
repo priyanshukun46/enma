@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   class IncidentReroutingService
     attr_reader :shipment, :incident
 
@@ -14,7 +14,7 @@ module Enma
       return nil unless orig && dest
 
       # Run recommendation in Safest / Emergency mode
-      result = Enma::RouteRecommendationService.new(
+      result = ResQWay::RouteRecommendationService.new(
         origin: orig,
         destination: dest,
         priority_mode: "safest",

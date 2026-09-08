@@ -127,7 +127,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   # 1. FULLY CONNECTED GRAPH
   # =========================================================================
   test "1. fully connected graph produces single component, 0 isolated settlements, and 100% health score" do
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -151,7 +151,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
     @road_nh27.update!(status: "blocked")
     @road_nh06.update!(status: "blocked")
 
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -170,7 +170,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   # 3. SINGLE ROAD CLOSURE
   # =========================================================================
   test "3. single road closure removes edge, splits components, and identifies affected nodes" do
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -192,7 +192,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   test "4. detects isolated settlements when road is blocked with cause and previous routes" do
     @road_sh05.update!(status: "blocked")
 
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -224,7 +224,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
 
     @road_nh27.update!(status: "blocked")
 
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse, wh_jorhat]
@@ -242,7 +242,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   # 6. CRITICAL CORRIDOR DETECTION (TARJAN BRIDGE)
   # =========================================================================
   test "6. detects critical roads and single points of failure (bridges) via Tarjan algorithm" do
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -263,7 +263,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   # 7. ALTERNATIVE ROUTE AVAILABILITY (DIJKSTRA)
   # =========================================================================
   test "7. identifies alternative reachable warehouse or reports when no alternative route is available" do
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -279,7 +279,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
 
     # Now block SH-05
     @road_sh05.update!(status: "blocked")
-    service_blocked = Enma::NetworkConnectivityService.new(
+    service_blocked = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -296,7 +296,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   # 8. EMPTY NETWORK
   # =========================================================================
   test "8. handles empty network without errors and returns 100% health score" do
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [],
       roads: [],
       warehouses: []
@@ -317,7 +317,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   # 9. NETWORK HEALTH CALCULATION & TREND
   # =========================================================================
   test "9. calculates network health score, active disruptions, and dynamic trend" do
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -329,7 +329,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
 
     # Block 1 road
     @road_nh27.update!(status: "blocked")
-    service_degraded = Enma::NetworkConnectivityService.new(
+    service_degraded = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -343,7 +343,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
   test "generates deduplicated LogisticsAlert records for isolated settlements and critical blocked corridors" do
     @road_sh05.update!(status: "blocked", risk_score: 95.0)
 
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse]
@@ -374,7 +374,7 @@ class NetworkConnectivityServiceTest < ActiveSupport::TestCase
 
     @road_nh27.update!(status: "blocked")
 
-    service = Enma::NetworkConnectivityService.new(
+    service = ResQWay::NetworkConnectivityService.new(
       locations: [@guwahati, @jorhat, @shillong, @cherra],
       roads: [@road_nh27, @road_nh06, @road_sh05],
       warehouses: [@warehouse, wh_jorhat]

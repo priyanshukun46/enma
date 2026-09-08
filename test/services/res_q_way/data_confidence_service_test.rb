@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-module Enma
+module ResQWay
   class DataConfidenceServiceTest < ActiveSupport::TestCase
     def setup
       Incident.delete_all
@@ -98,7 +98,7 @@ module Enma
       }
 
       with_mock_weather(weather_data) do
-        service = Enma::DataConfidenceService.new(@incident)
+        service = ResQWay::DataConfidenceService.new(@incident)
         res = service.calculate
 
         assert_equal 100.0, res[:overall_confidence]
@@ -131,7 +131,7 @@ module Enma
       }
 
       with_mock_weather(dry_weather) do
-        service = Enma::DataConfidenceService.new(@incident)
+        service = ResQWay::DataConfidenceService.new(@incident)
         res = service.calculate
 
         assert res[:overall_confidence] < 55.0, "Expected low score, got #{res[:overall_confidence]}"
@@ -144,7 +144,7 @@ module Enma
     # SCENARIO 3: Photo Scoring Gradient (0=0, 1=8, 2=14, 3+=20)
     # =========================================================================
     test "scenario 3: photo scoring gradient across count" do
-      service = Enma::DataConfidenceService.new(@incident)
+      service = ResQWay::DataConfidenceService.new(@incident)
 
       # 0 photos
       assert_equal 0.0, service.evaluate_evidence[:score]
@@ -170,7 +170,7 @@ module Enma
     # SCENARIO 4: Photo Format Validation
     # =========================================================================
     test "scenario 4: photo format validation accepts valid images and flags unprocessable types" do
-      service = Enma::DataConfidenceService.new(@incident)
+      service = ResQWay::DataConfidenceService.new(@incident)
 
       # Attach unsupported format
       @incident.photos.attach(
@@ -190,7 +190,7 @@ module Enma
     test "scenario 5: valid coordinates within Northeast India bounds receive full GPS score" do
       @incident.latitude = 26.1445
       @incident.longitude = 91.7362
-      service = Enma::DataConfidenceService.new(@incident)
+      service = ResQWay::DataConfidenceService.new(@incident)
 
       res = service.evaluate_gps
       assert_equal 20.0, res[:score]
@@ -204,7 +204,7 @@ module Enma
     test "scenario 6: coordinates outside Northeast India bounds are penalized" do
       @incident.latitude = 28.6139
       @incident.longitude = 77.2090 # New Delhi (Outside NE India lon: 89.5 - 97.5)
-      service = Enma::DataConfidenceService.new(@incident)
+      service = ResQWay::DataConfidenceService.new(@incident)
 
       res = service.evaluate_gps
       assert_equal 5.0, res[:score]
@@ -218,7 +218,7 @@ module Enma
     test "scenario 7: truncated or low-precision GPS coordinates are penalized" do
       @incident.latitude = 26.1 # only 1 decimal place
       @incident.longitude = 91.7 # only 1 decimal place
-      service = Enma::DataConfidenceService.new(@incident)
+      service = ResQWay::DataConfidenceService.new(@incident)
 
       res = service.evaluate_gps
       assert_equal 12.0, res[:score] # within bounds (15) but lacks precision (-3) = 12
@@ -232,27 +232,27 @@ module Enma
     test "scenario 8: temporal freshness exponential decay curve reduces score over 48 hours" do
       # Under 30 minutes: 15.0
       @incident.reported_at = 20.minutes.ago
-      s1 = Enma::DataConfidenceService.new(@incident).evaluate_freshness
+      s1 = ResQWay::DataConfidenceService.new(@incident).evaluate_freshness
       assert_equal 15.0, s1[:score]
 
       # 2 hours ago: ~12.5 - 13.5
       @incident.reported_at = 2.hours.ago
-      s2 = Enma::DataConfidenceService.new(@incident).evaluate_freshness
+      s2 = ResQWay::DataConfidenceService.new(@incident).evaluate_freshness
       assert s2[:score].between?(11.0, 14.0), "Expected ~12.5-13.5, got #{s2[:score]}"
 
       # 6 hours ago: ~9.5 - 10.5
       @incident.reported_at = 6.hours.ago
-      s3 = Enma::DataConfidenceService.new(@incident).evaluate_freshness
+      s3 = ResQWay::DataConfidenceService.new(@incident).evaluate_freshness
       assert s3[:score].between?(8.0, 11.0), "Expected ~9.5-10.5, got #{s3[:score]}"
 
       # 24 hours ago: ~3.0
       @incident.reported_at = 24.hours.ago
-      s4 = Enma::DataConfidenceService.new(@incident).evaluate_freshness
+      s4 = ResQWay::DataConfidenceService.new(@incident).evaluate_freshness
       assert s4[:score].between?(2.0, 5.0), "Expected ~3.0, got #{s4[:score]}"
 
       # 48 hours ago: ~0.7
       @incident.reported_at = 48.hours.ago
-      s5 = Enma::DataConfidenceService.new(@incident).evaluate_freshness
+      s5 = ResQWay::DataConfidenceService.new(@incident).evaluate_freshness
       assert s5[:score] <= 1.0, "Expected <= 1.0, got #{s5[:score]}"
     end
 
@@ -281,7 +281,7 @@ module Enma
       }
 
       with_mock_weather(weather) do
-        res = Enma::DataConfidenceService.new(@incident).calculate
+        res = ResQWay::DataConfidenceService.new(@incident).calculate
 
         # Intrinsic trust should remain solid (~70-85 pts)
         assert res[:data_trust_score] >= 70.0, "Expected data trust >= 70, got #{res[:data_trust_score]}"
@@ -307,7 +307,7 @@ module Enma
       }
 
       with_mock_weather(storm_weather) do
-        res = Enma::DataConfidenceService.new(@incident).evaluate_environmental
+        res = ResQWay::DataConfidenceService.new(@incident).evaluate_environmental
         assert_equal 20.0, res[:score]
         assert_equal true, res[:details][:corroborated]
       end
@@ -329,7 +329,7 @@ module Enma
       }
 
       with_mock_weather(bone_dry_weather) do
-        res = Enma::DataConfidenceService.new(@incident).evaluate_environmental
+        res = ResQWay::DataConfidenceService.new(@incident).evaluate_environmental
         assert_equal 0.0, res[:score]
         assert_equal false, res[:details][:corroborated]
         assert res[:warnings].any? { |w| w.include?("Weather mismatch") }
@@ -341,7 +341,7 @@ module Enma
     # =========================================================================
     test "scenario 12: weather unavailable provides graceful neutral degradation" do
       with_mock_weather(->(*_args) { raise StandardError, "Network connection timed out" }) do
-        res = Enma::DataConfidenceService.new(@incident).evaluate_environmental
+        res = ResQWay::DataConfidenceService.new(@incident).evaluate_environmental
 
         assert_equal 10.0, res[:score] # Neutral 10/20 fallback
         assert_equal false, res[:details][:data_available]
@@ -368,7 +368,7 @@ module Enma
         )
       end
 
-      res = Enma::DataConfidenceService.new(@incident).evaluate_spatial_consensus
+      res = ResQWay::DataConfidenceService.new(@incident).evaluate_spatial_consensus
       assert_equal 15.0, res[:score]
       assert_equal 3, res[:details][:nearby_matching_count]
     end
@@ -380,7 +380,7 @@ module Enma
       @incident.save!
       # Zero other incidents in database
 
-      res = Enma::DataConfidenceService.new(@incident).evaluate_spatial_consensus
+      res = ResQWay::DataConfidenceService.new(@incident).evaluate_spatial_consensus
       assert_equal 0.0, res[:score]
       assert_equal 0, res[:details][:nearby_matching_count]
       assert_equal 0, res[:details][:nearby_other_count]
@@ -405,7 +405,7 @@ module Enma
         )
       end
 
-      res = Enma::DataConfidenceService.new(@incident).evaluate_spatial_consensus
+      res = ResQWay::DataConfidenceService.new(@incident).evaluate_spatial_consensus
       assert_equal 7.5, res[:score]
       assert_equal 0, res[:details][:nearby_matching_count]
       assert_equal 3, res[:details][:nearby_other_count]
@@ -429,7 +429,7 @@ module Enma
         )
       end
 
-      res = Enma::DataConfidenceService.new(@incident).evaluate_reporter_reliability
+      res = ResQWay::DataConfidenceService.new(@incident).evaluate_reporter_reliability
       assert_equal 10.0, res[:score]
       assert_equal 1.0, res[:details][:verification_ratio]
     end
@@ -452,7 +452,7 @@ module Enma
         )
       end
 
-      res = Enma::DataConfidenceService.new(@incident).evaluate_reporter_reliability
+      res = ResQWay::DataConfidenceService.new(@incident).evaluate_reporter_reliability
       assert res[:score] <= 2.0, "Expected <= 2.0, got #{res[:score]}"
       assert res[:warnings].any? { |w| w.include?("elevated rejection rate") }
     end
@@ -468,7 +468,7 @@ module Enma
       )
       @incident.user = new_user
 
-      res = Enma::DataConfidenceService.new(@incident).evaluate_reporter_reliability
+      res = ResQWay::DataConfidenceService.new(@incident).evaluate_reporter_reliability
       assert_equal 6.0, res[:score]
       assert_equal "neutral_baseline", res[:details][:history_status]
     end
@@ -479,7 +479,7 @@ module Enma
     test "scenario 19: calculate_and_save! safely persists without triggering infinite callback loop" do
       @incident.save!
 
-      service = Enma::DataConfidenceService.new(@incident)
+      service = ResQWay::DataConfidenceService.new(@incident)
       result = service.calculate_and_save!
 
       assert result.is_a?(Hash)

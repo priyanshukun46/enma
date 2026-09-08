@@ -4,7 +4,7 @@ module Api
       before_action :authenticate_request!
 
       def create
-        service = Enma::GpsIngestionService.new(location_params)
+        service = ResQWay::GpsIngestionService.new(location_params)
         result = service.process
 
         if result[:success]

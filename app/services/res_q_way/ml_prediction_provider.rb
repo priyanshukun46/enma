@@ -1,4 +1,4 @@
-module Enma
+module ResQWay
   # ===========================================================================
   # ML Prediction Provider Interface (Strategy Pattern)
   #
@@ -10,7 +10,7 @@ module Enma
     end
 
     def predict(road)
-      res = Enma::MlPredictionService.new(road).predict
+      res = ResQWay::MlPredictionService.new(road).predict
 
       {
         disruption_probability: res[:disruption_probability],

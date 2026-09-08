@@ -59,7 +59,7 @@ class IncidentsController < ApplicationController
 
     if @incident.save
       begin
-        Enma::DataConfidenceService.new(@incident).calculate_and_save!
+        ResQWay::DataConfidenceService.new(@incident).calculate_and_save!
       rescue StandardError => e
         Rails.logger.error("Data confidence evaluation failed for incident #{@incident.id}: #{e.message}")
       end
