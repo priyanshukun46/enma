@@ -1,4 +1,4 @@
-# This file seeds the ENMA AI database with realistic North East India logistics,
+# This file seeds the ResQWay database with realistic North East India logistics,
 # terrain factors, strategic warehouses, and active emergency records.
 
 puts "Seeding North East India data for Phase 4..."
@@ -526,26 +526,28 @@ end
 puts "Configured #{LogisticsRoute.count} initial logistics routes."
 
 # --- User Accounts (Authentication & Roles) ---
-puts "Seeding default authentication accounts for ENMA AI..."
+puts "Seeding default authentication accounts for ResQWay..."
 if Rails.env.production? && (ENV["ADMIN_PASSWORD"].blank? || ENV["OPERATOR_PASSWORD"].blank?)
   abort("FATAL: In production, ADMIN_PASSWORD and OPERATOR_PASSWORD environment variables MUST be set before running seeds.")
 end
 
-admin_email = ENV["ADMIN_EMAIL"].presence || "admin@enma.ai"
+admin_email = ENV["ADMIN_EMAIL"].presence || "admin@resqway.ai"
 admin_pass  = ENV["ADMIN_PASSWORD"].presence || "password123"
-operator_email = ENV["OPERATOR_EMAIL"].presence || "operator@enma.ai"
+operator_email = ENV["OPERATOR_EMAIL"].presence || "operator@resqway.ai"
 operator_pass  = ENV["OPERATOR_PASSWORD"].presence || "password123"
 
-admin_user = User.find_or_initialize_by(email_address: admin_email.downcase)
+admin_user = User.find_by(username: "admin") || User.find_or_initialize_by(email_address: admin_email.downcase)
 admin_user.name = "Priyanshu Kumar (Administrator)"
+admin_user.email_address = admin_email.downcase
 admin_user.username = "admin"
 admin_user.password = admin_pass
 admin_user.password_confirmation = admin_pass
 admin_user.role = :admin
 admin_user.save!
 
-operator_user = User.find_or_initialize_by(email_address: operator_email.downcase)
+operator_user = User.find_by(username: "operator") || User.find_or_initialize_by(email_address: operator_email.downcase)
 operator_user.name = "Field Logistics Officer"
+operator_user.email_address = operator_email.downcase
 operator_user.username = "operator"
 operator_user.password = operator_pass
 operator_user.password_confirmation = operator_pass
@@ -861,14 +863,24 @@ end
 puts "Configured #{Incident.count} field incident reports."
 
 # =============================================================================
-# --- Run ENMA Hybrid Road Risk Intelligence Engine over All Corridors ---
+# --- Run ResQWay Hybrid Road Risk Intelligence Engine over All Corridors ---
 # =============================================================================
-puts "\nExecuting ENMA Hybrid Road Risk Intelligence Engine..."
+puts "\nExecuting ResQWay Hybrid Road Risk Intelligence Engine..."
 Road.find_each do |road|
-  res = road.recalculate_risk!(trigger_source: "initial_assessment")
-  puts "  ⚡ [#{res[:risk_level].upcase}] #{road.road_number} • #{road.name} (#{road.state}): Score #{res[:risk_score]}/100 (W:#{res[:factors][:weather]} H:#{res[:factors][:historical]} I:#{res[:factors][:incidents]} C:#{res[:factors][:condition]} G:#{res[:factors][:geographic]})"
+  begin
+    service = ResQWay::RoadRiskIntelligenceService.new(road)
+    res = service.calculate
+    road.update_columns(
+      risk_score: res[:risk_score],
+      risk_level: res[:risk_level],
+      incident_risk: res[:factors][:incidents],
+      updated_at: Time.current
+    )
+    puts "  ⚡ [#{res[:risk_level].upcase}] #{road.name} (#{road.state}): Score #{res[:risk_score]}/100 (W:#{res[:factors][:weather]} H:#{res[:factors][:historical]} I:#{res[:factors][:incidents]} C:#{res[:factors][:condition]} G:#{res[:factors][:geographic]})"
+  rescue StandardError => e
+    puts "  ⚠️ Failed to calculate road risk for #{road.name}: #{e.message}"
+  end
 end
-
 puts "Configured #{RoadRiskAssessment.count} road risk intelligence assessments."
 
 # =============================================================================
@@ -896,7 +908,7 @@ itanagar = Location.find_by(name: "Itanagar") || Location.third
 
 v1 = Vehicle.find_by(registration_number: "AS-01-EE-4589")
 if v1 && guwahati && shillong
-  sh1 = Shipment.find_or_initialize_by(tracking_number: "ENMA-TRK-2026-MED01")
+  sh1 = Shipment.find_or_initialize_by(tracking_number: "RESQWAY-TRK-2026-MED01")
   sh1.assign_attributes(
     vehicle: v1,
     cargo_type: "medicine",
@@ -945,8 +957,4 @@ if v1 && guwahati && shillong
   puts "  📦 Shipment #{sh1.tracking_number} (Medicines): #{sh1.origin_name} -> #{sh1.destination_name} (62% completed)"
 end
 
-puts "Seeding complete for ENMA AI Logistics Telemetry & GPS Fleet Tracking."
-
-
-
-
+puts "Seeding complete for ResQWay Logistics Telemetry & GPS Fleet Tracking."

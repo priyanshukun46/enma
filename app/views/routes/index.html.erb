@@ -14,7 +14,7 @@
       <div class="flex flex-wrap items-center gap-2.5">
         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-accent/10 text-accent border border-accent/20 shadow-sm shadow-accent/5">
           <span class="w-2 h-2 rounded-full bg-accent mr-2 animate-pulse"></span>
-          ENMA AI DECISION ENGINE
+          ResQWay DECISION ENGINE
         </span>
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
           <i class="fas fa-layer-group mr-1.5 text-[9px]"></i>
@@ -213,7 +213,7 @@
                 <% end %>
               </div>
 
-              <!-- Route Telemetry Row (Provider ETA vs ENMA Adjusted ETA) -->
+              <!-- Route Telemetry Row (Provider ETA vs ResQWay Adjusted ETA) -->
               <div class="flex items-baseline justify-between">
                 <div>
                   <div class="flex items-baseline space-x-1.5">
@@ -306,7 +306,7 @@
             <div class="flex items-center justify-between border-b border-[var(--line)] pb-2">
               <h3 class="text-xs font-black uppercase text-accent flex items-center">
                 <i class="fas fa-brain mr-1.5 text-accent"></i>
-                Why ENMA AI Recommends This Route (<%= rec[:confidence_percentage] %>% Confidence)
+                Why ResQWay Recommends This Route (<%= rec[:confidence_percentage] %>% Confidence)
               </h3>
               <span class="text-[10px] text-mute font-mono"><%= rec[:vehicle_context] %></span>
             </div>

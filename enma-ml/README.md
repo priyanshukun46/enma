@@ -1,6 +1,6 @@
-# 🤖 ENMA ML — Road Disruption Prediction Engine
+# 🤖 ResQWay ML — Road Disruption Prediction Engine
 
-This standalone microservice provides genuine Machine Learning road disruption predictions and explainability for the **ENMA AI** North Eastern Region Logistics Platform.
+This standalone microservice provides genuine Machine Learning road disruption predictions and explainability for the **ResQWay** North Eastern Region Logistics Platform.
 
 ---
 
@@ -8,7 +8,7 @@ This standalone microservice provides genuine Machine Learning road disruption p
 
 ```
   ┌────────────────────────────────────────────────────────┐
-  │                 ENMA PLATFORM (Rails)                  │
+  │               ResQWay PLATFORM (Rails)                 │
   │   - Road Network, Incidents, Weather & GIS Database    │
   └───────────────────────────┬────────────────────────────┘
                               │ POST /predict

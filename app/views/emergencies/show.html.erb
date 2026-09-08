@@ -129,7 +129,7 @@
       <div>
         <div class="flex items-center space-x-2">
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-accent/15 dark:bg-accent/10 text-accent dark:text-accent border border-accent/20 dark:border-accent/20 flex items-center">
-            <i class="fas fa-brain mr-1"></i> ENMA AI DECISION SUPPORT SYSTEM
+            <i class="fas fa-brain mr-1"></i> ResQWay DECISION SUPPORT SYSTEM
           </span>
           <span class="text-[10px] font-mono text-slate-400">Plan #<%= @response_plan.id %> &bull; <%= @response_plan.generated_at&.strftime("%H:%M:%S UTC") || "Active" %></span>
         </div>
@@ -222,7 +222,7 @@
         <div class="space-y-2 flex-1">
           <div class="flex flex-wrap items-center gap-2">
             <span class="px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-              <i class="fas fa-star mr-1 text-emerald-600"></i> ENMA AI Recommended Relief Warehouse
+              <i class="fas fa-star mr-1 text-emerald-600"></i> ResQWay Recommended Relief Warehouse
             </span>
             <span class="text-xs text-slate-500 dark:text-slate-400">Response Score: <strong class="text-emerald-600 dark:text-emerald-400"><%= wh[:response_score] || wh[:recommendation_score] %>/100</strong></span>
           </div>

@@ -1,14 +1,14 @@
 <%# 
-  Reusable ENMA AI QR Code Component
+  Reusable ResQWay QR Code Component
   Accepts optional locals:
-    - title (default: "Scan to Open ENMA AI")
+    - title (default: "Scan to Open ResQWay")
     - subtitle (default: "Open this live operational command platform on your smartphone or tablet.")
     - module_size (default: 4)
     - custom_url (optional, defaults to current public app URL)
     - show_mobile_notice (default: true)
 %>
 <% target_url = local_assigns[:custom_url].presence || current_app_public_url %>
-<% card_title = local_assigns[:title].presence || "Scan to Open ENMA AI" %>
+<% card_title = local_assigns[:title].presence || "Scan to Open ResQWay" %>
 <% card_subtitle = local_assigns[:subtitle].presence || "Open this live operational command platform on your smartphone or tablet." %>
 <% size = local_assigns[:module_size] || 4 %>
 

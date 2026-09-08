@@ -63,7 +63,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # Core ENMA AI Intelligence Modules
+  # Core ResQWay Intelligence Modules
   get "map", to: "maps#index"
   resources :locations, only: [:index]
 
@@ -82,7 +82,7 @@ Rails.application.routes.draw do
   get "routes/geocode", to: "routes#geocode", as: :geocode_routes
   post "routes/calculate", to: "routes#calculate", as: :calculate_routes
 
-  # Phase 6: Emergency Simulation & Disaster Response Center Routes
+  # Emergency Response Module (logistics use case)
   resources :emergencies, only: [:index, :new, :create, :show] do
     member do
       patch :update_status
@@ -125,7 +125,7 @@ Rails.application.routes.draw do
   # Field Incident Reporting (Geo-tagged Photo Reports)
   resources :incidents, only: [:index, :new, :create, :show]
 
-  # Phase 7 / Analytics: ENMA AI Intelligence Analytics Center Routes
+  # Phase 7 / Analytics: ResQWay Intelligence Analytics Center Routes
   get "analytics", to: "analytics#index"
   get "analytics/report", to: "analytics#report"
 

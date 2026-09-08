@@ -53,7 +53,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--line)] pb-3 mb-4">
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-        <span class="text-xs font-mono font-black uppercase tracking-wider text-ink">ENMA AI — RESPONSE COMMAND INTELLIGENCE</span>
+        <span class="text-xs font-mono font-black uppercase tracking-wider text-ink">RESQWAY — RESPONSE COMMAND INTELLIGENCE</span>
         <span class="text-[10px] font-mono text-mute">• LIVE DECISION SUPPORT</span>
       </div>
       <div class="flex items-center gap-2">
@@ -452,7 +452,7 @@
     <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
       <div class="border-b border-[var(--line)] pb-3">
         <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Counterfactual Analysis</h2>
-        <p class="text-[11px] text-mute">Modeled consequence comparison: No Action vs ENMA Plan</p>
+        <p class="text-[11px] text-mute">Modeled consequence comparison: No Action vs ResQWay Plan</p>
       </div>
 
       <% cf = @optimization[:counterfactual_analysis] || {} %>
@@ -467,13 +467,13 @@
           </div>
         </div>
 
-        <!-- With ENMA Plan -->
+        <!-- With ResQWay Plan -->
         <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-2">
-          <div class="text-[10px] font-mono font-black uppercase text-emerald-600 dark:text-emerald-400">WITH ENMA PLAN</div>
+          <div class="text-[10px] font-mono font-black uppercase text-emerald-600 dark:text-emerald-400">WITH RESQWAY PLAN</div>
           <div class="space-y-1 text-xs">
-            <div>Population protected: <strong><%= number_with_delimiter(cf.dig(:with_enma_plan, :population_protected) || 31_800) %></strong></div>
-            <div>Expected supply delay: <strong><%= cf.dig(:with_enma_plan, :expected_response_delay_hours) || 4.2 %> hours</strong></div>
-            <div>Supply continuity: <strong><%= cf.dig(:with_enma_plan, :supply_continuity_pct) || 88 %>%</strong></div>
+            <div>Population protected: <strong><%= number_with_delimiter(cf.dig(:with_resqway_plan, :population_protected) || cf.dig(:with_enma_plan, :population_protected) || 31_800) %></strong></div>
+            <div>Expected supply delay: <strong><%= cf.dig(:with_resqway_plan, :expected_response_delay_hours) || cf.dig(:with_enma_plan, :expected_response_delay_hours) || 4.2 %> hours</strong></div>
+            <div>Supply continuity: <strong><%= cf.dig(:with_resqway_plan, :supply_continuity_pct) || cf.dig(:with_enma_plan, :supply_continuity_pct) || 88 %>%</strong></div>
           </div>
         </div>
       </div>
