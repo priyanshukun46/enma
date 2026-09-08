@@ -35,7 +35,7 @@ METADATA_OUT = MODELS_DIR / "metadata.json"
 
 def train_models():
     print("=" * 60)
-    print("🚀 ENMA ML ROAD DISRUPTION PREDICTION — TRAINING PIPELINE")
+    print("🚀 ResQWay ML ROAD DISRUPTION PREDICTION — TRAINING PIPELINE")
     print("=" * 60)
 
     # 1. Dataset Loading or Generation

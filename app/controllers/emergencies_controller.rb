@@ -73,7 +73,7 @@ class EmergenciesController < ApplicationController
       format.json { render json: @response_plan.plan_payload }
       format.html do
         send_data @response_plan.formatted_briefing,
-                  filename: "ENMA_AI_Response_Plan_#{@emergency.id}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.txt",
+                  filename: "ResQWay_Response_Plan_#{@emergency.id}_#{Time.current.strftime('%Y%m%d_%H%M%S')}.txt",
                   type: "text/plain"
       end
     end

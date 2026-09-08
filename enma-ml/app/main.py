@@ -13,10 +13,10 @@ from .schemas import (
 from .predictor import predictor
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("enma.ml.api")
+logger = logging.getLogger("resqway.ml.api")
 
 app = FastAPI(
-    title="ENMA AI — Road Disruption Prediction ML Service",
+    title="ResQWay — Road Disruption Prediction ML Service",
     description="Machine Learning Disruption Probability and Explainability Service for North East India Logistics Corridors",
     version="1.0.0",
 )

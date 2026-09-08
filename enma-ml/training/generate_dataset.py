@@ -12,7 +12,7 @@ OUTPUT_CSV = DATA_DIR / "ner_road_disruption_dataset.csv"
 def generate_synthetic_ner_dataset(n_samples: int = 6000, seed: int = 42) -> pd.DataFrame:
     """
     Generates a realistic, reproducible synthetic dataset modeling North Eastern Region (NER)
-    road disruption conditions for training and benchmarking the ENMA ML model.
+    road disruption conditions for training and benchmarking the ResQWay ML model.
 
     NOTE: Clearly marked as SYNTHETIC DEMONSTRATION DATASET for development and testing.
     """

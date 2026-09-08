@@ -32,7 +32,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         uid: auth.uid,
         avatar_url: current_user.avatar_url.presence || auth.dig("info", "image")
       )
-      flash[:notice] = "#{kind} account successfully connected to your ENMA AI profile!"
+      flash[:notice] = "#{kind} account successfully connected to your ResQWay profile!"
       redirect_to settings_path
     else
       @user = User.from_omniauth(auth)

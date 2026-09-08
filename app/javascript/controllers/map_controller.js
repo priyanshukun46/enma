@@ -120,7 +120,7 @@ export default class extends Controller {
     L.tileLayer(tileUrl, {
       maxZoom: 18,
       subdomains: 'abcd',
-      attribution: '© OpenStreetMap & CARTO | ENMA AI GIS'
+      attribution: '© OpenStreetMap & CARTO | ResQWay GIS'
     }).addTo(this.map)
 
     // Layer groups

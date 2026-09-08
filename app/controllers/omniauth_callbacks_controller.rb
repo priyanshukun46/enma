@@ -16,7 +16,7 @@ class OmniauthCallbacksController < ApplicationController
         uid: auth.uid,
         avatar_url: current_user.avatar_url.presence || auth.dig("info", "image")
       )
-      flash[:notice] = "#{auth.provider.titleize} account successfully connected to your ENMA AI profile!"
+      flash[:notice] = "#{auth.provider.titleize} account successfully connected to your ResQWay profile!"
       redirect_to settings_path
     else
       # Standard OAuth login or registration

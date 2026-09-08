@@ -27,7 +27,7 @@ module Authentication
   def require_authentication
     unless user_signed_in?
       session[:user_return_to] = request.fullpath if request.get?
-      redirect_to new_user_session_path, alert: "Please sign in to access ENMA AI intelligence platform."
+      redirect_to new_user_session_path, alert: "Please sign in to access ResQWay intelligence platform."
     end
   end
 

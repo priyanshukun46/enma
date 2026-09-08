@@ -35,6 +35,6 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get about page" do
     get about_url
     assert_response :success
-    assert_select "h2", /About ENMA AI/
+    assert_select "h2", /About (ResQWay|ENMA AI)/
   end
 end

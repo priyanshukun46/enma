@@ -105,7 +105,7 @@ export default class extends Controller {
 
     // Base Maps Layer Controller
     const baseMaps = {
-      "ENMA Dark Radar": darkLayer,
+      "ResQWay Dark Radar": darkLayer,
       "Standard Street": osmLayer,
       "Topographic Terrain": topoLayer
     }

@@ -13,7 +13,7 @@ from .schemas import (
     PredictionFactor
 )
 
-logger = logging.getLogger("enma.ml.predictor")
+logger = logging.getLogger("resqway.ml.predictor")
 
 # Feature dictionary matching training feature_engineering
 FEATURE_COLUMNS = [

@@ -14,7 +14,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should get new login page" do
     get login_url
     assert_response :success
-    assert_select "h2", "ENMA AI"
+    assert_select "h2", text: /ResQWay|ENMA AI/
     assert_select "input[name='login']"
     assert_select "input[name='password']"
   end

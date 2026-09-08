@@ -85,6 +85,6 @@ class Shipment < ApplicationRecord
   private
 
   def ensure_tracking_number
-    self.tracking_number ||= "ENMA-TRK-#{Time.current.strftime('%Y%m%d')}-#{SecureRandom.alphanumeric(6).upcase}"
+    self.tracking_number ||= "RESQWAY-TRK-#{Time.current.strftime('%Y%m%d')}-#{SecureRandom.alphanumeric(6).upcase}"
   end
 end

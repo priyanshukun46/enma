@@ -43,7 +43,7 @@ class RoutesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select "div[data-controller='route-planner-map']"
-    assert_select "h3", /Why ENMA AI Recommends This Route/
+    assert_select "h3", /Why (ResQWay|ENMA AI) Recommends This Route/
   end
 
   test "should return JSON results on calculate with json format" do

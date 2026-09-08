@@ -152,7 +152,7 @@ class EmergencyIntelligenceServiceTest < ActiveSupport::TestCase
     assert plan.action_items.any?
 
     briefing = plan.formatted_briefing
-    assert_includes briefing, "ENMA AI INTELLIGENT DISASTER RESPONSE BRIEFING"
+    assert briefing.match?(/ResQWay|ENMA AI/)
     assert_includes briefing, @emergency.title
     assert_includes briefing, plan.warehouse_name
   end

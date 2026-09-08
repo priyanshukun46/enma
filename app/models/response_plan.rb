@@ -13,7 +13,7 @@ class ResponsePlan < ApplicationRecord
   def formatted_briefing
     <<~BRIEFING
       ================================================================================
-      ENMA AI INTELLIGENT DISASTER RESPONSE BRIEFING
+      ResQWay INTELLIGENT DISASTER RESPONSE BRIEFING
       ================================================================================
       Incident: #{emergency.title}
       Type: #{emergency.emergency_type} | Threat Level: #{severity_level} (Score: #{severity_score}/100)
@@ -45,7 +45,7 @@ class ResponsePlan < ApplicationRecord
       #{Array(action_items).map { |a| a.is_a?(Hash) ? "• [#{a['priority']}] #{a['action']}: #{a['detail']}" : "• #{a}" }.join("\n")}
 
       ================================================================================
-      ENMA AI Intelligence Platform — Decision Support System
+      ResQWay Intelligence Platform — Decision Support System
       ================================================================================
     BRIEFING
   end

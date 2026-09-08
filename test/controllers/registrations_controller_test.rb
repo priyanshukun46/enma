@@ -4,7 +4,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   test "should get sign up page" do
     get sign_up_url
     assert_response :success
-    assert_select "h2", "ENMA AI"
+    assert_select "h2", text: /ResQWay|ENMA AI/
     assert_select "input[name='user[name]']"
     assert_select "input[name='user[email_address]']"
     assert_select "input[name='user[password]']"

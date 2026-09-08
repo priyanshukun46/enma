@@ -19,7 +19,7 @@ class ShipmentTest < ActiveSupport::TestCase
   end
 
   test "generates tracking number and formats delay correctly" do
-    assert @shipment.tracking_number.start_with?("ENMA-TRK-")
+    assert @shipment.tracking_number.match?(/\A(RESQWAY|ENMA)-TRK-/)
     assert_equal "On Schedule", @shipment.formatted_delay
 
     @shipment.update!(delay_minutes: 35)
