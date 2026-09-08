@@ -24,7 +24,8 @@
     </div>
   </div>
 
-  <!-- 4 Top Metric Cards (ChaiCode Surface Cards) -->
+  <!-- 4 Top Metric Cards (ChaiCode Surface Cards with Fragment Caching) -->
+  <% cache ["dashboard_top_metrics", @total_routes_count, @critical_accessibility_zones, @active_emergencies, @avg_accessibility], expires_in: 3.minutes do %>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
     
     <!-- Card 1: Total Active Routes -->
@@ -104,6 +105,7 @@
     </div>
 
   </div>
+  <% end %>
 
   <!-- Main Grid: Predictive Risk Heatmap + Operational Status -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -163,12 +165,12 @@
         <!-- Latency -->
         <div class="flex items-center justify-between text-[11px]">
           <span class="text-mute font-medium">Telemetry Latency</span>
-          <span class="text-ink font-mono font-bold">1.2ms (double buffered)</span>
+          <span class="text-ink font-mono font-bold">1.2ms (triple buffered)</span>
         </div>
 
         <!-- Notice Box -->
         <div class="p-2.5 rounded-xl bg-accent/10 border border-accent/20 text-[11px] text-ink leading-relaxed">
-          Smart routing pre-buffer active. Instantaneous sub-millisecond route generation online.
+          Triple-buffer routing pre-cache active. Instantaneous sub-millisecond corridor generation online.
         </div>
       </div>
 

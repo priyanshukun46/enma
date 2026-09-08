@@ -4,7 +4,12 @@ class LogisticsAlert < ApplicationRecord
 
   serialize :metadata_json, coder: JSON
 
-  ALERT_TYPES = %w[route_deviation delivery_delay high_risk_corridor blocked_route incident_ahead severe_weather vehicle_offline].freeze
+  ALERT_TYPES = %w[
+    route_deviation delivery_delay high_risk_corridor blocked_route incident_ahead severe_weather vehicle_offline
+    settlement_isolated warehouse_isolated critical_corridor_blocked network_connectivity_drop
+    predictive_cascading_failure cascading_risk_warning
+    command_plan_drift_detected commander_feedback_recorded autonomous_response_required
+  ].freeze
   SEVERITIES = %w[info warning high critical].freeze
   STATUSES = %w[active acknowledged resolved].freeze
 
@@ -45,6 +50,18 @@ class LogisticsAlert < ApplicationRecord
       "fa-land-mine-on"
     when "severe_weather"
       "fa-cloud-bolt"
+    when "settlement_isolated"
+      "fa-house-crack"
+    when "warehouse_isolated"
+      "fa-warehouse"
+    when "critical_corridor_blocked"
+      "fa-road-circle-xmark"
+    when "network_connectivity_drop"
+      "fa-diagram-project"
+    when "predictive_cascading_failure"
+      "fa-land-mine-on"
+    when "cascading_risk_warning"
+      "fa-triangle-exclamation"
     else
       "fa-bell"
     end

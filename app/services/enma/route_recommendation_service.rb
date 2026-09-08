@@ -144,6 +144,13 @@ module Enma
       is_blocked = blocked_segments.any?
       blockage_reason = is_blocked ? "Active road blockage on #{blocked_segments.map { |b| b[:road_number] }.join(', ')}" : nil
 
+      # Check for Network Disconnection / Partition
+      net_partition = check_network_partition(origin, destination)
+      if net_partition[:disconnected]
+        is_blocked = true
+        blockage_reason ||= net_partition[:reason]
+      end
+
       # Incident intersections
       incident_exposure = evaluate_incident_exposure(coords, incidents)
       incident_count = incident_exposure[:intersected_count]
@@ -529,6 +536,37 @@ module Enma
       else
         "#{m}m"
       end
+    end
+
+    def check_network_partition(orig, dest)
+      return { disconnected: false } unless defined?(Enma::NetworkConnectivityService)
+      return { disconnected: false } unless orig.respond_to?(:id) && dest.respond_to?(:id) && orig.id.present? && dest.id.present?
+      return { disconnected: false } if options[:skip_network_check]
+
+      begin
+        net_analysis = Rails.cache.fetch("enma_network_connectivity_clusters", expires_in: 15.seconds) do
+          Enma::NetworkConnectivityService.new.analyze(include_criticalities: false)
+        end
+
+        comps = net_analysis[:components] || []
+        return { disconnected: false } if comps.empty?
+
+        orig_comp = comps.find { |c| c[:node_ids]&.include?(orig.id) }
+        dest_comp = comps.find { |c| c[:node_ids]&.include?(dest.id) }
+
+        if orig_comp && dest_comp && orig_comp[:cluster_id] != dest_comp[:cluster_id]
+          orig_name = orig.respond_to?(:name) ? orig.name : "Origin"
+          dest_name = dest.respond_to?(:name) ? dest.name : "Destination"
+          return {
+            disconnected: true,
+            reason: "Corridor severed by regional network partition: #{orig_name} and #{dest_name} reside in disconnected clusters with no passable overland route."
+          }
+        end
+      rescue StandardError => e
+        Rails.logger.warn("[RouteRecommendation] Network partition check error: #{e.message}")
+      end
+
+      { disconnected: false }
     end
 
     def self.calculate_haversine(lat1, lon1, lat2, lon2)

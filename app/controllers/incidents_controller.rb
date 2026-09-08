@@ -17,8 +17,6 @@ class IncidentsController < ApplicationController
       @incidents_scope = @incidents_scope.by_status(params[:status])
     end
 
-    @incidents = @incidents_scope.recent
-
     @total_count = Incident.count
     @reported_count = Incident.where(status: "reported").count
     @verified_count = Incident.where(status: "verified").count
@@ -26,8 +24,11 @@ class IncidentsController < ApplicationController
     @critical_count = Incident.critical.count
 
     respond_to do |format|
-      format.html
+      format.html do
+        @pagy, @incidents = pagy(@incidents_scope.recent)
+      end
       format.json do
+        @incidents = @incidents_scope.recent.limit(200)
         render json: @incidents.map { |inc| inc.as_map_json(view_context) }
       end
     end
@@ -57,6 +58,11 @@ class IncidentsController < ApplicationController
     @incident.status ||= "reported"
 
     if @incident.save
+      begin
+        Enma::DataConfidenceService.new(@incident).calculate_and_save!
+      rescue StandardError => e
+        Rails.logger.error("Data confidence evaluation failed for incident #{@incident.id}: #{e.message}")
+      end
       redirect_to incident_path(@incident), notice: "Field incident report submitted successfully. Geographic intelligence updated."
     else
       flash.now[:alert] = "Please fix the errors below to submit the incident report."

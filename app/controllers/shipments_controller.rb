@@ -2,16 +2,17 @@ class ShipmentsController < ApplicationController
   before_action :set_shipment, only: [:show, :simulate, :confirm_reroute]
 
   def index
-    @shipments = Shipment.includes(:vehicle, :origin, :destination).recent
-    @total_shipments = @shipments.count
-    @active_count = @shipments.where(status: %w[in_transit assigned delayed rerouting]).count
-    @on_time_count = @shipments.where(status: "in_transit").where("delay_minutes <= 0").count
-    @delayed_count = @shipments.where(status: "delayed").or(@shipments.where("delay_minutes > 0")).count
-    @high_risk_count = @shipments.where("current_corridor_risk >= 60.0 OR ml_disruption_probability >= 0.60").count
+    @total_shipments = Shipment.count
+    @active_count = Shipment.where(status: %w[in_transit assigned delayed rerouting]).count
+    @on_time_count = Shipment.where(status: "in_transit").where("delay_minutes <= 0").count
+    @delayed_count = Shipment.where(status: "delayed").or(Shipment.where("delay_minutes > 0")).count
+    @high_risk_count = Shipment.where("current_corridor_risk >= 60.0 OR ml_disruption_probability >= 0.60").count
     @critical_alerts_count = LogisticsAlert.where(status: "active", severity: %w[critical high]).count
 
+    @pagy, @shipments = pagy(Shipment.includes(:vehicle, :origin, :destination).recent)
+
     # Active deliveries for GIS Map visualization
-    @map_shipments = @shipments.where(status: %w[in_transit delayed rerouting assigned]).limit(25)
+    @map_shipments = Shipment.includes(:vehicle, :origin, :destination).where(status: %w[in_transit delayed rerouting assigned]).limit(25)
     @active_vehicles = Vehicle.where.not(current_latitude: nil, current_longitude: nil).active.limit(50)
   end
 

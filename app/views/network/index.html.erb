@@ -1,0 +1,460 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div>
+      <div class="flex items-center gap-2">
+        <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight font-hand">Network Connectivity Intelligence</h2>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-black uppercase bg-accent/10 text-accent border border-accent/20">
+          Graph Intelligence
+        </span>
+      </div>
+      <p class="text-xs text-mute mt-1">Graph-theoretic network impact, isolated settlement triage, and single points of failure across North East India.</p>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <% if @simulated_road_ids.any? %>
+        <%= link_to network_path, class: "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-surface text-sketch border border-[var(--line)] shadow-sm hover:bg-ink/5 transition-all" do %>
+          <i class="fas fa-undo mr-1.5 text-xs text-mute"></i>
+          <span>Clear Simulation</span>
+        <% end %>
+      <% end %>
+
+      <%= link_to map_path, class: "inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-ink text-paper shadow-sm hover:opacity-90 transition-all" do %>
+        <i class="fas fa-map mr-1.5 text-xs"></i>
+        <span>Full GIS Radar</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- KPI Cards Grid -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Health Score -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>Network Health</span>
+        <div class="flex items-center gap-1.5">
+          <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-black uppercase <%= @network_data[:network_health_trend] == 'STABLE' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : (@network_data[:network_health_trend] == 'DECLINING' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' : 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20') %>">
+            <%= @network_data[:network_health_trend] %>
+          </span>
+          <i class="fas fa-heart-pulse <%= @network_data[:network_health_score] >= 75 ? 'text-emerald-500' : 'text-amber-500' %>"></i>
+        </div>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-ink">
+          <%= @network_data[:network_health_score] %><span class="text-base text-mute font-normal"> / 100</span>
+        </div>
+        <div class="text-[11px] font-bold mt-0.5 <%= @network_data[:network_health_score] >= 75 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400' %>">
+          Trend: <%= @network_data[:network_health_trend] %> • Disruptions: <%= @network_data[:blocked_roads_count] %>
+        </div>
+      </div>
+      <div class="w-full bg-ink/10 rounded-full h-1.5 overflow-hidden">
+        <div class="h-1.5 rounded-full <%= @network_data[:network_health_score] >= 75 ? 'bg-emerald-500' : 'bg-amber-500' %>"
+             style="width: <%= @network_data[:network_health_score] %>%"></div>
+      </div>
+    </div>
+
+    <!-- Connected Settlements -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>Connected Settlements</span>
+        <i class="fas fa-circle-check text-emerald-500"></i>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-ink">
+          <%= @network_data[:connected_settlements_count] %><span class="text-base text-mute font-normal"> / <%= @network_data[:total_settlements] %></span>
+        </div>
+        <div class="text-[11px] text-mute mt-0.5">
+          Across <%= @network_data[:connected_components_count] %> connected <%= 'component'.pluralize(@network_data[:connected_components_count]) %>
+        </div>
+      </div>
+      <div class="text-[10px] text-mute font-mono">
+        Active corridors: <%= @network_data[:total_settlements] - @network_data[:blocked_roads_count] %>
+      </div>
+    </div>
+
+    <!-- Isolated Settlements -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>Isolated Settlements</span>
+        <i class="fas fa-triangle-exclamation <%= @network_data[:isolated_settlements_count].positive? ? 'text-red-500' : 'text-mute' %>"></i>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono <%= @network_data[:isolated_settlements_count].positive? ? 'text-red-600 dark:text-red-400' : 'text-ink' %>">
+          <%= @network_data[:isolated_settlements_count] %>
+        </div>
+        <div class="text-[11px] font-bold text-red-600 dark:text-red-400 mt-0.5">
+          <%= number_with_delimiter(@network_data[:isolated_population]) %> citizens cut off
+        </div>
+      </div>
+      <div class="text-[10px] text-mute font-mono">
+        Isolation Impact: <%= @network_data[:isolation_impact_score] %>/100
+      </div>
+    </div>
+
+    <!-- Critical Corridors at Risk -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>Critical Corridors at Risk</span>
+        <i class="fas fa-bridge-water text-orange-500"></i>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-orange-600 dark:text-orange-400">
+          <%= @network_data[:critical_corridors_at_risk_count] %>
+        </div>
+        <div class="text-[11px] text-mute mt-0.5">
+          <%= @network_data[:critical_roads].count { |r| r[:is_bridge] } %> Tarjan bridges (SPoF)
+        </div>
+      </div>
+      <div class="text-[10px] text-orange-600 dark:text-orange-400 font-mono font-bold">
+        Active Disruptions: <%= @network_data[:blocked_roads_count] %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Regional Network Health Diagnostic Explanation Banner -->
+  <% if @network_data[:explanation].present? %>
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex items-start gap-3 text-xs">
+      <div class="w-8 h-8 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 mt-0.5 text-accent">
+        <i class="fas fa-circle-info text-sm"></i>
+      </div>
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="font-bold text-ink uppercase tracking-wide text-[11px] font-mono">Regional Network Impact Explanation</span>
+          <span class="px-1.5 py-0.2 rounded text-[9px] font-mono uppercase bg-ink/5 text-mute font-bold">Health Score: <%= @network_data[:network_health_score] %>/100</span>
+        </div>
+        <p class="text-sketch leading-relaxed"><%= @network_data[:explanation] %></p>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Interactive Road Closure Simulation Sandbox -->
+  <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[var(--line)] pb-3">
+      <div>
+        <h3 class="text-base font-black text-ink flex items-center gap-2">
+          <i class="fas fa-flask text-accent text-sm"></i>
+          <span>What-If Corridor Disruption Sandbox</span>
+        </h3>
+        <p class="text-xs text-mute">Simulate temporary closure of any highway corridor to compute downstream network isolation impact.</p>
+      </div>
+      <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-ink/5 text-mute font-bold">
+        Interactive Graph Simulation
+      </span>
+    </div>
+
+    <%= form_with url: simulate_network_path, method: :post, local: true, class: "flex flex-col sm:flex-row items-stretch sm:items-center gap-3" do |f| %>
+      <div class="flex-1 min-w-0">
+        <%= f.select :road_id,
+                     options_for_select(
+                       @roads.map { |r| ["#{r.road_number} • #{r.name} (#{r.state}) — Risk: #{r.risk_score.round}/100", r.id] },
+                       selected: @simulated_road_ids.first
+                     ),
+                     { prompt: "-- Select a corridor to simulate closure --" },
+                     class: "w-full text-xs font-semibold bg-paper text-ink border border-[var(--line)] rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-accent focus:outline-none truncate" %>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <%= f.button class: "px-5 py-2.5 rounded-xl text-xs font-black bg-accent hover:opacity-90 text-white shadow-sm transition-all cursor-pointer inline-flex items-center justify-center gap-1.5" do %>
+          <i class="fas fa-play text-xs"></i>
+          <span>Simulate Impact</span>
+        <% end %>
+
+        <% if @simulated_road_ids.any? %>
+          <%= link_to "Reset", network_path, class: "px-4 py-2.5 rounded-xl text-xs font-bold bg-surface text-sketch border border-[var(--line)] hover:bg-ink/5 transition-all" %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Simulation Output Banner (Matches User Spec) -->
+    <% if @simulation_result %>
+      <div class="mt-4 rounded-2xl bg-[#18120E] text-[#ECE5D6] p-5 border-2 border-accent/40 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[#2D2319] pb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-accent animate-ping"></span>
+            <span class="font-mono text-xs font-black uppercase tracking-widest text-accent">NETWORK IMPACT ANALYSIS</span>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-accent/20 text-accent font-black border border-accent/30">
+            Criticality: <%= @simulation_result[:criticality_score] %>/100
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+          <div>
+            <span class="text-slate-400 block text-[10px] uppercase">Road Corridor</span>
+            <strong class="text-sm text-white font-bold"><%= @simulation_result[:target_road_names] %></strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px] uppercase">Simulated Status</span>
+            <strong class="text-sm text-red-400 font-bold">BLOCKED / SEVERED</strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px] uppercase">Connectivity Impact</span>
+            <strong class="text-sm text-accent font-black"><%= @simulation_result[:connectivity_impact] %></strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px] uppercase">Alternative Access</span>
+            <strong class="text-sm text-slate-200"><%= @simulation_result[:alternative_access] %></strong>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-[#221A14] p-3.5 rounded-xl text-xs">
+          <div>
+            <span class="text-slate-400 block text-[10px]">Previously Connected Settlements:</span>
+            <strong class="text-emerald-400 font-mono text-sm"><%= @simulation_result[:pre_connected_settlements] %></strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px]">Currently Isolated Settlements:</span>
+            <strong class="text-red-400 font-mono text-sm"><%= @simulation_result[:newly_isolated_count] %> (<%= @simulation_result[:newly_isolated_settlements].join(", ").presence || "None newly isolated" %>)</strong>
+          </div>
+          <div>
+            <span class="text-slate-400 block text-[10px]">Affected Warehouses:</span>
+            <strong class="text-amber-400 font-mono text-sm"><%= @simulation_result[:affected_warehouses_count] %> (<%= @simulation_result[:affected_warehouses].join(", ").presence || "None cut off" %>)</strong>
+          </div>
+        </div>
+
+        <div class="text-xs pt-1 flex items-start gap-2 text-slate-200">
+          <i class="fas fa-bullhorn text-accent mt-0.5 text-xs"></i>
+          <div>
+            <span class="font-bold text-accent">Recommended Action:</span>
+            <span><%= @simulation_result[:recommended_action] %></span>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Interactive Network Map Canvas -->
+  <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4"
+       data-controller="network-map"
+       data-network-map-graph-value="<%= @graph_json.to_json %>">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div>
+        <h3 class="text-sm font-black text-ink uppercase tracking-wide flex items-center gap-2">
+          <i class="fas fa-diagram-project text-accent text-sm"></i>
+          <span>Regional Transportation Graph Topology</span>
+        </h3>
+        <p class="text-xs text-mute">Live vector rendering of settlement nodes, warehouse hubs, and connectivity corridors.</p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="flex items-center gap-1.5 p-1 bg-paper rounded-xl border border-[var(--line)] text-xs">
+        <button type="button"
+                data-network-map-target="filterButton"
+                data-filter="all"
+                data-action="click->network-map#filterGraph"
+                class="px-2.5 py-1 rounded-lg text-xs font-black bg-ink text-paper transition-all">
+          All Corridors
+        </button>
+        <button type="button"
+                data-network-map-target="filterButton"
+                data-filter="critical"
+                data-action="click->network-map#filterGraph"
+                class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface text-sketch transition-all hover:text-ink">
+          Critical / Bridges Only
+        </button>
+        <button type="button"
+                data-network-map-target="filterButton"
+                data-filter="blocked"
+                data-action="click->network-map#filterGraph"
+                class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-surface text-sketch transition-all hover:text-ink">
+          Blocked Corridors
+        </button>
+      </div>
+    </div>
+
+    <!-- Map Element -->
+    <div class="relative w-full h-[450px] rounded-xl overflow-hidden border border-[var(--line)]">
+      <div data-network-map-target="container" class="w-full h-full z-10"></div>
+
+      <!-- Map Legend Overlay -->
+      <div class="absolute bottom-3 left-3 z-[400] bg-surface/95 backdrop-blur-md p-3 rounded-xl border border-[var(--line)] shadow-xl text-[10px] space-y-2">
+        <div class="font-black text-ink uppercase tracking-wider text-[9px] border-b border-[var(--line)] pb-1">Network Topology</div>
+        
+        <div class="space-y-1">
+          <div class="text-[9px] font-mono font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide">Normal Network</div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span class="text-sketch font-medium">🟢 Connected nodes</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-1 bg-emerald-500 rounded"></span>
+            <span class="text-sketch font-medium">━━━━━━ Active corridors</span>
+          </div>
+        </div>
+
+        <div class="space-y-1 pt-1.5 border-t border-[var(--line)]">
+          <div class="text-[9px] font-mono font-bold text-red-600 dark:text-red-400 uppercase tracking-wide">Disrupted Network</div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+            <span class="text-sketch font-bold text-red-600 dark:text-red-400">🔴 Isolated nodes</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-1 border-t-2 border-dashed border-red-500"></span>
+            <span class="text-sketch font-medium">╌╌╌╌ Blocked corridors</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-1 bg-purple-500 rounded"></span>
+            <span class="text-sketch font-medium">🟣 Bridge chokepoints (SPoF)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dual Tables Grid: Critical Corridors & Isolated Settlements -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+    
+    <!-- Critical Corridors Table -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-black text-ink tracking-wide uppercase">Critical Corridors (Single Points of Failure)</h3>
+          <p class="text-xs text-mute">Corridors whose disruption partitions the regional transportation graph.</p>
+        </div>
+        <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded bg-orange-100 text-orange-800">
+          <%= @network_data[:critical_roads].count { |r| r[:criticality_score] >= 50 } %> High Impact
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="border-b border-[var(--line)] text-mute font-mono text-[10px] uppercase">
+              <th class="py-2 pr-2">Corridor</th>
+              <th class="py-2 px-2">State</th>
+              <th class="py-2 px-2 text-center">Score</th>
+              <th class="py-2 px-2 text-center">Bridge</th>
+              <th class="py-2 pl-2 text-right">Failure Impact</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[var(--line)]/50">
+            <% @network_data[:critical_roads].first(8).each do |cr| %>
+              <tr class="hover:bg-ink/5 transition-colors">
+                <td class="py-2.5 pr-2 font-bold text-ink">
+                  <div><%= cr[:road_number] %></div>
+                  <div class="text-[10px] text-mute truncate max-w-[140px] font-normal"><%= cr[:name] %></div>
+                </td>
+                <td class="py-2.5 px-2 text-sketch"><%= cr[:state] %></td>
+                <td class="py-2.5 px-2 text-center">
+                  <span class="font-mono font-black <%= cr[:criticality_score] >= 75 ? 'text-red-600' : (cr[:criticality_score] >= 50 ? 'text-orange-600' : 'text-sketch') %>">
+                    <%= cr[:criticality_score].round %>
+                  </span>
+                </td>
+                <td class="py-2.5 px-2 text-center">
+                  <% if cr[:is_bridge] %>
+                    <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300 border border-orange-300">
+                      SPOF
+                    </span>
+                  <% else %>
+                    <span class="text-mute text-[10px] font-mono">—</span>
+                  <% end %>
+                </td>
+                <td class="py-2.5 pl-2 text-right font-mono text-[11px] <%= cr[:lost_settlements_on_failure].positive? ? 'text-red-600 font-bold' : 'text-mute' %>">
+                  <% if cr[:lost_settlements_on_failure].positive? %>
+                    -<%= cr[:lost_settlements_on_failure] %> settlements
+                  <% else %>
+                    Bypass exists
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Isolated Settlements Table -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-black text-ink tracking-wide uppercase">Settlement Isolation Triage</h3>
+          <p class="text-xs text-mute">Habitations currently cut off from regional logistics supply chains.</p>
+        </div>
+        <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded <%= @network_data[:isolated_settlements].any? ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800' %>">
+          <%= @network_data[:isolated_settlements].size %> Isolated
+        </span>
+      </div>
+
+      <% if @network_data[:isolated_settlements].empty? %>
+        <div class="p-8 text-center bg-paper rounded-xl border border-[var(--line)] space-y-2">
+          <i class="fas fa-shield-halved text-emerald-500 text-2xl"></i>
+          <div class="text-xs font-bold text-ink">Zero Settlements Isolated</div>
+          <p class="text-[11px] text-mute">All habitations maintain redundant overland routes to regional staging hubs.</p>
+        </div>
+      <% else %>
+        <div class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+          <% @network_data[:isolated_settlements].each do |iso| %>
+            <div class="p-3.5 rounded-xl bg-paper border border-red-200 dark:border-red-900/60 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                  <strong class="text-sm text-ink"><%= iso[:name] %></strong>
+                  <span class="text-[10px] text-mute">(<%= iso[:district] %>, <%= iso[:state] %>)</span>
+                </div>
+                <span class="text-[10px] font-mono font-bold text-red-600 bg-red-50 dark:bg-red-950 px-2 py-0.5 rounded">
+                  Pop: <%= number_with_delimiter(iso[:population]) %>
+                </span>
+              </div>
+
+              <p class="text-xs text-sketch leading-snug">
+                <%= iso[:explanation] %>
+              </p>
+
+              <div class="pt-2 border-t border-[var(--line)] flex items-center justify-between text-[11px]">
+                <div class="text-mute">
+                  <% if iso[:alternative_warehouse] %>
+                    <span class="text-ink font-semibold">Nearest Depot:</span>
+                    <span><%= iso[:alternative_warehouse][:warehouse_name] %> (<%= iso[:alternative_warehouse][:distance_km] %> km)</span>
+                  <% else %>
+                    <span class="text-red-600 font-bold">No overland depot reachable</span>
+                  <% end %>
+                </div>
+
+                <%= link_to routes_path(origin_id: Location.find_by(name: "Guwahati")&.id, destination_id: iso[:id]), class: "text-accent hover:underline font-bold text-[10px]" do %>
+                  Plan Reroute →
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Active Connectivity Alerts Section -->
+  <% if @connectivity_alerts.any? %>
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xs font-black text-ink uppercase tracking-wider flex items-center gap-2">
+          <i class="fas fa-bell text-accent"></i>
+          <span>Active Connectivity Alerts</span>
+        </h3>
+        <%= link_to "View All Alerts", logistics_alerts_path, class: "text-xs text-accent hover:underline font-bold" %>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <% @connectivity_alerts.each do |alert| %>
+          <div class="p-3 rounded-xl bg-paper border border-[var(--line)] flex items-start gap-3">
+            <div class="p-2 rounded-lg bg-red-100 text-red-800 shrink-0 mt-0.5">
+              <i class="fas <%= alert.icon_class %> text-xs"></i>
+            </div>
+            <div class="min-w-0 flex-1 space-y-0.5">
+              <div class="flex items-center justify-between gap-1">
+                <strong class="text-xs text-ink truncate"><%= alert.title %></strong>
+                <span class="text-[9px] font-mono text-mute shrink-0"><%= time_ago_in_words(alert.created_at) %> ago</span>
+              </div>
+              <p class="text-[11px] text-sketch leading-snug line-clamp-2"><%= alert.message %></p>
+              <% if alert.recommended_action.present? %>
+                <div class="text-[10px] text-accent font-semibold pt-1">
+                  Action: <%= alert.recommended_action %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

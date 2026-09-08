@@ -100,6 +100,62 @@ class Incident < ApplicationRecord
     end
   end
 
+  def confidence_data
+    @confidence_data ||= begin
+      if ai_classification_json.present?
+        parsed = JSON.parse(ai_classification_json)
+        parsed.is_a?(Hash) ? parsed.with_indifferent_access : {}
+      else
+        Enma::DataConfidenceService.new(self).calculate.with_indifferent_access
+      end
+    rescue StandardError
+      {}
+    end
+  end
+
+  def confidence_score
+    ai_confidence_score || confidence_data[:overall_confidence] || 70.0
+  end
+
+  def confidence_level
+    return confidence_data[:confidence_level] if confidence_data[:confidence_level].present?
+
+    score = confidence_score.to_f
+    if score >= 90.0
+      "VERIFIED"
+    elsif score >= 75.0
+      "HIGH"
+    elsif score >= 55.0
+      "MODERATE"
+    else
+      "LOW"
+    end
+  end
+
+  def confidence_badge_class
+    case confidence_level
+    when "VERIFIED"
+      "bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 font-bold"
+    when "HIGH"
+      "bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800 font-semibold"
+    when "MODERATE"
+      "bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800 font-medium"
+    when "LOW"
+      "bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800 font-medium"
+    else
+      "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+    end
+  end
+
+  def confidence_verified?
+    confidence_level == "VERIFIED"
+  end
+
+  def high_confidence?
+    confidence_score.to_f >= 75.0
+  end
+
+
   def as_map_json(view_context = nil)
     photo_urls = []
     if photos.attached?
@@ -138,6 +194,9 @@ class Incident < ApplicationRecord
       photos_count: photos.attached? ? photos.count : 0,
       first_photo_url: photo_urls.first,
       photo_urls: photo_urls,
+      confidence_score: confidence_score.round(1),
+      confidence_level: confidence_level,
+      confidence_badge_class: confidence_badge_class,
       url: Rails.application.routes.url_helpers.incident_path(self)
     }
   end

@@ -330,12 +330,12 @@
           <div class="w-10 h-10 rounded-xl bg-accent2/10 text-accent2 flex items-center justify-center text-lg font-bold">
             <i class="fas fa-route"></i>
           </div>
-          <h3 class="text-base font-bold text-ink">Double-Buffered Smart Routes</h3>
+          <h3 class="text-base font-bold text-ink">Triple-Buffered Smart Routes</h3>
           <p class="text-xs text-sketch leading-relaxed">
             Multi-candidate corridor analysis weighing risk scores, elevation changes, and weather severity with instant sub-millisecond buffer load times.
           </p>
           <div class="pt-2 text-[11px] font-mono font-bold text-accent2">
-            <span>&lt; 2ms In-Memory Buffer Response</span>
+            <span>&lt; 0.1ms In-Memory Buffer Response</span>
           </div>
         </div>
 
@@ -416,31 +416,31 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
         <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">1</div>
+          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">1</div>
           <h4 class="font-bold text-sm text-ink">Ingest</h4>
           <p class="text-xs text-sketch leading-relaxed">Open-Meteo rainfall, terrain slope, and citizen alerts.</p>
         </div>
 
         <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent2 text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">2</div>
+          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">2</div>
           <h4 class="font-bold text-sm text-ink">Predict</h4>
           <p class="text-xs text-sketch leading-relaxed">Machine Learning forecasts road collapse risks.</p>
         </div>
 
         <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-[rgb(var(--gold-text))] text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">3</div>
+          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">3</div>
           <h4 class="font-bold text-sm text-ink">Score</h4>
           <p class="text-xs text-sketch leading-relaxed">Ranks remote settlements by accessibility index.</p>
         </div>
 
         <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-[rgb(var(--done-stroke))] text-white font-bold text-xs flex items-center justify-center mx-auto shadow-sm">4</div>
+          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">4</div>
           <h4 class="font-bold text-sm text-ink">Optimize</h4>
           <p class="text-xs text-sketch leading-relaxed">Computes safest corridor avoiding active mudflows.</p>
         </div>
 
         <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-ink text-paper font-bold text-xs flex items-center justify-center mx-auto shadow-sm">5</div>
+          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">5</div>
           <h4 class="font-bold text-sm text-ink">Dispatch</h4>
           <p class="text-xs text-sketch leading-relaxed">Assigns relief depot and tracks real-time GPS path.</p>
         </div>
@@ -505,7 +505,7 @@
           ["Leaflet GIS", "fas fa-map"],
           ["CartoDB Dark Matter", "fas fa-circle-half-stroke"],
           ["Tailwind CSS", "fas fa-palette"],
-          ["Double-Buffer Engine", "fas fa-microchip"]
+          ["Triple-Buffer Engine", "fas fa-microchip"]
         ].each do |tech, icon| %>
           <span class="sketch-border-soft bg-surface text-ink text-xs font-semibold px-3.5 py-2 flex items-center space-x-2">
             <i class="<%= icon %> text-accent text-xs"></i>

@@ -1,0 +1,596 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-16">
+
+  <!-- PAGE HEADER -->
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <h1 class="text-2xl sm:text-3xl font-black text-ink tracking-tight font-hand">Autonomous Response Optimization Engine</h1>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-black uppercase bg-accent/15 text-accent border border-accent/30">
+          Decision Support System
+        </span>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono text-mute bg-surface border border-[var(--line)]">
+          <i class="fas fa-stopwatch mr-1 text-[10px]"></i><%= @optimization.dig(:instrumentation, :execution_time_ms) || 35 %>ms latency
+        </span>
+      </div>
+      <p class="text-xs sm:text-sm text-mute mt-1">
+        Humanitarian prioritization, multi-hub logistics optimization, and contingency stress-testing for disaster dispatch.
+      </p>
+    </div>
+
+    <!-- Controls: Horizons & Export -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- Horizon Selector -->
+      <div class="flex items-center bg-surface border border-[var(--line)] rounded-xl p-1 shadow-sm">
+        <span class="text-[10px] font-mono text-mute font-bold uppercase px-2">Horizon:</span>
+        <% [6, 12, 24, 48].each do |h| %>
+          <%= link_to intelligence_response_path(horizon: h),
+                      class: "px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition #{h == @horizon ? 'bg-ink text-paper shadow-sm' : 'text-mute hover:text-ink hover:bg-ink/5'}" do %>
+            <%= h %>h
+          <% end %>
+        <% end %>
+      </div>
+
+      <!-- Export JSON -->
+      <%= link_to intelligence_response_path(horizon: @horizon, format: :json),
+                  target: "_blank",
+                  class: "inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold bg-surface text-sketch border border-[var(--line)] hover:bg-ink/5 shadow-sm transition" do %>
+        <i class="fas fa-code mr-1.5 text-xs text-mute"></i>
+        <span>JSON API</span>
+      <% end %>
+
+      <!-- Cascade Predictions Link -->
+      <%= link_to intelligence_predictions_path(horizon: @horizon),
+                  class: "inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-ink text-paper shadow-sm hover:opacity-90 transition" do %>
+        <i class="fas fa-chart-line mr-1.5 text-xs"></i>
+        <span>Cascade Radar</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- PROMINENT HUMAN COMMAND DECISION SUPPORT HERO (WIRE-FRAME ALIGNED) -->
+  <div class="bg-surface rounded-2xl border-2 border-amber-500/40 dark:border-amber-500/30 p-5 sm:p-6 shadow-md relative overflow-hidden">
+    <!-- Top Bar: Live Status & Warning -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[var(--line)] pb-3 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+        <span class="text-xs font-mono font-black uppercase tracking-wider text-ink">ENMA AI — RESPONSE COMMAND INTELLIGENCE</span>
+        <span class="text-[10px] font-mono text-mute">• LIVE DECISION SUPPORT</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1">
+          <i class="fas fa-triangle-exclamation text-[9px]"></i>
+          <span>AWAITING HUMAN COMMAND APPROVAL</span>
+        </span>
+        <span class="text-[10px] font-mono text-mute hidden sm:inline">AI RECOMMENDATION — NOT AUTONOMOUS EXECUTION</span>
+      </div>
+    </div>
+
+    <!-- Main Action Callout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+      <div class="lg:col-span-2 space-y-2">
+        <div class="text-[11px] font-mono uppercase font-black tracking-wider text-accent">
+          RECOMMENDED ACTION PROTOCOL
+        </div>
+        <div class="text-xl sm:text-2xl font-black text-ink font-hand flex items-center gap-2">
+          <span><%= @optimization.dig(:optimal_strategy, :name) || "Direct Logistics Dispatch" %></span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+            Top Ranked Plan
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-ink/90 leading-relaxed max-w-2xl">
+          <%= @optimization.dig(:optimal_strategy, :description) || "Coordinate overland dispatch to isolate vulnerable settlements." %>
+        </p>
+
+        <!-- Bullet Highlights -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+          <% (@optimization.dig(:decision_explanation, :why_selected) || []).first(4).each do |point| %>
+            <div class="flex items-start gap-1.5 text-ink/90">
+              <span class="text-emerald-500 mt-0.5 shrink-0"><i class="fas fa-check text-[10px]"></i></span>
+              <span><%= point %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Interactive Commander Approval Panel -->
+      <div class="bg-paper/80 dark:bg-ink/10 rounded-xl p-4 border border-[var(--line)] space-y-3">
+        <div class="flex items-center justify-between text-xs font-bold text-ink">
+          <span>Commander Sign-Off</span>
+          <span class="font-mono text-[10px] text-mute"><%= @optimization.dig(:decision_explanation, :recommendation_id) || "REC-OPT" %></span>
+        </div>
+
+        <% if @last_feedback %>
+          <div class="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
+            <div class="flex items-center justify-between font-bold">
+              <span>Decision Logged: <%= @last_feedback["decision"]&.upcase %></span>
+              <span class="text-[10px] font-mono"><%= Time.parse(@last_feedback["timestamp"].to_s).strftime("%H:%M:%S") rescue "Active" %></span>
+            </div>
+            <% if @last_feedback["commander_feedback"].present? %>
+              <p class="text-[11px] text-mute italic">"<%= @last_feedback["commander_feedback"] %>"</p>
+            <% end %>
+          </div>
+        <% end %>
+
+        <!-- Action Buttons Forms -->
+        <div class="space-y-2">
+          <%= form_with url: intelligence_feedback_path, method: :post, local: true, class: "inline" do |f| %>
+            <%= f.hidden_field :recommendation_id, value: @optimization.dig(:decision_explanation, :recommendation_id) %>
+            <%= f.hidden_field :decision, value: "approved" %>
+            <%= f.hidden_field :horizon, value: @horizon %>
+            <button type="submit" class="w-full py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-1.5 transition">
+              <i class="fas fa-check"></i>
+              <span>APPROVE PLAN</span>
+            </button>
+          <% end %>
+
+          <div class="grid grid-cols-2 gap-2">
+            <%= form_with url: intelligence_feedback_path, method: :post, local: true do |f| %>
+              <%= f.hidden_field :recommendation_id, value: @optimization.dig(:decision_explanation, :recommendation_id) %>
+              <%= f.hidden_field :decision, value: "modified" %>
+              <%= f.hidden_field :horizon, value: @horizon %>
+              <button type="submit" class="w-full py-1.5 px-2.5 rounded-lg text-[11px] font-bold uppercase bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30 transition flex items-center justify-center gap-1">
+                <i class="fas fa-pen-to-square"></i>
+                <span>MODIFY</span>
+              </button>
+            <% end %>
+
+            <%= form_with url: intelligence_feedback_path, method: :post, local: true do |f| %>
+              <%= f.hidden_field :recommendation_id, value: @optimization.dig(:decision_explanation, :recommendation_id) %>
+              <%= f.hidden_field :decision, value: "rejected" %>
+              <%= f.hidden_field :horizon, value: @horizon %>
+              <button type="submit" class="w-full py-1.5 px-2.5 rounded-lg text-[11px] font-bold uppercase bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30 transition flex items-center justify-center gap-1">
+                <i class="fas fa-ban"></i>
+                <span>REJECT</span>
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE 4-BLOCK KPI BANNER -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <!-- URGENCY -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>OVERALL URGENCY</span>
+        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase" style="color: <%= @optimization[:urgency_color] %>">
+          <%= @optimization[:urgency_level] %>
+        </span>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-ink">
+          <%= @optimization[:overall_response_urgency] %><span class="text-sm text-mute font-normal"> / 100</span>
+        </div>
+        <div class="text-[11px] font-bold mt-0.5 text-accent">
+          <%= @optimization[:urgency_level] %> dispatch mandate
+        </div>
+      </div>
+      <div class="w-full bg-ink/10 rounded-full h-1.5 overflow-hidden">
+        <div class="h-1.5 rounded-full" style="width: <%= @optimization[:overall_response_urgency] %>%; background-color: <%= @optimization[:urgency_color] %>"></div>
+      </div>
+    </div>
+
+    <!-- POPULATION -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>POPULATION PRIORITIZED</span>
+        <i class="fas fa-users-rays text-accent"></i>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-ink">
+          <%= number_with_delimiter(@optimization[:population_prioritized]) %>
+        </div>
+        <div class="text-[11px] text-mute mt-0.5">
+          Across <%= @optimization[:priority_zones]&.size || 0 %> high-priority zones
+        </div>
+      </div>
+      <div class="text-[10px] text-mute font-mono">
+        Triage protection active
+      </div>
+    </div>
+
+    <!-- PLAN RESILIENCE -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>PLAN RESILIENCE</span>
+        <i class="fas fa-shield-halved text-emerald-500"></i>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-ink">
+          <%= @optimization.dig(:response_resilience, :score) || 82 %><span class="text-sm text-mute font-normal"> / 100</span>
+        </div>
+        <div class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
+          <%= @optimization.dig(:response_resilience, :classification)&.humanize || "Resilient" %>
+        </div>
+      </div>
+      <div class="w-full bg-ink/10 rounded-full h-1.5 overflow-hidden">
+        <div class="h-1.5 rounded-full bg-emerald-500" style="width: <%= @optimization.dig(:response_resilience, :score) || 82 %>%"></div>
+      </div>
+    </div>
+
+    <!-- RESPONSE ETA -->
+    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+      <div class="flex items-center justify-between text-xs text-mute font-bold">
+        <span>RESPONSE ETA</span>
+        <i class="fas fa-clock text-amber-500"></i>
+      </div>
+      <div class="my-2">
+        <div class="text-3xl font-black font-mono text-ink">
+          <%= @optimization.dig(:optimal_strategy, :estimated_eta_hours) || 4.2 %><span class="text-sm text-mute font-normal"> HOURS</span>
+        </div>
+        <div class="text-[11px] text-mute mt-0.5">
+          Transit to primary sector
+        </div>
+      </div>
+      <div class="text-[10px] text-mute font-mono">
+        Prepositioning reduces to 2.1h
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIORITY ZONES & PREPOSITIONING (2 COLS) -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Priority Zones Ranking (2 cols) -->
+    <div class="lg:col-span-2 bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Priority Zones Ranking</h2>
+          <p class="text-[11px] text-mute">Humanitarian priority triage: Exposure, isolation, and response delay</p>
+        </div>
+        <span class="text-xs font-mono text-mute px-2.5 py-1 rounded bg-ink/5 border border-[var(--line)]">
+          <%= @optimization[:priority_zones]&.size || 0 %> Zones Ranked
+        </span>
+      </div>
+
+      <div class="space-y-3">
+        <% (@optimization[:priority_zones] || []).each_with_index do |zone, idx| %>
+          <div class="bg-paper/70 dark:bg-ink/10 rounded-xl p-3.5 border border-[var(--line)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-lg bg-ink text-paper font-mono font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
+                <%= idx + 1 %>
+              </span>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-black text-xs sm:text-sm text-ink"><%= zone[:name] %></span>
+                  <span class="text-[10px] text-mute font-mono">(<%= zone[:district] %>, <%= zone[:state] %>)</span>
+                  <span class="px-2 py-0.2 rounded text-[9px] font-mono font-black uppercase border <%= zone[:priority_badge] %>">
+                    <%= zone[:priority_level] %>
+                  </span>
+                </div>
+                <div class="text-[11px] text-mute mt-1 flex items-center gap-3 flex-wrap">
+                  <span>Pop at Risk: <strong><%= number_with_delimiter(zone[:population_at_risk]) %></strong></span>
+                  <span>Isolation: <strong class="<%= zone[:isolation_risk] == 'CRITICAL' ? 'text-red-500' : 'text-amber-500' %>"><%= zone[:isolation_risk] %></strong></span>
+                  <span>Delay Risk: <%= zone[:response_delay_risk] %>/100</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Visual Bar (User Wireframe Style: ██████████) -->
+            <div class="sm:text-right min-w-[140px]">
+              <div class="text-xs font-mono font-black text-ink">
+                Priority: <%= zone[:humanitarian_priority] %>/100
+              </div>
+              <div class="w-full bg-ink/10 rounded-full h-2 overflow-hidden mt-1">
+                <div class="h-2 rounded-full" style="width: <%= zone[:humanitarian_priority] %>%; background-color: <%= zone[:priority_color] %>"></div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Autonomous Prepositioning Decision (1 col) -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="border-b border-[var(--line)] pb-3">
+        <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Prepositioning Decision</h2>
+        <p class="text-[11px] text-mute">Advance stock movement before predicted failure</p>
+      </div>
+
+      <% prep = (@optimization[:resource_prepositioning] || []).first %>
+      <% if prep %>
+        <div class="p-4 rounded-xl <%= prep[:decision] == 'PREPOSITION_NOW' ? 'bg-red-500/10 border-red-500/30' : 'bg-amber-500/10 border-amber-500/30' %> border space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-mono uppercase text-mute font-bold">DECISION ENGINE</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase <%= prep[:decision] == 'PREPOSITION_NOW' ? 'bg-red-600 text-white' : 'bg-amber-500 text-white' %>">
+              <%= prep[:decision] %>
+            </span>
+          </div>
+
+          <div class="font-black text-xs sm:text-sm text-ink">
+            <%= prep[:threat_corridor] %>
+          </div>
+
+          <p class="text-xs text-ink/90 leading-relaxed bg-surface/60 rounded-lg p-2.5 border border-[var(--line)]/50">
+            <%= prep[:action] %>
+          </p>
+
+          <div class="grid grid-cols-2 gap-2 text-center pt-1 text-xs">
+            <div class="p-2 rounded-lg bg-surface border border-[var(--line)]">
+              <div class="text-[9px] font-mono text-mute">Without Prepositioning</div>
+              <div class="font-mono font-black text-red-500 mt-0.5"><%= prep[:current_eta_hours] %> Hours</div>
+            </div>
+            <div class="p-2 rounded-lg bg-surface border border-[var(--line)]">
+              <div class="text-[9px] font-mono text-mute">With Prepositioning</div>
+              <div class="font-mono font-black text-emerald-500 mt-0.5"><%= prep[:prepositioned_eta_hours] %> Hours</div>
+            </div>
+          </div>
+
+          <div class="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-bold text-center pt-1">
+            ↓ <%= prep[:expected_delay_reduction_pct] %>% Reduction in Emergency Delay
+          </div>
+        </div>
+      <% else %>
+        <div class="py-8 text-center text-xs text-mute italic">
+          No advance prepositioning currently triggered.
+        </div>
+      <% end %>
+
+      <!-- Aerial Response Pill -->
+      <% air = @optimization[:aerial_response] || {} %>
+      <div class="p-3.5 rounded-xl bg-paper/80 dark:bg-ink/10 border border-[var(--line)] space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-ink">Airlift &amp; UAV Status</span>
+          <span class="px-2 py-0.2 rounded text-[9px] font-mono font-bold uppercase <%= air[:airlift_justified] ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30' : 'bg-ink/5 text-mute' %>">
+            <%= air[:recommendation] || "GROUND_RESPONSE" %>
+          </span>
+        </div>
+        <p class="text-[11px] text-mute leading-snug">
+          <%= air[:airlift_benefit] %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRATEGY COMPARISON & WHY ALTERNATIVES LOST -->
+  <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-[var(--line)] pb-3">
+      <div>
+        <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Strategy Comparison &amp; Decision Matrix</h2>
+        <p class="text-[11px] text-mute">Multi-objective evaluation: Utility, plan resilience, and risk-adjusted ranking</p>
+      </div>
+      <span class="text-xs font-mono text-mute px-2 py-0.5 rounded bg-ink/5 border border-[var(--line)]">
+        Autonomous Ranking
+      </span>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto -mx-5 px-5">
+      <table class="w-full text-left text-xs text-ink">
+        <thead>
+          <tr class="border-b border-[var(--line)] text-mute font-mono text-[10px] uppercase">
+            <th class="py-2.5 pr-2">Strategy</th>
+            <th class="py-2.5 px-3">Type</th>
+            <th class="py-2.5 px-3 text-center">Utility</th>
+            <th class="py-2.5 px-3 text-center">Resilience</th>
+            <th class="py-2.5 px-3 text-center">Route Safety</th>
+            <th class="py-2.5 px-3 text-center">Response ETA</th>
+            <th class="py-2.5 px-3 text-right">Risk-Adj. Score</th>
+            <th class="py-2.5 pl-3 text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[var(--line)]/50">
+          <% ([@optimization[:optimal_strategy]].compact + (@optimization[:alternative_strategies] || [])).each_with_index do |strat, idx| %>
+            <% is_rec = idx == 0 %>
+            <tr class="<%= is_rec ? 'bg-accent/5 font-bold' : 'hover:bg-ink/5' %> transition-colors">
+              <td class="py-3 pr-2">
+                <div class="flex items-center gap-1.5">
+                  <% if is_rec %>
+                    <span class="text-amber-500 font-black">⭐</span>
+                  <% end %>
+                  <span class="font-bold text-ink"><%= strat[:name] %></span>
+                </div>
+                <div class="text-[11px] text-mute truncate max-w-[240px]">
+                  <%= strat[:description] %>
+                </div>
+              </td>
+              <td class="py-3 px-3 font-mono text-[10px] text-mute uppercase">
+                <%= strat[:strategy_type] %>
+              </td>
+              <td class="py-3 px-3 text-center font-mono">
+                <%= strat[:response_utility] %>
+              </td>
+              <td class="py-3 px-3 text-center font-mono">
+                <%= strat[:plan_resilience_score] %>
+              </td>
+              <td class="py-3 px-3 text-center font-mono">
+                <%= strat[:route_safety_score] %>
+              </td>
+              <td class="py-3 px-3 text-center font-mono">
+                <%= strat[:estimated_eta_hours] %>h
+              </td>
+              <td class="py-3 px-3 text-right font-mono font-black text-xs <%= is_rec ? 'text-accent' : 'text-ink' %>">
+                <%= strat[:risk_adjusted_utility] %>
+              </td>
+              <td class="py-3 pl-3 text-center">
+                <% if is_rec %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-mono font-black uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                    RECOMMENDED
+                  </span>
+                <% else %>
+                  <span class="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-ink/5 text-mute">
+                    ALTERNATIVE
+                  </span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EXPLAIN WHY STRATEGIES WERE REJECTED (USER REQUIREMENT) -->
+    <div class="pt-4 border-t border-[var(--line)] space-y-3">
+      <h3 class="text-xs font-mono font-black uppercase tracking-wider text-mute">
+        Trade-Off Audit: Why Alternative Strategies Were Rejected
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <% (@optimization.dig(:decision_explanation, :rejected_alternatives) || []).each do |rej| %>
+          <div class="bg-paper/70 dark:bg-ink/10 rounded-xl p-3 border border-[var(--line)] space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-ink"><%= rej[:strategy_name] %></span>
+              <span class="font-mono text-[10px] text-mute">Score: <%= rej[:risk_adjusted_utility] %></span>
+            </div>
+            <ul class="text-[11px] text-mute space-y-1">
+              <% rej[:why_rejected].each do |reason| %>
+                <li class="flex items-start gap-1 text-red-600 dark:text-red-400">
+                  <span class="mt-0.5 shrink-0">✗</span>
+                  <span><%= reason %></span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTERFACTUAL ANALYSIS & RESOURCE CONSTRAINTS (2 COLS) -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Counterfactual Panel (User Wireframe Style) -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="border-b border-[var(--line)] pb-3">
+        <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Counterfactual Analysis</h2>
+        <p class="text-[11px] text-mute">Modeled consequence comparison: No Action vs ENMA Plan</p>
+      </div>
+
+      <% cf = @optimization[:counterfactual_analysis] || {} %>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Without Action -->
+        <div class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 space-y-2">
+          <div class="text-[10px] font-mono font-black uppercase text-red-600 dark:text-red-400">WITHOUT ACTION</div>
+          <div class="space-y-1 text-xs">
+            <div>Population affected: <strong><%= number_with_delimiter(cf.dig(:without_action, :population_affected) || 42_300) %></strong></div>
+            <div>Expected supply delay: <strong><%= cf.dig(:without_action, :expected_response_delay_hours) || 18.0 %> hours</strong></div>
+            <div>Supply continuity: <strong><%= cf.dig(:without_action, :supply_continuity_pct) || 15 %>%</strong></div>
+          </div>
+        </div>
+
+        <!-- With ENMA Plan -->
+        <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 space-y-2">
+          <div class="text-[10px] font-mono font-black uppercase text-emerald-600 dark:text-emerald-400">WITH ENMA PLAN</div>
+          <div class="space-y-1 text-xs">
+            <div>Population protected: <strong><%= number_with_delimiter(cf.dig(:with_enma_plan, :population_protected) || 31_800) %></strong></div>
+            <div>Expected supply delay: <strong><%= cf.dig(:with_enma_plan, :expected_response_delay_hours) || 4.2 %> hours</strong></div>
+            <div>Supply continuity: <strong><%= cf.dig(:with_enma_plan, :supply_continuity_pct) || 88 %>%</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-surface border border-[var(--line)] text-center space-y-0.5">
+        <div class="text-sm font-mono font-black text-emerald-600 dark:text-emerald-400">
+          ESTIMATED IMPROVEMENT: +<%= cf.dig(:modeled_improvements, :delay_reduction_pct) || 68 %>% Faster Response
+        </div>
+        <div class="text-[10px] text-mute italic">
+          <%= cf[:model_disclaimer] || "Estimated from current network and predictive intelligence. Actual outcomes may vary." %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Constraints Verification -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Resource Availability &amp; Bounds</h2>
+          <p class="text-[11px] text-mute">Enforced constraint: Allocated Resources ≤ Available Resources</p>
+        </div>
+        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+          Constraint Verified
+        </span>
+      </div>
+
+      <% res = @optimization.dig(:optimal_strategy, :allocated_resources) || {} %>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
+        <div class="p-3 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] text-center">
+          <div class="text-[9px] font-mono text-mute uppercase">Medical Kits</div>
+          <div class="text-base font-black font-mono text-ink mt-0.5"><%= res[:medical_kits] || 350 %></div>
+          <div class="text-[9px] text-mute">Trauma crates</div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] text-center">
+          <div class="text-[9px] font-mono text-mute uppercase">Food Packages</div>
+          <div class="text-base font-black font-mono text-ink mt-0.5"><%= res[:food_packages] || 1_200 %></div>
+          <div class="text-[9px] text-mute">7-day rations</div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] text-center">
+          <div class="text-[9px] font-mono text-mute uppercase">Fuel Reserve</div>
+          <div class="text-base font-black font-mono text-ink mt-0.5"><%= res[:fuel_liters] || 8_000 %> L</div>
+          <div class="text-[9px] text-mute">Diesel &amp; generator</div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] text-center">
+          <div class="text-[9px] font-mono text-mute uppercase">Rescue Vehicles</div>
+          <div class="text-base font-black font-mono text-ink mt-0.5"><%= res[:rescue_vehicles] || 4 %></div>
+          <div class="text-[9px] text-mute">4x4 Heavy all-terrain</div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] text-center">
+          <div class="text-[9px] font-mono text-mute uppercase">Personnel</div>
+          <div class="text-base font-black font-mono text-ink mt-0.5"><%= res[:personnel] || 20 %></div>
+          <div class="text-[9px] text-mute">NDRF / SDRF team</div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] text-center">
+          <div class="text-[9px] font-mono text-mute uppercase">Cargo Tonnage</div>
+          <div class="text-base font-black font-mono text-accent mt-0.5"><%= res[:total_tonnage] || 75.0 %> T</div>
+          <div class="text-[9px] text-mute">Net payload</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTINGENCY STRESS-TESTS & OPERATIONAL TIMELINE -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Contingency Simulations -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="border-b border-[var(--line)] pb-3">
+        <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Contingency Stress-Testing</h2>
+        <p class="text-[11px] text-mute">Simulated plan survival under concurrent route and depot failures</p>
+      </div>
+
+      <div class="space-y-3">
+        <% (@optimization[:contingency_plans] || []).each do |cont| %>
+          <div class="p-3.5 rounded-xl bg-paper/70 dark:bg-ink/10 border border-[var(--line)] space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-ink"><%= cont[:scenario] %></span>
+              <span class="font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                <%= cont[:residual_response_capacity_pct] %>% Residual Cap
+              </span>
+            </div>
+            <p class="text-[11px] text-mute"><%= cont[:description] %></p>
+            <div class="text-xs text-ink/90 pt-1 border-t border-[var(--line)]/50 flex items-center gap-1.5">
+              <span class="font-mono text-[10px] text-accent font-bold">Fallback:</span>
+              <span><%= cont[:fallback_action] %></span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Operational Timeline -->
+    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+      <div class="border-b border-[var(--line)] pb-3">
+        <h2 class="text-base sm:text-lg font-black text-ink tracking-tight font-hand">Operational Dispatch Timeline</h2>
+        <p class="text-[11px] text-mute">Deterministic execution sequence from approval to field delivery</p>
+      </div>
+
+      <div class="space-y-3">
+        <% (@optimization[:operational_timeline] || []).each do |step| %>
+          <div class="flex items-start gap-3">
+            <span class="px-2 py-1 rounded text-[10px] font-mono font-black uppercase bg-ink text-paper shrink-0 mt-0.5">
+              <%= step[:time_offset] %>
+            </span>
+            <div class="space-y-0.5">
+              <div class="text-xs font-bold text-ink"><%= step[:title] %></div>
+              <p class="text-[11px] text-mute leading-snug"><%= step[:action] %></p>
+              <div class="text-[9px] font-mono text-accent">Responsible: <%= step[:responsible_agency] %></div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+</div>

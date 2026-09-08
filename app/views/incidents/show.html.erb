@@ -78,6 +78,224 @@
     </div>
   </div>
 
+  <!-- Multi-Source Data Confidence Intelligence Card -->
+  <% conf = @incident.confidence_data %>
+  <% overall = (conf[:overall_confidence] || @incident.confidence_score).to_f.round(1) %>
+  <% trust = (conf[:data_trust_score] || overall).to_f.round(1) %>
+  <% relevance = (conf[:operational_relevance_score] || overall).to_f.round(1) %>
+  <% breakdown = conf[:breakdown] || {} %>
+
+  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-4">
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <i class="fas fa-microchip-ai mr-1"></i> Confidence Intelligence Engine
+          </span>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase border <%= @incident.confidence_badge_class %>">
+            <%= @incident.confidence_level %> CONFIDENCE
+          </span>
+        </div>
+        <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-1">Multi-Source Verification &amp; Operational Relevance</h2>
+      </div>
+
+      <div class="flex items-center space-x-3 bg-slate-50 dark:bg-slate-800/80 px-4 py-2.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+        <div class="text-right">
+          <span class="text-[10px] uppercase font-bold text-slate-400 block leading-tight">Composite Score</span>
+          <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 font-mono"><%= @incident.confidence_level %></span>
+        </div>
+        <div class="text-3xl font-black font-mono text-slate-900 dark:text-white">
+          <%= overall.round(0) %><span class="text-xs text-slate-400 font-normal">/100</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust vs Operational Relevance Split -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center">
+            <i class="fas fa-shield-halved text-accent mr-1.5"></i>
+            Data Trust Score
+          </span>
+          <span class="text-base font-black font-mono text-slate-900 dark:text-white"><%= trust %>%</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+          <div class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: <%= [trust, 100].min %>%"></div>
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+          Evaluates empirical truth, coordinate accuracy, photo authenticity, weather cross-checks, and reporter integrity.
+        </p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center">
+            <i class="fas fa-hourglass-half text-amber-500 mr-1.5"></i>
+            Operational Dispatch Relevance
+          </span>
+          <span class="text-base font-black font-mono text-slate-900 dark:text-white"><%= relevance %>%</span>
+        </div>
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+          <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: <%= [relevance, 100].min %>%"></div>
+        </div>
+        <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug">
+          Real-time logistical relevance dynamically decayed over time as physical hazards evolve or resolve.
+        </p>
+      </div>
+    </div>
+
+    <!-- 6 Signal Vector Breakdown Grid -->
+    <div class="space-y-3">
+      <h3 class="text-xs font-black uppercase text-slate-600 dark:text-slate-400 tracking-wider">
+        6-Dimensional Corroboration Matrix
+      </h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <!-- 1. GPS Authenticity -->
+        <% gps = breakdown[:gps_authenticity] || {} %>
+        <% gps_score = (gps[:score] || 15.0).to_f %>
+        <div class="p-3.5 rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+              <i class="fas fa-location-crosshairs text-blue-500 mr-1.5"></i> GPS Precision
+            </span>
+            <span class="font-mono font-black text-slate-900 dark:text-white"><%= gps_score.round(1) %>/20</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-blue-500 h-full rounded-full" style="width: <%= (gps_score / 20.0 * 100).clamp(0, 100) %>%"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+            <%= gps[:explanation] || "Sub-meter precision coordinate validation." %>
+          </p>
+        </div>
+
+        <!-- 2. Photographic Evidence -->
+        <% photo = breakdown[:photographic_evidence] || {} %>
+        <% photo_score = (photo[:score] || 0.0).to_f %>
+        <div class="p-3.5 rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+              <i class="fas fa-camera text-emerald-500 mr-1.5"></i> Photo Evidence
+            </span>
+            <span class="font-mono font-black text-slate-900 dark:text-white"><%= photo_score.round(1) %>/20</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-emerald-500 h-full rounded-full" style="width: <%= (photo_score / 20.0 * 100).clamp(0, 100) %>%"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+            <%= photo[:explanation] || "Attached visual telemetry check." %>
+          </p>
+        </div>
+
+        <!-- 3. Temporal Freshness -->
+        <% temp = breakdown[:temporal_freshness] || {} %>
+        <% temp_score = (temp[:score] || 15.0).to_f %>
+        <div class="p-3.5 rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+              <i class="fas fa-clock text-amber-500 mr-1.5"></i> Freshness
+            </span>
+            <span class="font-mono font-black text-slate-900 dark:text-white"><%= temp_score.round(1) %>/15</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-amber-500 h-full rounded-full" style="width: <%= (temp_score / 15.0 * 100).clamp(0, 100) %>%"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+            <%= temp[:explanation] || "Age decay scoring." %>
+          </p>
+        </div>
+
+        <!-- 4. Environmental Weather Corroboration -->
+        <% env = breakdown[:environmental_weather] || {} %>
+        <% env_score = (env[:score] || 10.0).to_f %>
+        <div class="p-3.5 rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+              <i class="fas fa-cloud-bolt text-indigo-500 mr-1.5"></i> Weather Verification
+            </span>
+            <span class="font-mono font-black text-slate-900 dark:text-white"><%= env_score.round(1) %>/20</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-indigo-500 h-full rounded-full" style="width: <%= (env_score / 20.0 * 100).clamp(0, 100) %>%"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+            <%= env[:explanation] || "Cross-referenced with regional telemetry." %>
+          </p>
+        </div>
+
+        <!-- 5. Spatial Consensus -->
+        <% spat = breakdown[:spatial_consensus] || {} %>
+        <% spat_score = (spat[:score] || 0.0).to_f %>
+        <div class="p-3.5 rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+              <i class="fas fa-bullseye text-purple-500 mr-1.5"></i> Spatial Consensus
+            </span>
+            <span class="font-mono font-black text-slate-900 dark:text-white"><%= spat_score.round(1) %>/15</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-purple-500 h-full rounded-full" style="width: <%= (spat_score / 15.0 * 100).clamp(0, 100) %>%"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+            <%= spat[:explanation] || "Cluster corroboration from nearby incidents." %>
+          </p>
+        </div>
+
+        <!-- 6. Reporter Reliability -->
+        <% rep = breakdown[:reporter_reliability] || {} %>
+        <% rep_score = (rep[:score] || 6.0).to_f %>
+        <div class="p-3.5 rounded-2xl border border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center">
+              <i class="fas fa-user-check text-teal-500 mr-1.5"></i> Reporter Reliability
+            </span>
+            <span class="font-mono font-black text-slate-900 dark:text-white"><%= rep_score.round(1) %>/10</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+            <div class="bg-teal-500 h-full rounded-full" style="width: <%= (rep_score / 10.0 * 100).clamp(0, 100) %>%"></div>
+          </div>
+          <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
+            <%= rep[:explanation] || "Historical verification track record." %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warnings / Alerts Banner if any -->
+    <% if conf[:warnings].present? && conf[:warnings].any? %>
+      <div class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 space-y-1.5">
+        <div class="flex items-center text-xs font-bold text-amber-800 dark:text-amber-300">
+          <i class="fas fa-triangle-exclamation mr-2"></i>
+          Intelligence Reliability Notices (<%= conf[:warnings].size %>)
+        </div>
+        <ul class="text-xs text-amber-700 dark:text-amber-400 list-disc list-inside space-y-0.5">
+          <% conf[:warnings].each do |warn| %>
+            <li><%= warn %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- Actionable Dispatch Recommendations -->
+    <% if conf[:actionable_recommendations].present? && conf[:actionable_recommendations].any? %>
+      <div class="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/60 space-y-2">
+        <div class="flex items-center text-xs font-bold text-indigo-900 dark:text-indigo-200">
+          <i class="fas fa-route mr-2 text-accent"></i>
+          Operational Dispatch Protocol
+        </div>
+        <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1">
+          <% conf[:actionable_recommendations].each do |rec| %>
+            <li class="flex items-start">
+              <i class="fas fa-check-circle text-emerald-500 text-[11px] mt-0.5 mr-2 flex-shrink-0"></i>
+              <span><%= rec %></span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+
   <!-- Description Card -->
   <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
     <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">

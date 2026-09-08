@@ -90,6 +90,20 @@ class Road < ApplicationRecord
     end
   end
 
+  def latitude
+    coords = coordinates
+    return nil if coords.blank? || !coords.is_a?(Array)
+    mid = coords[coords.size / 2]
+    mid.is_a?(Array) ? mid[0].to_f : nil
+  end
+
+  def longitude
+    coords = coordinates
+    return nil if coords.blank? || !coords.is_a?(Array)
+    mid = coords[coords.size / 2]
+    mid.is_a?(Array) ? mid[1].to_f : nil
+  end
+
   # =========================================================================
   # Intelligence Engine Integration
   # =========================================================================
@@ -279,5 +293,35 @@ class Road < ApplicationRecord
       last_updated: formatted_last_updated,
       ml_prediction: latest_ml_prediction_data
     }
+  end
+
+  def origin_location
+    if respond_to?(:origin_location_id) && read_attribute(:origin_location_id).present?
+      Location.find_by(id: read_attribute(:origin_location_id))
+    else
+      @origin_location ||= find_nearest_location_to(coordinates.first)
+    end
+  end
+
+  def destination_location
+    if respond_to?(:destination_location_id) && read_attribute(:destination_location_id).present?
+      Location.find_by(id: read_attribute(:destination_location_id))
+    else
+      @destination_location ||= find_nearest_location_to(coordinates.last)
+    end
+  end
+
+  def network_impact_analysis
+    @network_impact_analysis ||= NetworkConnectivityService.new.simulate_road_closure(id)
+  end
+
+  private
+
+  def find_nearest_location_to(point)
+    return nil if point.blank? || !point.is_a?(Array)
+    lat, lon = point[0].to_f, point[1].to_f
+    Location.all.min_by do |loc|
+      ((loc.latitude - lat)**2 + (loc.longitude - lon)**2)
+    end
   end
 end

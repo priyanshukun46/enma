@@ -81,7 +81,29 @@ def predict_batch(request: BatchPredictionRequest):
 
     results = []
     for road_input in request.roads:
-        results.append(predictor.predict(road_input))
+        try:
+            results.append(predictor.predict(road_input))
+        except Exception as e:
+            logger.error(f"Prediction failure for road {road_input.road_id} in batch: {e}", exc_info=True)
+            prob = min(max((road_input.rainfall_last_24h * 0.4 + road_input.slope * 0.8) / 100.0, 0.05), 0.95)
+            level = "high" if prob >= 0.65 else ("moderate" if prob >= 0.35 else "low")
+            fallback = RoadDisruptionPredictionResponse(
+                road_id=road_input.road_id,
+                disruption_probability=round(prob, 3),
+                risk_level=level,
+                prediction_window_hours=24,
+                factors=[
+                    PredictionFactor(
+                        feature="heuristic_fallback",
+                        importance="low",
+                        label="⚡ Fallback Heuristic",
+                        value=round(prob * 100, 1),
+                        description="Estimated via terrain and precipitation heuristic fallback."
+                    )
+                ],
+                narrative_summary=f"Fallback estimation ({round(prob * 100, 1)}% disruption probability, {level.upper()} risk)."
+            )
+            results.append(fallback)
     return results
 
 

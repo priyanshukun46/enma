@@ -41,6 +41,8 @@ module Enma
         calculated_score: final_risk_score
       })
 
+      operational_significance = determine_operational_significance(final_risk_score, calculated_status)
+
       {
         road_id: road.id,
         risk_score: final_risk_score,
@@ -54,7 +56,8 @@ module Enma
           geographic: geographic_score.round(1)
         },
         weights: weights,
-        ml_prediction: ml_result
+        ml_prediction: ml_result,
+        operational_significance: operational_significance
       }
     end
 
@@ -162,7 +165,11 @@ module Enma
                           else 30.0
                           end
 
-          score = severity_base * type_multiplier
+          # Multi-source data confidence multiplier: ranges from 0.5 to 1.0
+          conf_score = inc.ai_confidence_score || 70.0
+          confidence_multiplier = (0.5 + (conf_score.to_f / 200.0)).clamp(0.5, 1.0)
+
+          score = severity_base * type_multiplier * confidence_multiplier
           max_score = score if score > max_score
         end
 
@@ -239,6 +246,31 @@ module Enma
       dlon = (lon2 - lon1) * Math::PI / 180.0
       a = Math.sin(dlat / 2.0)**2 + Math.cos(lat1 * Math::PI / 180.0) * Math.cos(lat2 * Math::PI / 180.0) * Math.sin(dlon / 2.0)**2
       EARTH_RADIUS_KM * 2.0 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a))
+    end
+
+    def determine_operational_significance(risk_score, status)
+      is_high_risk = risk_score >= 60.0 || status == "blocked"
+      is_critical_corridor = road.respond_to?(:road_number) && road.road_number.to_s.start_with?("NH", "SH")
+
+      if is_high_risk && is_critical_corridor
+        {
+          level: "CRITICAL_LIFELINE",
+          strategic_importance: "High",
+          operational_note: "Strategic arterial corridor under severe environmental risk. Failure threatens multi-settlement isolation."
+        }
+      elsif is_high_risk
+        {
+          level: "ELEVATED_MONITORING",
+          strategic_importance: "Moderate",
+          operational_note: "High risk segment requiring active convoy escort and detour preparation."
+        }
+      else
+        {
+          level: "STANDARD_LOGISTICS",
+          strategic_importance: "Normal",
+          operational_note: "Routine logistics transit permissible under standard safety protocols."
+        }
+      end
     end
   end
 end

@@ -61,7 +61,7 @@
     </div>
 
     <!-- Email / Username & Password Form -->
-    <%= form_with url: login_path, local: true, data: { turbo: false }, class: "space-y-4" do |f| %>
+    <%= form_with url: login_path, local: true, data: { turbo: false }, id: "login-form", class: "space-y-4" do |f| %>
       <div>
         <label for="login" class="block text-xs font-bold text-ink uppercase tracking-wider mb-1.5">Username or Email</label>
         <input type="text"
@@ -106,23 +106,51 @@
       </div>
       
       <div class="grid grid-cols-2 gap-2 w-full">
-        <%= form_with url: login_path, local: true, data: { turbo: false }, class: "w-full" do |f| %>
-          <%= f.hidden_field :login, value: "admin" %>
-          <%= f.hidden_field :password, value: "password123" %>
-          <button type="submit" class="w-full py-1.5 px-2 bg-accent hover:opacity-90 text-white font-bold text-xs rounded-lg shadow-sm cursor-pointer transition-opacity text-center">
-            Admin Access
-          </button>
-        <% end %>
+        <button type="button"
+                onclick="quickLogin('admin', 'password123')"
+                title="1-Click Login as Admin (admin / password123)"
+                class="w-full py-2 px-3 bg-accent hover:opacity-90 text-white font-bold text-xs rounded-xl shadow-sm cursor-pointer transition-opacity text-center flex items-center justify-center space-x-1.5">
+          <i class="fas fa-user-shield text-xs"></i>
+          <span>Admin Access</span>
+        </button>
 
-        <%= form_with url: login_path, local: true, data: { turbo: false }, class: "w-full" do |f| %>
-          <%= f.hidden_field :login, value: "operator" %>
-          <%= f.hidden_field :password, value: "password123" %>
-          <button type="submit" class="w-full py-1.5 px-2 bg-surface hover:bg-ink/5 text-ink border border-[var(--line)] font-bold text-xs rounded-lg shadow-sm cursor-pointer transition-colors text-center">
-            Operator Access
-          </button>
-        <% end %>
+        <button type="button"
+                onclick="quickLogin('operator', 'password123')"
+                title="1-Click Login as Operator (operator / password123)"
+                class="w-full py-2 px-3 bg-surface hover:bg-ink/5 text-ink border border-[var(--line)] font-bold text-xs rounded-xl shadow-sm cursor-pointer transition-colors text-center flex items-center justify-center space-x-1.5">
+          <i class="fas fa-user-gear text-xs"></i>
+          <span>Operator Access</span>
+        </button>
       </div>
     </div>
+
+    <script>
+      function quickLogin(username, password) {
+        var loginField = document.getElementById('login');
+        var passField = document.getElementById('password');
+        var form = document.getElementById('login-form');
+
+        if (loginField) {
+          loginField.value = username;
+          loginField.dispatchEvent(new Event('input', { bubbles: true }));
+          loginField.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (passField) {
+          passField.value = password;
+          passField.dispatchEvent(new Event('input', { bubbles: true }));
+          passField.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (form) {
+          if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+          } else {
+            form.submit();
+          }
+        }
+      }
+    </script>
 
     <!-- Link to Sign Up -->
     <div class="text-center pt-3 border-t border-[var(--line)]">

@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
+  get "health" => "health#show", as: :health_check
 
   # Defines the root path route ("/")
   root "pages#landing"
@@ -66,6 +67,10 @@ Rails.application.routes.draw do
   get "map", to: "maps#index"
   resources :locations, only: [:index]
 
+  # Network Connectivity Intelligence Engine Routes
+  get "network", to: "network#index", as: :network
+  post "network/simulate", to: "network#simulate", as: :simulate_network
+
   # Phase 4: Accessibility Intelligence Engine Routes
   get "accessibility", to: "accessibility#index"
   post "accessibility", to: "accessibility#recalculate"
@@ -123,4 +128,17 @@ Rails.application.routes.draw do
   # Phase 7 / Analytics: ENMA AI Intelligence Analytics Center Routes
   get "analytics", to: "analytics#index"
   get "analytics/report", to: "analytics#report"
+
+  # Predictive Cascading Impact Intelligence Engine Dashboard
+  get "intelligence/predictions", to: "intelligence#predictions", as: :intelligence_predictions
+
+  # Autonomous Response Optimization Engine Dashboard & Human Command Feedback
+  get "intelligence/response", to: "intelligence#response_plan", as: :intelligence_response
+  post "intelligence/feedback", to: "intelligence#feedback", as: :intelligence_feedback
+
+  # Unified Emergency Command & Closed-Loop Response Intelligence
+  get "intelligence/command", to: "intelligence#command_center", as: :intelligence_command
+  post "intelligence/command/approve", to: "intelligence#command_approve", as: :intelligence_command_approve
+  post "intelligence/command/modify", to: "intelligence#command_modify", as: :intelligence_command_modify
+  post "intelligence/command/reject", to: "intelligence#command_reject", as: :intelligence_command_reject
 end

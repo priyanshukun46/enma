@@ -4,13 +4,14 @@ class EmergenciesController < ApplicationController
   def index
     @status_filter = params[:status].presence || "all"
     
-    @emergencies = case @status_filter
-                   when "active" then Emergency.active.recent
-                   when "monitoring" then Emergency.monitoring.recent
-                   when "responding" then Emergency.responding.recent
-                   when "resolved" then Emergency.resolved.recent
-                   else Emergency.recent
-                   end
+    base_scope = case @status_filter
+                 when "active" then Emergency.active.recent
+                 when "monitoring" then Emergency.monitoring.recent
+                 when "responding" then Emergency.responding.recent
+                 when "resolved" then Emergency.resolved.recent
+                 else Emergency.recent
+                 end.includes(:location)
+    @pagy, @emergencies = pagy(base_scope)
 
     @total_emergencies = Emergency.count
     @active_count = Emergency.active_or_responding.count

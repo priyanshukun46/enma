@@ -34,14 +34,15 @@ class AccessibilityScoreService
     "low"    => 25
   }.freeze
 
-  attr_reader :location
+  attr_reader :location, :network_service
 
-  def initialize(location)
+  def initialize(location, network_service: nil)
     @location = location
+    @network_service = network_service
   end
 
-  def calculate
-    breakdown = factor_breakdown
+  def calculate(include_network: false)
+    breakdown = factor_breakdown(include_network: include_network)
     total_penalty = breakdown.values.sum { |f| f[:impact].abs }
     raw_score = BASE_SCORE - total_penalty
     final_score = [[0.0, raw_score].max, 100.0].min.round(1)
@@ -97,7 +98,7 @@ class AccessibilityScoreService
 
   private
 
-  def factor_breakdown
+  def factor_breakdown(include_network: false)
     weather = WeatherService.fetch(location.latitude, location.longitude, fallback_location: location)
     
     road_val = location.road_quality.to_s.downcase.strip
@@ -124,7 +125,7 @@ class AccessibilityScoreService
                                rain_val.capitalize.presence || "Moderate"
                              end
 
-    {
+    factors = {
       road_quality: {
         title: "Road Quality",
         value: road_val.capitalize.presence || "Moderate",
@@ -175,6 +176,29 @@ class AccessibilityScoreService
         description: warehouse_description(warehouse_dist)
       }
     }
+
+    if (include_network || @network_service.present?) && network_isolated?
+      factors[:network_isolation] = {
+        title: "Network Connectivity",
+        value: "Isolated",
+        raw_value: "isolated",
+        impact: -25,
+        impact_level: "Critical",
+        description: "Settlement is isolated from regional road network or lacks accessible relief warehouses."
+      }
+    end
+
+    factors
+  end
+
+  def network_isolated?
+    return false unless location&.persisted?
+
+    net_svc = @network_service || (defined?(Enma::NetworkConnectivityService) ? Enma::NetworkConnectivityService.new : nil)
+    return false unless net_svc
+
+    analysis = net_svc.analyze
+    analysis[:isolated_settlements].any? { |s| s[:id] == location.id }
   end
 
   def calculate_hospital_penalty(distance)

@@ -110,7 +110,7 @@
   <body class="bg-paper text-ink flex flex-col min-h-screen antialiased select-none" data-controller="theme">
     
     <!-- Top Full-Width Navigation (Brand + Back + Theme Toggle) -->
-    <header class="w-full border-b border-[var(--line)] bg-surface/80 backdrop-blur-md sticky top-0 z-30 transition-colors">
+    <header class="w-full border-b border-[var(--line)] bg-surface sticky top-0 z-30 transition-colors">
       <div class="w-full px-4 sm:px-8 lg:px-12 py-3.5 sm:py-4 flex items-center justify-between">
         <!-- Logo linking back to root -->
         <%= link_to root_path, class: "inline-flex items-center space-x-2.5 text-ink hover:opacity-90 transition-opacity" do %>
@@ -146,7 +146,7 @@
         <!-- Global Flash Notifications -->
         <% if notice.present? %>
           <div data-controller="flash"
-               data-flash-timeout-value="3500"
+               data-flash-timeout-value="2000"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
                class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center justify-between shadow-sm transition-all">
             <div class="flex items-center space-x-2">
@@ -164,7 +164,7 @@
 
         <% if alert.present? %>
           <div data-controller="flash"
-               data-flash-timeout-value="5000"
+               data-flash-timeout-value="2000"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
                class="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-red-800 dark:text-red-300 text-xs font-semibold flex items-center justify-between shadow-sm transition-all">
             <div class="flex items-center space-x-2">

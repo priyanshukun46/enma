@@ -11,7 +11,7 @@ class User < ApplicationRecord
   enum :role, { operator: "operator", admin: "admin" }, default: :operator
 
   generates_token_for :password_reset, expires_in: 20.minutes do
-    (encrypted_password.presence || password_digest).to_s.last(10)
+    (encrypted_password.presence || read_attribute(:password_digest)).to_s.last(10)
   end
 
   before_validation :sync_email_fields
@@ -54,6 +54,15 @@ class User < ApplicationRecord
     ).first
   end
 
+  # Safeguard password_digest column accessor from clashing with Devise's password_digest(password) method
+  def password_digest(*args)
+    if args.empty?
+      read_attribute(:password_digest)
+    else
+      super
+    end
+  end
+
   # Backward compatibility alias for has_secure_password authenticate method
   def authenticate(password)
     valid_password?(password) ? self : false
@@ -63,8 +72,8 @@ class User < ApplicationRecord
   def valid_password?(password)
     if encrypted_password.present?
       super(password)
-    elsif password_digest.present?
-      valid = BCrypt::Password.new(password_digest) == password
+    elsif read_attribute(:password_digest).present?
+      valid = BCrypt::Password.new(read_attribute(:password_digest)) == password
       if valid
         self.encrypted_password = ::BCrypt::Password.create(password, cost: Devise.stretches).to_s
         save(validate: false)

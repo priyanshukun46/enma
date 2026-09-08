@@ -135,4 +135,32 @@ class RouteRecommendationServiceTest < ActiveSupport::TestCase
     assert_not_nil result[:recommended_route]
     assert result[:recommended_route][:ml_disruption_probability] >= 0.0
   end
+
+  test "marks route as blocked when origin and destination are in disconnected network partitions" do
+    # Create an isolated destination
+    isolated_dest = Location.create!(
+      name: "Cutoff Island",
+      district: "Kamrup",
+      state: "Assam",
+      latitude: 26.5000,
+      longitude: 92.5000,
+      accessibility_score: 20.0
+    )
+
+    # Road between origin and destination is blocked
+    @road.update!(status: "blocked")
+    Rails.cache.clear
+
+    service = Enma::RouteRecommendationService.new(
+      origin: @origin,
+      destination: isolated_dest,
+      priority_mode: "balanced",
+      options: { provider: "fallback" }
+    )
+
+    result = service.recommend
+    # All routes should encounter blockage / disconnection
+    assert result[:routes].all? { |r| r[:is_blocked] }
+    assert_includes result[:explanation][:warnings].join, "blockages"
+  end
 end

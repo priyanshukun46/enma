@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark h-full" style="color-scheme: dark; background-color: #000000;">
+<html lang="en" class="h-full">
   <head>
     <title>ENMA AI - North East Smart Logistics &amp; Accessibility Intelligence</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -24,6 +24,19 @@
               mute: 'rgb(var(--mute) / <alpha-value>)',
               accent: 'rgb(var(--accent) / <alpha-value>)',
               accent2: 'rgb(var(--accent2) / <alpha-value>)',
+              slate: {
+                50: 'rgb(var(--paper) / <alpha-value>)',
+                100: 'rgb(var(--paper) / <alpha-value>)',
+                200: 'var(--line)',
+                300: 'var(--line-hi)',
+                400: 'rgb(var(--mute) / <alpha-value>)',
+                500: 'rgb(var(--mute) / <alpha-value>)',
+                600: 'rgb(var(--sketch) / <alpha-value>)',
+                700: 'rgb(var(--sketch) / <alpha-value>)',
+                800: 'var(--card-hi)',
+                900: 'rgb(var(--surface) / <alpha-value>)',
+                950: 'rgb(var(--paper) / <alpha-value>)',
+              },
             },
             fontFamily: {
               sans: ['"Nunito"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
@@ -51,275 +64,7 @@
         document.documentElement.classList.add('dark');
       }
     </script>
-    <style>
-      /* ChaiCode (dsa.chaicode.com) Design System Tokens */
-      :root, [data-theme=light] {
-        color-scheme: light;
-        --paper: 250 246 238;          /* #FAF6EE warm parchment */
-        --surface: 255 252 247;        /* #FFFCF7 warm surface */
-        --ink: 24 18 14;               /* #18120E high-contrast espresso ink */
-        --sketch: 76 62 50;            /* #4C3E32 warm charcoal text */
-        --mute: 118 104 90;            /* #76685A deep legible taupe (>4.5:1 ratio) */
-        --accent: 226 84 56;           /* #E25438 rich warm reddish terracotta */
-        --accent2: 200 60 45;          /* #C83C2D deep rust red */
-        --border: 31 31 31;
-        --shadow: 31 31 31;
-        --card: rgba(31, 24, 18, 0.035);
-        --card-hi: rgba(31, 24, 18, 0.07);
-        --line: rgba(38, 30, 24, 0.15);
-        --line-hi: rgba(38, 30, 24, 0.30);
-        --done-bg: #DFF0E2;
-        --done-text: #2F7D4A;
-        --done-stroke: #3A9D5D;
-        --dead-bg: #FDE2E2;
-        --dead-text: #B03A3A;
-        --dead-stroke: #C84A4A;
-        --gold-bg: #FFF4D6;
-        --gold-text: #917400;
-        --gold-stroke: #CAA400;
-        --compare-bg: #F5EBE6;
-        --radius-card: 16px;
-      }
-
-      [data-theme=dark], .dark {
-        color-scheme: dark;
-        --paper: 20 16 12;             /* #14100C dark espresso */
-        --surface: 27 22 17;           /* #1B1611 dark roasted surface */
-        --ink: 236 229 214;            /* #ECE5D6 warm cream ivory */
-        --sketch: 184 176 160;         /* #B8B0A0 warm parchment */
-        --mute: 146 138 123;           /* #928A7B muted cocoa */
-        --accent: 236 94 66;           /* #EC5E42 warm glowing reddish coral */
-        --accent2: 216 74 46;          /* #D84A2E rich terracotta red */
-        --border: 90 82 68;
-        --shadow: 0 0 0;
-        --card: rgba(255, 255, 255, 0.035);
-        --card-hi: rgba(255, 255, 255, 0.065);
-        --line: rgba(236, 229, 214, 0.12);
-        --line-hi: rgba(236, 229, 214, 0.22);
-        --done-bg: #17301F;
-        --done-text: #6FC28D;
-        --done-stroke: #4FB374;
-        --dead-bg: #351A1A;
-        --dead-text: #E88A8A;
-        --dead-stroke: #E06B6B;
-        --gold-bg: #332A12;
-        --gold-text: #D8B638;
-        --gold-stroke: #D8B638;
-        --compare-bg: #2C1E1A;
-        --radius-card: 16px;
-      }
-
-      body {
-        font-family: 'Inter', system-ui, sans-serif;
-        background-color: rgb(var(--paper)) !important;
-        color: rgb(var(--ink)) !important;
-        transition: background-color 0.25s ease, color 0.25s ease;
-      }
-
-      .landing-gradient-bg, html, body {
-        background-color: rgb(var(--paper)) !important;
-        color: rgb(var(--ink)) !important;
-      }
-
-      aside {
-        background: rgb(var(--surface)) !important;
-        border-right: 1px solid var(--line) !important;
-        color: rgb(var(--ink)) !important;
-      }
-
-      header, .nav-blur {
-        backdrop-filter: blur(16px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-        background: rgb(var(--surface) / 0.88) !important;
-        border-bottom: 1px solid var(--line) !important;
-      }
-
-      main {
-        background: rgb(var(--paper)) !important;
-      }
-
-      /* ChaiCode Surface Cards */
-      .glass-card,
-      .bg-surface,
-      .bg-white,
-      .bg-slate-900,
-      .bg-slate-900\/80,
-      .dark\:bg-slate-900 {
-        background: rgb(var(--surface)) !important;
-        border: 1px solid var(--line) !important;
-        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04) !important;
-        color: rgb(var(--ink)) !important;
-        border-radius: 16px !important;
-      }
-
-      .dark .bg-slate-900,
-      [data-theme=dark] .bg-slate-900 {
-        background: rgb(var(--surface)) !important;
-        color: rgb(var(--ink)) !important;
-      }
-
-      .glass-card-hover:hover,
-      .glass-card:hover {
-        border-color: rgb(var(--accent) / 0.45) !important;
-        box-shadow: 0 10px 30px -5px rgb(var(--accent) / 0.12) !important;
-      }
-
-      .bg-slate-50,
-      .dark\:bg-slate-800\/60,
-      .dark\:bg-slate-800\/50,
-      .dark\:bg-slate-800\/40,
-      .dark\:bg-slate-800,
-      .bg-black\/40,
-      .bg-black\/30,
-      .bg-slate-100 {
-        background-color: var(--card) !important;
-        border-color: var(--line) !important;
-      }
-
-      /* ChaiCode Accent Text Gradient */
-      .gradient-text, .text-gradient-aurora {
-        background: linear-gradient(135deg, rgb(var(--ink)) 30%, rgb(var(--accent)) 100%) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        background-clip: text !important;
-      }
-
-      .gradient-text-orange, .text-gradient-cyan {
-        background: linear-gradient(135deg, rgb(var(--accent)) 0%, rgb(var(--accent2)) 100%) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        background-clip: text !important;
-      }
-
-      .stat-counter { font-variant-numeric: tabular-nums; }
-
-      /* Universal High-Contrast Adaptive Text Colors */
-      .text-slate-900,
-      .text-gray-900,
-      .text-slate-800,
-      .text-gray-800,
-      .text-slate-950,
-      .text-neutral-900,
-      .text-zinc-900 {
-        color: rgb(var(--ink)) !important;
-      }
-      .text-slate-700,
-      .text-slate-600,
-      .text-gray-700,
-      .text-gray-600,
-      .text-neutral-700,
-      .text-zinc-700 {
-        color: rgb(var(--sketch)) !important;
-      }
-      .text-slate-500,
-      .text-slate-400,
-      .text-gray-500,
-      .text-gray-400,
-      .text-neutral-500,
-      .text-zinc-500 {
-        color: rgb(var(--mute)) !important;
-      }
-
-      /* In dark mode, ensure elements marked with dark:text-white render in bright ivory */
-      .dark .dark\:text-white,
-      [data-theme=dark] .dark\:text-white,
-      .dark .dark\:text-slate-200,
-      [data-theme=dark] .dark\:text-slate-200 {
-        color: rgb(var(--ink)) !important;
-      }
-
-      /* In light mode, ensure elements with dark:text-white render as crisp dark ink */
-      :root:not(.dark) .dark\:text-white,
-      [data-theme=light] .dark\:text-white {
-        color: rgb(var(--ink)) !important;
-      }
-
-      /* Universal border colors */
-      .border-slate-200,
-      .border-slate-100,
-      .border-slate-300,
-      .border-gray-200,
-      .border-gray-100,
-      .border-slate-800,
-      .border-slate-700 {
-        border-color: var(--line) !important;
-      }
-
-      /* Universal form inputs & dropdowns */
-      input[type="text"],
-      input[type="search"],
-      input[type="password"],
-      input[type="email"],
-      input[type="number"],
-      select,
-      textarea {
-        background-color: rgb(var(--surface)) !important;
-        color: rgb(var(--ink)) !important;
-        border: 1px solid var(--line) !important;
-      }
-      select option {
-        background-color: rgb(var(--surface)) !important;
-        color: rgb(var(--ink)) !important;
-      }
-
-      /* Universal Tables */
-      table thead {
-        background-color: var(--card) !important;
-        color: rgb(var(--mute)) !important;
-      }
-      table tbody tr:hover {
-        background-color: var(--card) !important;
-      }
-      table tbody tr td {
-        border-color: var(--line) !important;
-      }
-
-      /* Leaflet Modern Popup Polish & High Contrast Button Fix */
-      .leaflet-container {
-        font-family: inherit !important;
-        width: 100% !important;
-      }
-      .custom-leaflet-icon {
-        background: transparent !important;
-        border: none !important;
-      }
-      .leaflet-popup-content-wrapper {
-        border-radius: 1.25rem !important;
-        padding: 0.25rem !important;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        background-color: #101014 !important;
-        color: #f4f4f5 !important;
-        font-family: inherit !important;
-      }
-      .leaflet-popup-tip {
-        box-shadow: none !important;
-        background-color: #101014 !important;
-      }
-      .leaflet-popup-content {
-        margin: 0.75rem 0.85rem !important;
-        line-height: 1.5 !important;
-        color: #f4f4f5 !important;
-      }
-      .leaflet-popup-content a {
-        color: #ffffff !important;
-        text-decoration: none !important;
-      }
-      .leaflet-popup-content a:hover {
-        color: #ffffff !important;
-        opacity: 0.95 !important;
-      }
-      .leaflet-popup-close-button {
-        padding: 0.4rem !important;
-        color: #94a3b8 !important;
-      }
-
-      /* Scrollbar */
-      ::-webkit-scrollbar { width: 5px; height: 5px; }
-      ::-webkit-scrollbar-track { background: rgb(var(--paper)); }
-      ::-webkit-scrollbar-thumb { background: rgb(var(--mute) / 0.4); border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgb(var(--accent)); }
-    </style>
+    <%= stylesheet_link_tag "chaicode", "data-turbo-track": "reload" %>
   </head>
 
   <body class="flex h-screen bg-paper text-ink antialiased overflow-hidden"
@@ -328,7 +73,7 @@
     <!-- Mobile Drawer Backdrop Overlay -->
     <div data-sidebar-target="backdrop"
          data-action="click->sidebar#close"
-         class="fixed inset-0 bg-ink/30 backdrop-blur-[2px] z-40 hidden md:hidden transition-opacity"></div>
+         class="fixed inset-0 bg-ink/30 z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- Left Sidebar Navigation (Chai Visual Reference: dsa.chaicode.com) -->
     <aside data-sidebar-target="sidebar"
@@ -382,11 +127,15 @@
       <nav class="mt-6 space-y-5 flex-1 overflow-y-auto pr-1">
         
         <!-- Category 1: Operational Engines -->
-        <div class="space-y-1">
-          <div class="flex items-center gap-1.5 text-left font-hand text-lg text-ink/80 px-1">
-            <span class="text-ink/60 text-[10px] leading-none shrink-0">▶</span>
-            <span class="font-bold truncate">Operational Engines</span>
-          </div>
+        <details data-category-key="operational_engines" class="group/cat space-y-1" open>
+          <summary data-action="click->sidebar#toggleCategory"
+                   class="flex items-center justify-between gap-1.5 text-left font-hand text-lg text-ink/80 px-1 py-1 rounded-lg hover:bg-ink/5 hover:text-ink transition-colors cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-ink/60 text-[10px] leading-none shrink-0 transition-transform duration-200 group-open/cat:rotate-90">▶</span>
+              <span class="font-bold truncate text-base sm:text-lg">Operational Engines</span>
+            </div>
+            <span class="text-[10px] text-mute font-mono px-1.5 py-0.5 rounded bg-ink/5 group-hover/cat:text-ink">9</span>
+          </summary>
 
           <ul class="space-y-1 pl-3.5 mt-1">
             <% is_dash = request.path == '/dashboard' %>
@@ -434,6 +183,66 @@
               <% end %>
             </li>
 
+            <% is_net = request.path.start_with?('/network') %>
+            <li>
+              <%= link_to network_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_net ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
+                <span class="flex items-start gap-1.5">
+                  <% if is_net %>
+                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
+                  <% end %>
+                  <span class="min-w-0 flex-1">
+                    Network Graph
+                    <span class="block text-xs text-mute <%= is_net ? 'text-paper/70' : '' %>">Connectivity &amp; Isolation</span>
+                  </span>
+                </span>
+              <% end %>
+            </li>
+
+            <% is_pred = request.path.start_with?('/intelligence/predictions') %>
+            <li>
+              <%= link_to intelligence_predictions_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_pred ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
+                <span class="flex items-start gap-1.5">
+                  <% if is_pred %>
+                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
+                  <% end %>
+                  <span class="min-w-0 flex-1">
+                    Cascade Predictions
+                    <span class="block text-xs text-mute <%= is_pred ? 'text-paper/70' : '' %>">Predictive Cascading Engine</span>
+                  </span>
+                </span>
+              <% end %>
+            </li>
+
+            <% is_resp = request.path.start_with?('/intelligence/response') %>
+            <li>
+              <%= link_to intelligence_response_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_resp ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
+                <span class="flex items-start gap-1.5">
+                  <% if is_resp %>
+                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
+                  <% end %>
+                  <span class="min-w-0 flex-1">
+                    Autonomous Response
+                    <span class="block text-xs text-mute <%= is_resp ? 'text-paper/70' : '' %>">Optimization &amp; Staging</span>
+                  </span>
+                </span>
+              <% end %>
+            </li>
+
+            <% is_cmd = request.path.start_with?('/intelligence/command') %>
+            <li>
+              <%= link_to intelligence_command_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_cmd ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
+                <span class="flex items-start gap-1.5">
+                  <% if is_cmd %>
+                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
+                  <% end %>
+                  <span class="min-w-0 flex-1">
+                    Unified Command
+                    <span class="block text-xs text-mute <%= is_cmd ? 'text-paper/70' : '' %>">Closed-Loop Decision Center</span>
+                  </span>
+                </span>
+              <% end %>
+            </li>
+
             <% is_routes = request.path.start_with?('/routes') %>
             <li>
               <%= link_to routes_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_routes ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
@@ -443,7 +252,7 @@
                   <% end %>
                   <span class="min-w-0 flex-1">
                     Smart Routes
-                    <span class="block text-xs text-mute <%= is_routes ? 'text-paper/70' : '' %>">Double-Buffered Optimizer</span>
+                    <span class="block text-xs text-mute <%= is_routes ? 'text-paper/70' : '' %>">Triple-Buffered Optimizer</span>
                   </span>
                 </span>
               <% end %>
@@ -464,14 +273,18 @@
               <% end %>
             </li>
           </ul>
-        </div>
+        </details>
 
         <!-- Category 2: Incident Response -->
-        <div class="space-y-1">
-          <div class="flex items-center gap-1.5 text-left font-hand text-lg text-ink/80 px-1">
-            <span class="text-ink/60 text-[10px] leading-none shrink-0">▶</span>
-            <span class="font-bold truncate">Tactical Response</span>
-          </div>
+        <details data-category-key="tactical_response" class="group/cat space-y-1" open>
+          <summary data-action="click->sidebar#toggleCategory"
+                   class="flex items-center justify-between gap-1.5 text-left font-hand text-lg text-ink/80 px-1 py-1 rounded-lg hover:bg-ink/5 hover:text-ink transition-colors cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-ink/60 text-[10px] leading-none shrink-0 transition-transform duration-200 group-open/cat:rotate-90">▶</span>
+              <span class="font-bold truncate text-base sm:text-lg">Tactical Response</span>
+            </div>
+            <span class="text-[10px] text-mute font-mono px-1.5 py-0.5 rounded bg-ink/5 group-hover/cat:text-ink">3</span>
+          </summary>
 
           <ul class="space-y-1 pl-3.5 mt-1">
             <% is_em = request.path.start_with?('/emergencies') %>
@@ -519,14 +332,18 @@
               <% end %>
             </li>
           </ul>
-        </div>
+        </details>
 
         <!-- Category 3: Insights & Tools -->
-        <div class="space-y-1">
-          <div class="flex items-center gap-1.5 text-left font-hand text-lg text-ink/80 px-1">
-            <span class="text-ink/60 text-[10px] leading-none shrink-0">▶</span>
-            <span class="font-bold truncate">Insights &amp; Simulation</span>
-          </div>
+        <details data-category-key="insights_simulation" class="group/cat space-y-1" open>
+          <summary data-action="click->sidebar#toggleCategory"
+                   class="flex items-center justify-between gap-1.5 text-left font-hand text-lg text-ink/80 px-1 py-1 rounded-lg hover:bg-ink/5 hover:text-ink transition-colors cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-ink/60 text-[10px] leading-none shrink-0 transition-transform duration-200 group-open/cat:rotate-90">▶</span>
+              <span class="font-bold truncate text-base sm:text-lg">Insights &amp; Simulation</span>
+            </div>
+            <span class="text-[10px] text-mute font-mono px-1.5 py-0.5 rounded bg-ink/5 group-hover/cat:text-ink"><%= authenticated? && current_user.admin? ? '3' : '2' %></span>
+          </summary>
 
           <ul class="space-y-1 pl-3.5 mt-1">
             <% is_ana = request.path.start_with?('/analytics') %>
@@ -576,7 +393,7 @@
               </li>
             <% end %>
           </ul>
-        </div>
+        </details>
 
       </nav>
 
@@ -595,17 +412,17 @@
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-paper">
-      
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-paper relative">
       <!-- Top Navigation Bar -->
-      <header class="w-full flex justify-between items-center px-4 sm:px-8 lg:px-10 py-2.5 bg-surface/90 backdrop-blur-xl border-b border-[var(--line)] shadow-sm z-20">
+      <header class="w-full flex justify-between items-center px-4 sm:px-8 lg:px-10 py-2.5 bg-surface border-b border-[var(--line)] shadow-sm z-20">
         
         <!-- Left: Brand + Hamburger (Mobile) + Search Pill Input -->
         <div class="flex items-center space-x-2 sm:space-x-4 max-w-xl flex-1 min-w-0">
           <!-- Mobile Hamburger Toggle -->
           <button type="button"
                   data-action="click->sidebar#toggle"
-                  class="md:hidden p-2 rounded-xl text-sketch hover:bg-ink/5 transition-colors focus:outline-none flex-shrink-0">
+                  aria-label="Toggle Navigation Sidebar"
+                  class="md:hidden p-2 rounded-xl text-sketch hover:bg-ink/5 transition-colors focus:outline-none flex-shrink-0 cursor-pointer">
             <i class="fas fa-bars text-base"></i>
           </button>
 
@@ -654,6 +471,7 @@
           <button type="button"
                   data-action="click->qr-modal#open"
                   title="Scan QR Code on Mobile"
+                  aria-label="Scan QR Code on Mobile"
                   class="hidden sm:inline-flex items-center p-2 rounded-full text-sketch hover:text-accent hover:bg-ink/5 transition-colors cursor-pointer">
             <i class="fas fa-qrcode text-sm"></i>
           </button>
@@ -662,12 +480,13 @@
           <button type="button"
                   data-action="click->theme#toggle"
                   title="Toggle Light / Dark Mode"
+                  aria-label="Toggle Light / Dark Mode"
                   class="p-2 rounded-full text-accent hover:opacity-80 hover:bg-ink/5 transition-colors cursor-pointer">
             <i data-theme-target="icon" class="fas fa-moon text-sm"></i>
           </button>
 
           <!-- Notification Bell with Active Indicator -->
-          <%= link_to emergencies_path, title: "Emergency Notifications", class: "relative p-2 text-sketch hover:text-ink transition-colors" do %>
+          <%= link_to emergencies_path, title: "Emergency Notifications", aria: { label: "Emergency Notifications" }, class: "relative p-2 text-sketch hover:text-ink transition-colors" do %>
             <i class="fas fa-bell text-sm"></i>
             <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-surface"></span>
           <% end %>
@@ -696,10 +515,10 @@
       </header>
 
       <!-- Page Content Area -->
-      <main class="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-6 lg:p-8 bg-paper">
+      <main class="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-6 lg:p-8 bg-transparent relative z-10">
         <% if flash[:notice] %>
           <div data-controller="flash"
-               data-flash-timeout-value="3500"
+               data-flash-timeout-value="2000"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
                class="mb-6 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 px-4 py-3 rounded-2xl flex items-center justify-between shadow-sm transition-all">
             <div class="flex items-center space-x-3">
@@ -717,7 +536,7 @@
 
         <% if flash[:alert] %>
           <div data-controller="flash"
-               data-flash-timeout-value="5000"
+               data-flash-timeout-value="2000"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
                class="mb-6 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-200 px-4 py-3 rounded-2xl flex items-center justify-between shadow-sm transition-all">
             <div class="flex items-center space-x-3">
@@ -740,7 +559,7 @@
     <!-- Desktop QR Code Modal Overlay -->
     <div data-qr-modal-target="backdrop"
          data-action="click->qr-modal#close"
-         class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+         class="fixed inset-0 bg-black/75 z-50 hidden transition-opacity"></div>
 
     <div data-qr-modal-target="modal"
          class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden pointer-events-none">
@@ -758,7 +577,7 @@
     <!-- Global Search Command Palette Modal (⌘K Spotlight) -->
     <div data-search-modal-target="backdrop"
          data-action="click->search-modal#close"
-         class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden transition-opacity"></div>
+         class="fixed inset-0 bg-black/75 z-50 hidden transition-opacity"></div>
 
     <div data-search-modal-target="modal"
          class="fixed inset-0 z-50 flex items-start justify-center pt-14 sm:pt-20 p-4 hidden pointer-events-none">

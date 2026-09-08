@@ -1,0 +1,609 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-20">
+
+  <!-- PAGE HEADER -->
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <h1 class="text-2xl sm:text-3xl font-black text-ink tracking-tight font-hand">Unified Emergency Command Center</h1>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-black uppercase bg-accent/15 text-accent border border-accent/30">
+          Closed-Loop Intelligence
+        </span>
+        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono text-mute bg-surface border border-[var(--line)]">
+          <i class="fas fa-stopwatch mr-1 text-[10px]"></i><%= @command.dig(:instrumentation, :execution_time_ms) || 28 %>ms latency
+        </span>
+        <% if @command.dig(:data_reliability, :degraded_mode) %>
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+            <i class="fas fa-triangle-exclamation mr-1"></i>Degraded Mode
+          </span>
+        <% end %>
+      </div>
+      <p class="text-xs sm:text-sm text-mute mt-1">
+        Multi-signal continuous reassessment, assumption monitoring, plan drift detection, and human-in-the-loop decision support.
+      </p>
+    </div>
+
+    <!-- Controls: Horizons & Export -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- Horizon Selector -->
+      <div class="flex items-center bg-surface border border-[var(--line)] rounded-xl p-1 shadow-sm">
+        <span class="text-[10px] font-mono text-mute font-bold uppercase px-2">Horizon:</span>
+        <% [6, 12, 24, 48].each do |h| %>
+          <%= link_to intelligence_command_path(horizon: h),
+                      class: "px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition #{h == @horizon ? 'bg-ink text-paper shadow-sm' : 'text-mute hover:text-ink hover:bg-ink/5'}" do %>
+            <%= h %>h
+          <% end %>
+        <% end %>
+      </div>
+
+      <!-- JSON API -->
+      <%= link_to intelligence_command_path(horizon: @horizon, format: :json),
+                  target: "_blank",
+                  class: "inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold bg-surface text-sketch border border-[var(--line)] hover:bg-ink/5 shadow-sm transition" do %>
+        <i class="fas fa-code mr-1.5 text-xs text-mute"></i>
+        <span>JSON API</span>
+      <% end %>
+
+      <!-- Autonomous Response Link -->
+      <%= link_to intelligence_response_path(horizon: @horizon),
+                  class: "inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold bg-surface text-sketch border border-[var(--line)] hover:bg-ink/5 shadow-sm transition" do %>
+        <i class="fas fa-route mr-1.5 text-xs text-mute"></i>
+        <span>Response Engine</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- A. COMMAND STATUS HERO PANEL (HUMAN IN THE LOOP MANDATORY) -->
+  <div class="bg-surface rounded-2xl border-2 border-amber-500/50 dark:border-amber-500/40 p-5 sm:p-6 shadow-md relative overflow-hidden">
+    <!-- Top Bar: Live Monitoring & State -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--line)] pb-3 mb-4">
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+        <span class="text-xs font-mono font-black uppercase tracking-wider text-ink">UNIFIED EMERGENCY COMMAND</span>
+        <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 font-bold">
+          ● <%= @command.dig(:command_state, :phase)&.tr('_', ' ') || 'ACTIVE MONITORING' %>
+        </span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-black uppercase bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+          <i class="fas fa-shield-halved text-xs"></i>
+          <span>AWAITING HUMAN COMMAND APPROVAL</span>
+        </span>
+        <span class="text-[10px] font-mono text-mute hidden sm:inline">AI RECOMMENDATION — NOT AUTONOMOUS EXECUTION</span>
+      </div>
+    </div>
+
+    <!-- Core Decision & Commitment Banner -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+      <div class="lg:col-span-2 space-y-2.5">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-mono uppercase font-black tracking-wider text-accent">
+            ACTIVE STRATEGIC DIRECTIVE
+          </span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold <%= @command.dig(:commitment_level, :badge) %>">
+            <%= @command.dig(:commitment_level, :label) %>
+          </span>
+        </div>
+        <div class="text-xl sm:text-2xl font-black text-ink font-hand flex items-center gap-2 flex-wrap">
+          <span><%= @command.dig(:response_optimization, :optimal_strategy_name) || "Resilient Multi-Hub Response" %></span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+            <%= @command.dig(:response_optimization, :optimal_strategy_type) || "RECOMMENDED" %>
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-ink/90 leading-relaxed max-w-2xl">
+          <%= @command.dig(:explainability, :situation_summary) %>
+        </p>
+
+        <!-- Key Reasoning Bullets -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+          <% (@command.dig(:explainability, :why_this_plan) || []).first(4).each do |reason| %>
+            <div class="flex items-start gap-1.5 text-ink/90">
+              <span class="text-emerald-500 mt-0.5 shrink-0"><i class="fas fa-circle-check text-[10px]"></i></span>
+              <span><%= reason %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Commander Sign-Off Actions -->
+      <div class="bg-paper/80 dark:bg-ink/10 rounded-xl p-4 border border-[var(--line)] space-y-3">
+        <div class="flex items-center justify-between text-xs font-bold text-ink border-b border-[var(--line)] pb-2">
+          <span>Commander Authority</span>
+          <span class="font-mono text-[10px] text-mute"><%= @command.dig(:situation_snapshot, :scenario_fingerprint) %></span>
+        </div>
+
+        <p class="text-[11px] text-mute leading-snug">
+          Operational recommendations remain simulated decision-support until explicitly signed off.
+        </p>
+
+        <div class="grid grid-cols-3 gap-1.5 pt-1">
+          <!-- APPROVE BUTTON -->
+          <%= button_to intelligence_command_approve_path(horizon: @horizon),
+                        method: :post,
+                        params: {
+                          recommendation_id: @command.dig(:response_optimization, :optimal_strategy_name),
+                          notes: "Commander authorized recommended response plan without alterations."
+                        },
+                        class: "w-full py-2 px-1 text-center font-mono text-[11px] font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow transition cursor-pointer" do %>
+            <i class="fas fa-check mr-1"></i>Approve
+          <% end %>
+
+          <!-- MODIFY BUTTON -->
+          <%= button_to intelligence_command_modify_path(horizon: @horizon),
+                        method: :post,
+                        params: {
+                          recommendation_id: @command.dig(:response_optimization, :optimal_strategy_name),
+                          notes: "Commander requested additional UAV escort and secondary warehouse activation."
+                        },
+                        class: "w-full py-2 px-1 text-center font-mono text-[11px] font-bold rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow transition cursor-pointer" do %>
+            <i class="fas fa-pen mr-1"></i>Modify
+          <% end %>
+
+          <!-- REJECT BUTTON -->
+          <%= button_to intelligence_command_reject_path(horizon: @horizon),
+                        method: :post,
+                        params: {
+                          recommendation_id: @command.dig(:response_optimization, :optimal_strategy_name),
+                          notes: "Commander rejected plan due to localized operational intelligence."
+                        },
+                        class: "w-full py-2 px-1 text-center font-mono text-[11px] font-bold rounded-lg bg-red-600 hover:bg-red-700 text-white shadow transition cursor-pointer" do %>
+            <i class="fas fa-xmark mr-1"></i>Reject
+          <% end %>
+        </div>
+
+        <div class="text-[9px] font-mono text-center text-mute pt-1">
+          No real-world autonomous execution occurs upon logging.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEGRADED INTELLIGENCE WARNING BANNER -->
+  <% if @command.dig(:data_reliability, :degraded_mode) %>
+    <div class="bg-amber-500/10 border-2 border-amber-500/40 rounded-xl p-3.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+          <i class="fas fa-triangle-exclamation text-sm"></i>
+        </div>
+        <div>
+          <div class="text-xs font-mono font-black uppercase text-amber-800 dark:text-amber-300">
+            OPERATING IN DEGRADED INTELLIGENCE MODE
+          </div>
+          <div class="text-[11px] text-mute">
+            Some telemetry feeds or ML predictions are degraded or offline. Uncertainty intervals widened; mandatory physical/UAV verification enforced.
+          </div>
+        </div>
+      </div>
+      <span class="text-xs font-mono font-bold text-amber-700 dark:text-amber-400">
+        <%= @command.dig(:data_reliability, :score) %>% Reliability
+      </span>
+    </div>
+  <% end %>
+
+  <!-- B. EXECUTIVE SITUATION STRIP -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <!-- Threat Level -->
+    <div class="bg-surface p-3.5 rounded-xl border border-[var(--line)] shadow-sm">
+      <div class="text-[10px] font-mono text-mute font-bold uppercase">Overall Threat</div>
+      <div class="text-xl font-black text-ink font-mono mt-0.5">
+        <%= @command.dig(:situation_snapshot, :overall_threat_level) %>
+        <span class="text-xs font-normal text-mute">/100</span>
+      </div>
+      <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase bg-red-500/15 text-red-600">
+        <%= @command.dig(:situation_snapshot, :threat_classification) %>
+      </span>
+    </div>
+
+    <!-- Population At Risk -->
+    <div class="bg-surface p-3.5 rounded-xl border border-[var(--line)] shadow-sm">
+      <div class="text-[10px] font-mono text-mute font-bold uppercase">Population At Risk</div>
+      <div class="text-xl font-black text-ink font-mono mt-0.5">
+        <%= number_with_delimiter(@command.dig(:situation_snapshot, :population_at_risk) || 0) %>
+      </div>
+      <div class="text-[10px] text-mute font-mono mt-1">
+        <%= @command.dig(:situation_snapshot, :affected_settlements)&.size || 0 %> zones prioritized
+      </div>
+    </div>
+
+    <!-- Network Health -->
+    <div class="bg-surface p-3.5 rounded-xl border border-[var(--line)] shadow-sm">
+      <div class="text-[10px] font-mono text-mute font-bold uppercase">Network Health</div>
+      <div class="text-xl font-black text-ink font-mono mt-0.5">
+        <%= @command.dig(:situation_snapshot, :network_health) %>%
+      </div>
+      <div class="text-[10px] text-mute font-mono mt-1 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full <%= @command.dig(:situation_snapshot, :network_health).to_f > 60 ? 'bg-emerald-500' : 'bg-red-500' %>"></span>
+        <%= @command.dig(:situation_snapshot, :trend) %>
+      </div>
+    </div>
+
+    <!-- Plan Validity -->
+    <div class="bg-surface p-3.5 rounded-xl border border-[var(--line)] shadow-sm">
+      <div class="text-[10px] font-mono text-mute font-bold uppercase">Plan Validity</div>
+      <div class="text-xl font-black text-ink font-mono mt-0.5">
+        <%= @command.dig(:plan_validity, :score) %>%
+      </div>
+      <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase <%= @command.dig(:plan_validity, :badge) %>">
+        <%= @command.dig(:plan_validity, :classification) %>
+      </span>
+    </div>
+
+    <!-- Assumption Health -->
+    <div class="bg-surface p-3.5 rounded-xl border border-[var(--line)] shadow-sm">
+      <div class="text-[10px] font-mono text-mute font-bold uppercase">Assumption Health</div>
+      <div class="text-xl font-black text-ink font-mono mt-0.5">
+        <%= @command[:assumption_health_score] %>%
+      </div>
+      <div class="text-[10px] text-mute font-mono mt-1">
+        <%= @command[:plan_assumptions]&.count { |a| a[:current_status] == 'VALID' } %>/<%= @command[:plan_assumptions]&.size %> valid
+      </div>
+    </div>
+
+    <!-- Data Reliability -->
+    <div class="bg-surface p-3.5 rounded-xl border border-[var(--line)] shadow-sm">
+      <div class="text-[10px] font-mono text-mute font-bold uppercase">Data Reliability</div>
+      <div class="text-xl font-black text-ink font-mono mt-0.5">
+        <%= @command.dig(:data_reliability, :score) %>%
+      </div>
+      <div class="text-[10px] font-mono mt-1 text-mute">
+        Uncertainty: <span class="font-bold text-ink"><%= @command.dig(:uncertainty_analysis, :uncertainty_level) %></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. COMMANDER ATTENTION STRIP (TOP 3 ACTIONS STRICTLY) -->
+  <div class="bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-3">
+    <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-bell text-accent text-sm"></i>
+        <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">
+          Commander Attention Required (Top 3 Actions)
+        </h2>
+      </div>
+      <span class="text-[10px] font-mono text-mute">Prioritized by Impact × Urgency ÷ Uncertainty</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+      <% (@command[:commander_attention] || []).each_with_index do |action, idx| %>
+        <% badge_color = case action[:action_type]
+                         when "ACT_NOW"    then "bg-red-500/15 text-red-600 border-red-500/30"
+                         when "DECIDE_NOW" then "bg-amber-500/15 text-amber-600 border-amber-500/30"
+                         when "VERIFY_NOW" then "bg-blue-500/15 text-blue-600 border-blue-500/30"
+                         else "bg-ink/10 text-ink border-[var(--line)]"
+                         end %>
+        <div class="p-3.5 rounded-xl bg-paper/60 dark:bg-ink/10 border border-[var(--line)] space-y-2 relative">
+          <div class="flex items-center justify-between">
+            <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase <%= badge_color %> border">
+              <%= action[:action_type].tr('_', ' ') %>
+            </span>
+            <span class="text-[10px] font-mono text-mute"><%= action[:time_sensitivity] %></span>
+          </div>
+          <div class="text-xs font-bold text-ink leading-snug">
+            <%= idx + 1 %>. <%= action[:title] %>
+          </div>
+          <p class="text-[11px] text-mute leading-relaxed">
+            <%= action[:description] %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- D. PLAN DRIFT MONITOR & ORIGINAL VS REVISED COMPARISON -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Plan Drift Gauge & Breakdown -->
+    <div class="bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-compass-drafting text-accent text-sm"></i>
+          <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Plan Drift Monitor</h2>
+        </div>
+        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase <%= @command.dig(:plan_drift, :detected) ? 'bg-amber-500/15 text-amber-600 border border-amber-500/30' : 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/30' %>">
+          <%= @command.dig(:plan_drift, :severity) %> DRIFT
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-baseline justify-between">
+          <span class="text-xs text-mute font-mono">Drift Index</span>
+          <span class="text-2xl font-black font-mono text-ink"><%= @command.dig(:plan_drift, :drift_score) %><span class="text-xs font-normal text-mute">/100</span></span>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-ink/10 h-2.5 rounded-full overflow-hidden">
+          <% d_score = @command.dig(:plan_drift, :drift_score).to_f %>
+          <div class="h-full rounded-full transition-all duration-500 <%= d_score > 50 ? 'bg-red-500' : (d_score > 25 ? 'bg-amber-500' : 'bg-emerald-500') %>"
+               style="width: <%= [d_score, 100].min %>%"></div>
+        </div>
+      </div>
+
+      <!-- Factor Breakdown -->
+      <div class="space-y-1.5 pt-1 text-xs">
+        <div class="text-[10px] font-mono uppercase text-mute font-bold">Contributing Drift Factors:</div>
+        <% (@command.dig(:plan_drift, :drift_factors) || {}).each do |factor, val| %>
+          <div class="flex items-center justify-between py-1 border-b border-[var(--line)]/50 text-[11px]">
+            <span class="text-ink capitalize"><%= factor %> Drift</span>
+            <span class="font-mono font-bold text-ink"><%= val %> pts</span>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Drift Reasons -->
+      <div class="space-y-1 pt-1">
+        <div class="text-[10px] font-mono uppercase text-mute font-bold">Detection Audit:</div>
+        <% (@command.dig(:plan_drift, :reasons) || []).first(3).each do |reason| %>
+          <div class="text-[11px] text-mute flex items-start gap-1.5">
+            <span class="text-amber-500 shrink-0 mt-0.5">•</span>
+            <span><%= reason %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Original vs Revised Plan Comparison (2 Cols) -->
+    <div class="lg:col-span-2 bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-code-compare text-accent text-sm"></i>
+          <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Plan Comparison: Original vs Revised</h2>
+        </div>
+        <span class="text-[10px] font-mono text-mute">
+          <%= @command.dig(:reoptimization, :reoptimization_performed) ? "Re-optimization Triggered" : "Original Plan Intact" %>
+        </span>
+      </div>
+
+      <% if @command.dig(:reoptimization, :reoptimization_performed) %>
+        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-ink/90 leading-relaxed">
+          <span class="font-bold text-amber-700 dark:text-amber-400"><i class="fas fa-arrows-rotate mr-1"></i>Reassessment Directive:</span>
+          <%= @command.dig(:reoptimization, :narrative) %>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[var(--line)] text-[10px] font-mono text-mute uppercase">
+                <th class="py-2">Operational Dimension</th>
+                <th class="py-2">Original Strategy</th>
+                <th class="py-2">Revised Plan</th>
+                <th class="py-2 text-right">Impact Delta</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[var(--line)] font-mono text-[11px]">
+              <tr>
+                <td class="py-2 font-sans font-bold text-ink">Strategy Model</td>
+                <td class="py-2 text-mute"><%= @command.dig(:reoptimization, :original_strategy, :name) %></td>
+                <td class="py-2 font-bold text-accent"><%= @command.dig(:reoptimization, :revised_strategy, :name) %></td>
+                <td class="py-2 text-right text-emerald-600 font-bold">Adapted</td>
+              </tr>
+              <tr>
+                <td class="py-2 font-sans font-bold text-ink">Plan Resilience</td>
+                <td class="py-2 text-mute"><%= @command.dig(:reoptimization, :original_strategy, :plan_resilience_score) %>%</td>
+                <td class="py-2 font-bold text-ink"><%= @command.dig(:reoptimization, :revised_strategy, :plan_resilience_score) %>%</td>
+                <td class="py-2 text-right text-emerald-600 font-bold"><%= @command.dig(:reoptimization, :improvement, :resilience_change) %></td>
+              </tr>
+              <tr>
+                <td class="py-2 font-sans font-bold text-ink">Population Protected</td>
+                <td class="py-2 text-mute"><%= number_with_delimiter(@command.dig(:reoptimization, :original_strategy, :population_protected) || 0) %></td>
+                <td class="py-2 font-bold text-ink"><%= number_with_delimiter(@command.dig(:reoptimization, :revised_strategy, :population_protected) || 0) %></td>
+                <td class="py-2 text-right text-emerald-600 font-bold"><%= @command.dig(:reoptimization, :improvement, :population_protection_change) %></td>
+              </tr>
+              <tr>
+                <td class="py-2 font-sans font-bold text-ink">Transit ETA</td>
+                <td class="py-2 text-mute"><%= @command.dig(:reoptimization, :original_strategy, :estimated_eta_hours) %>h</td>
+                <td class="py-2 font-bold text-ink"><%= @command.dig(:reoptimization, :revised_strategy, :estimated_eta_hours) %>h</td>
+                <td class="py-2 text-right text-amber-600 font-bold"><%= @command.dig(:reoptimization, :improvement, :response_time_change) %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="py-8 text-center space-y-2">
+          <div class="w-10 h-10 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center mx-auto">
+            <i class="fas fa-circle-check text-lg"></i>
+          </div>
+          <div class="text-sm font-bold text-ink">Original Plan Remains Operationally Sound</div>
+          <p class="text-xs text-mute max-w-md mx-auto">
+            Plan drift (<%= @command.dig(:plan_drift, :drift_score) %> pts) is within acceptable tolerances. Assumptions hold and no re-optimization trigger has fired.
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- E. ASSUMPTION MONITOR & EXPLAINABLE DECISION TRACE -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Assumption & Dependency Monitor -->
+    <div class="bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-list-check text-accent text-sm"></i>
+          <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Plan Assumptions &amp; Dependencies</h2>
+        </div>
+        <span class="text-xs font-mono font-bold text-ink">Health: <%= @command[:assumption_health_score] %>%</span>
+      </div>
+
+      <div class="space-y-2.5">
+        <% (@command[:plan_assumptions] || []).each do |asm| %>
+          <% st_color = case asm[:current_status]
+                        when "VALID"    then "bg-emerald-500/15 text-emerald-600 border-emerald-500/30"
+                        when "DEGRADED" then "bg-amber-500/15 text-amber-600 border-amber-500/30"
+                        when "AT_RISK"  then "bg-orange-500/15 text-orange-600 border-orange-500/30"
+                        else "bg-red-500/15 text-red-600 border-red-500/30"
+                        end %>
+          <div class="p-3 rounded-xl bg-paper/60 dark:bg-ink/10 border border-[var(--line)] space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-mono text-[10px] text-mute font-bold"><%= asm[:id] %> • <%= asm[:dependency_type] %></span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-black uppercase <%= st_color %> border">
+                <%= asm[:current_status] %>
+              </span>
+            </div>
+            <div class="text-xs font-bold text-ink">
+              <%= asm[:assumption] %>
+            </div>
+            <div class="text-[10px] text-mute flex items-center justify-between pt-1">
+              <span>Trigger: <%= asm[:invalidation_trigger] %></span>
+              <span class="font-mono">Conf: <%= asm[:confidence] %>%</span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Vertical Explainable Decision Trace -->
+    <div class="bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-sitemap text-accent text-sm"></i>
+          <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Explainable Decision Trace</h2>
+        </div>
+        <span class="text-[10px] font-mono text-mute">Deterministic Reasoning Chain</span>
+      </div>
+
+      <div class="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[var(--line)]">
+        <% (@command[:decision_trace] || []).each do |step| %>
+          <div class="relative space-y-1">
+            <div class="absolute -left-[27px] top-1 w-3 h-3 rounded-full bg-ink border-2 border-surface"></div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono font-black uppercase text-accent"><%= step[:stage] %></span>
+              <span class="text-[9px] font-mono text-mute">Weight: <%= step[:influence_score] %>%</span>
+            </div>
+            <div class="text-xs font-bold text-ink leading-snug">
+              <%= step[:finding] %>
+            </div>
+            <div class="text-[11px] text-mute">
+              Evidence: <%= step[:evidence] %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- F. SCENARIO COMPARISON (MAX 3) & HISTORICAL CONTEXT -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Scenario Comparison Cards (2 Cols) -->
+    <div class="lg:col-span-2 bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-4">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-layer-group text-accent text-sm"></i>
+          <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Scenario Stress-Test Comparison</h2>
+        </div>
+        <span class="text-[10px] font-mono text-mute">Max 3 Bounded Scenarios</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <% (@command[:scenario_comparison] || []).each do |scen| %>
+          <div class="p-3.5 rounded-xl bg-paper/60 dark:bg-ink/10 border border-[var(--line)] space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-[10px] text-mute font-bold"><%= scen[:id] %></span>
+              <span class="text-[9px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-ink/5 text-ink">
+                <%= scen[:uncertainty] %> Uncert
+              </span>
+            </div>
+            <div class="text-xs font-bold text-ink leading-tight">
+              <%= scen[:name] %>
+            </div>
+            <p class="text-[10px] text-mute leading-snug">
+              <%= scen[:description] %>
+            </p>
+            <div class="pt-2 border-t border-[var(--line)]/50 space-y-1 text-[10px] font-mono">
+              <div class="flex justify-between">
+                <span class="text-mute">Threat Level:</span>
+                <span class="font-bold text-ink"><%= scen[:threat_level] %> (<%= scen[:threat_classification] %>)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-mute">Plan Validity:</span>
+                <span class="font-bold text-ink"><%= scen[:plan_validity_score] %>%</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-mute">Strategy:</span>
+                <span class="font-bold text-accent"><%= scen[:optimal_strategy_type] %></span>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Historical Command Context (Advisory Only) -->
+    <div class="bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-3">
+      <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-clock-rotate-left text-accent text-sm"></i>
+          <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Decision Memory</h2>
+        </div>
+        <span class="text-[9px] font-mono text-amber-600 font-bold">Advisory Only</span>
+      </div>
+
+      <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[10px] font-mono text-amber-800 dark:text-amber-300">
+        HISTORICAL COMMAND CONTEXT — ADVISORY ONLY. Past choices never override current operational recommendations.
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <div class="flex items-baseline justify-between text-xs">
+          <span class="text-mute">Similar Scenarios Match:</span>
+          <span class="font-mono font-bold text-ink"><%= @command.dig(:historical_context, :similar_scenarios_count) %> incidents</span>
+        </div>
+        <div class="grid grid-cols-3 gap-1 text-center font-mono text-[10px] pt-1">
+          <div class="p-2 rounded bg-emerald-500/10 text-emerald-700">
+            <div class="text-base font-bold"><%= @command.dig(:historical_context, :decision_breakdown, :approved) %></div>
+            Approved
+          </div>
+          <div class="p-2 rounded bg-amber-500/10 text-amber-700">
+            <div class="text-base font-bold"><%= @command.dig(:historical_context, :decision_breakdown, :modified) %></div>
+            Modified
+          </div>
+          <div class="p-2 rounded bg-red-500/10 text-red-700">
+            <div class="text-base font-bold"><%= @command.dig(:historical_context, :decision_breakdown, :rejected) %></div>
+            Rejected
+          </div>
+        </div>
+        <p class="text-[11px] text-mute pt-1 leading-relaxed">
+          <%= @command.dig(:historical_context, :historical_pattern) %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- G. EXPLICIT NO-ACTION BASELINE (COUNTERFACTUAL TRADE-OFFS) -->
+  <div class="bg-surface rounded-2xl border border-[var(--line)] p-5 shadow-sm space-y-4">
+    <div class="flex items-center justify-between border-b border-[var(--line)] pb-2.5">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-scale-balanced text-accent text-sm"></i>
+        <h2 class="text-sm font-bold text-ink uppercase tracking-wider font-mono">Explicit No-Action Baseline (Counterfactual Trade-offs)</h2>
+      </div>
+      <span class="text-[10px] font-mono text-mute"><%= @command.dig(:no_action_baseline, :disclaimer) %></span>
+    </div>
+
+    <p class="text-xs text-ink/90 leading-relaxed max-w-3xl">
+      <%= @command.dig(:no_action_baseline, :narrative) %>
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+      <% (@command.dig(:no_action_baseline, :postures) || []).each do |pos| %>
+        <div class="p-3.5 rounded-xl bg-paper/60 dark:bg-ink/10 border border-[var(--line)] space-y-2">
+          <div class="text-[10px] font-mono font-bold uppercase text-accent"><%= pos[:posture].tr('_', ' ') %></div>
+          <div class="text-xs font-bold text-ink leading-tight"><%= pos[:label] %></div>
+          <div class="space-y-1 pt-2 border-t border-[var(--line)]/50 text-[10px] font-mono">
+            <div class="flex justify-between">
+              <span class="text-mute">Pop Protected:</span>
+              <span class="font-bold text-ink"><%= number_with_delimiter(pos[:population_protected]) %></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-mute">Projected Isolation:</span>
+              <span class="font-bold text-ink"><%= pos[:projected_isolation_pct] %>%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-mute">Transit Delay:</span>
+              <span class="font-bold text-ink"><%= pos[:estimated_delay_hours] %>h</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-mute">Plan Resilience:</span>
+              <span class="font-bold text-ink"><%= pos[:response_resilience_score] %>%</span>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+</div>

@@ -97,4 +97,32 @@ class AccessibilityScoreServiceTest < ActiveSupport::TestCase
     assert_equal(-10, factors[:distance_to_hospital][:impact])
     assert_equal(-10, factors[:distance_to_warehouse][:impact])
   end
+
+  test "network isolation reduces accessibility score when enabled" do
+    loc = Location.create!(
+      name: "Cutoff Hamlet",
+      state: "Assam",
+      district: "Dima Hasao",
+      location_type: "Village",
+      road_quality: "good",
+      rainfall_level: "low",
+      landslide_risk: "low",
+      transport_availability: "high",
+      distance_to_hospital: 5.0,
+      distance_to_warehouse: 5.0
+    )
+
+    # Mock network service where loc is isolated
+    mock_network_service = Object.new
+    mock_network_service.define_singleton_method(:analyze) do
+      { isolated_settlements: [{ id: loc.id, name: loc.name }] }
+    end
+
+    result_without = AccessibilityScoreService.new(loc).calculate
+    result_with = AccessibilityScoreService.new(loc, network_service: mock_network_service).calculate(include_network: true)
+
+    assert_operator result_with[:score], :<, result_without[:score]
+    assert_equal(-25, result_with[:factors][:network_isolation][:impact])
+    assert_equal "Isolated", result_with[:factors][:network_isolation][:value]
+  end
 end

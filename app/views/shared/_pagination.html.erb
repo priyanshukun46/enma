@@ -1,0 +1,52 @@
+<%# Shared ChaiCode-styled Pagination Component for ENMA AI %>
+<% if pagy && pagy.pages > 1 %>
+  <div class="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2 border-t border-line text-xs">
+    <div class="text-mute font-mono">
+      Showing <span class="font-bold text-ink"><%= pagy.from %></span> to <span class="font-bold text-ink"><%= pagy.to %></span> of <span class="font-bold text-ink"><%= pagy.count %></span> records
+    </div>
+
+    <div class="flex items-center space-x-1.5 font-mono">
+      <%# Previous page link %>
+      <% if pagy.prev %>
+        <%= link_to url_for(request.query_parameters.merge(page: pagy.prev)),
+                    class: "px-3 py-1.5 rounded-lg bg-surface hover:bg-paper sketch-border-soft text-ink font-bold transition-all hover:-translate-y-0.5",
+                    title: "Previous Page" do %>
+          &larr; Prev
+        <% end %>
+      <% else %>
+        <span class="px-3 py-1.5 rounded-lg bg-paper/50 text-mute/50 border border-line/50 cursor-not-allowed">
+          &larr; Prev
+        </span>
+      <% end %>
+
+      <%# Page number links %>
+      <% pagy.series.each do |item| %>
+        <% if item.is_a?(Integer) %>
+          <%= link_to item,
+                      url_for(request.query_parameters.merge(page: item)),
+                      class: "px-3 py-1.5 rounded-lg bg-surface hover:bg-paper sketch-border-soft text-ink font-bold transition-all hover:-translate-y-0.5" %>
+        <% elsif item.is_a?(String) %>
+          <%# Current active page %>
+          <span class="px-3 py-1.5 rounded-lg bg-accent text-white font-black shadow-sm">
+            <%= item %>
+          </span>
+        <% elsif item == :gap %>
+          <span class="px-2 py-1.5 text-mute">…</span>
+        <% end %>
+      <% end %>
+
+      <%# Next page link %>
+      <% if pagy.next %>
+        <%= link_to url_for(request.query_parameters.merge(page: pagy.next)),
+                    class: "px-3 py-1.5 rounded-lg bg-surface hover:bg-paper sketch-border-soft text-ink font-bold transition-all hover:-translate-y-0.5",
+                    title: "Next Page" do %>
+          Next &rarr;
+        <% end %>
+      <% else %>
+        <span class="px-3 py-1.5 rounded-lg bg-paper/50 text-mute/50 border border-line/50 cursor-not-allowed">
+          Next &rarr;
+        </span>
+      <% end %>
+    </div>
+  </div>
+<% end %>

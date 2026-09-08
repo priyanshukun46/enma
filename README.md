@@ -35,7 +35,7 @@ Rather than giving emergency coordinators a generic map or a simple shortest-pat
 - Dynamic isolation tiers: *Highly Accessible* (80+), *Moderately Accessible* (60–79), *Difficult Access* (40–59), and *Critical Vulnerability* (<40).
 - Detailed drill-down reports showing primary bottlenecks (e.g. single bridge dependency, washed-out culverts, steep slope saturation).
 
-### 🚚 Double-Buffered Smart Route Optimizer (`/routes`)
+### 🚚 Triple-Buffered Smart Route Optimizer (`/routes`)
 - Integrates with Open Source Routing Machine (OSRM) driving engines for turn-by-turn navigation over actual road networks.
 - 3 distinct routing strategies:
   - **🛡️ Safest Route**: Actively avoids high-risk mountain passes and flash-flood zones.

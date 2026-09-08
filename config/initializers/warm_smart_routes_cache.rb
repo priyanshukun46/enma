@@ -17,7 +17,7 @@ Rails.application.config.after_initialize do
             vehicle_type: "Truck",
             cargo_type: "General Supplies"
           ).recommend
-          Rails.logger.info("[SmartRoutes] Double-buffer background pre-warming complete for Guwahati -> Shillong.")
+          Rails.logger.info("[SmartRoutes] Triple-buffer background pre-warming complete for Guwahati -> Shillong.")
         rescue StandardError => e
           Rails.logger.warn("[SmartRoutes] Pre-warming deferred: #{e.message}")
         end
@@ -25,3 +25,4 @@ Rails.application.config.after_initialize do
     end
   end
 end
+

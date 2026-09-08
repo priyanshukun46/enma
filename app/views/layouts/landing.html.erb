@@ -51,138 +51,42 @@
         }
       }
     </script>
-    <style>
-      /* ChaiCode (dsa.chaicode.com) Design System Tokens */
-      :root, [data-theme=light] {
-        color-scheme: light;
-        --paper: 250 246 238;          /* #FAF6EE warm parchment */
-        --surface: 255 252 247;        /* #FFFCF7 warm surface */
-        --ink: 24 18 14;               /* #18120E high-contrast espresso ink */
-        --sketch: 76 62 50;            /* #4C3E32 warm charcoal text */
-        --mute: 118 104 90;            /* #76685A deep legible taupe (>4.5:1 ratio) */
-        --accent: 226 84 56;           /* #E25438 rich warm reddish terracotta */
-        --accent2: 200 60 45;          /* #C83C2D deep rust red */
-        --border: 31 31 31;
-        --shadow: 31 31 31;
-        --card: rgba(31, 24, 18, 0.035);
-        --card-hi: rgba(31, 24, 18, 0.07);
-        --line: rgba(38, 30, 24, 0.15);
-        --line-hi: rgba(38, 30, 24, 0.30);
-        --done-bg: #DFF0E2;
-        --done-text: #2F7D4A;
-        --done-stroke: #3A9D5D;
-        --dead-bg: #FDE2E2;
-        --dead-text: #B03A3A;
-        --dead-stroke: #C84A4A;
-        --gold-bg: #FFF4D6;
-        --gold-text: #917400;
-        --gold-stroke: #CAA400;
-        --compare-bg: #F5EBE6;
-        --radius-card: 16px;
-      }
-
-      [data-theme=dark], .dark {
-        color-scheme: dark;
-        --paper: 20 16 12;             /* #14100C dark espresso */
-        --surface: 27 22 17;           /* #1B1611 dark roasted surface */
-        --ink: 236 229 214;            /* #ECE5D6 warm cream ivory */
-        --sketch: 184 176 160;         /* #B8B0A0 warm parchment */
-        --mute: 146 138 123;           /* #928A7B muted cocoa */
-        --accent: 236 94 66;           /* #EC5E42 warm glowing reddish coral */
-        --accent2: 216 74 46;          /* #D84A2E rich terracotta red */
-        --border: 90 82 68;
-        --shadow: 0 0 0;
-        --card: rgba(255, 255, 255, 0.035);
-        --card-hi: rgba(255, 255, 255, 0.065);
-        --line: rgba(236, 229, 214, 0.12);
-        --line-hi: rgba(236, 229, 214, 0.22);
-        --done-bg: #17301F;
-        --done-text: #6FC28D;
-        --done-stroke: #4FB374;
-        --dead-bg: #351A1A;
-        --dead-text: #E88A8A;
-        --dead-stroke: #E06B6B;
-        --gold-bg: #332A12;
-        --gold-text: #D8B638;
-        --gold-stroke: #D8B638;
-        --compare-bg: #2C1E1A;
-        --radius-card: 16px;
-      }
-
-      body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        background-color: rgb(var(--paper));
-        color: rgb(var(--ink));
-        transition: background-color 0.25s ease, color 0.25s ease;
-        overflow-x: hidden;
-      }
-
-      /* ChaiCode Card & Border Styles */
-      .sketch-border {
-        border: 1px solid var(--line-hi);
-        border-radius: var(--radius-card, 16px);
-        background-clip: padding-box;
-      }
-
-      .sketch-border-soft {
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        background-clip: padding-box;
-      }
-
-      /* Glassmorphism tuned for ChaiCode warm palette */
-      .chai-nav {
-        background: rgb(var(--surface) / 0.85);
-        backdrop-filter: blur(16px) saturate(180%);
-        -webkit-backdrop-filter: blur(16px) saturate(180%);
-        border-bottom: 1px solid var(--line);
-      }
-
-      .chai-card {
-        background: rgb(var(--surface));
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      }
-
-      .chai-card:hover {
-        border-color: rgb(var(--accent) / 0.45);
-        box-shadow: 0 10px 30px -5px rgb(var(--accent) / 0.12);
-        transform: translateY(-2px);
-      }
-
-      /* Typography Gradients matching ChaiCode */
-      .text-accent-gradient {
-        background: linear-gradient(135deg, rgb(var(--ink)) 30%, rgb(var(--accent)) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-
-      /* Minimal Scrollbars */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: rgb(var(--paper)); }
-      ::-webkit-scrollbar-thumb { background: rgb(var(--mute) / 0.4); border-radius: 9999px; }
-      ::-webkit-scrollbar-thumb:hover { background: rgb(var(--accent)); }
-    </style>
+    <%= stylesheet_link_tag "chaicode", "data-turbo-track": "reload" %>
   </head>
 
   <body class="min-h-screen antialiased selection:bg-accent selection:text-white flex flex-col justify-between"
         data-controller="theme">
     
     <% if flash[:notice].present? || flash[:alert].present? %>
-      <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4 pointer-events-none">
+      <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4 pointer-events-none space-y-2">
         <% if flash[:notice] %>
-          <div class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center"
+          <div data-controller="flash"
+               data-flash-timeout-value="2000"
+               data-action="mouseenter->flash#pause mouseleave->flash#resume"
+               class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all"
                style="background-color: var(--done-bg); color: var(--done-text); border-color: var(--done-stroke);">
-            <i class="fas fa-check-circle mr-2.5"></i><%= flash[:notice] %>
+            <div class="flex items-center space-x-2.5">
+              <i class="fas fa-check-circle"></i>
+              <span><%= flash[:notice] %></span>
+            </div>
+            <button type="button" data-action="click->flash#dismiss" class="ml-2 text-current opacity-70 hover:opacity-100 cursor-pointer p-0.5">
+              <i class="fas fa-times text-xs"></i>
+            </button>
           </div>
         <% end %>
         <% if flash[:alert] %>
-          <div class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center"
+          <div data-controller="flash"
+               data-flash-timeout-value="2000"
+               data-action="mouseenter->flash#pause mouseleave->flash#resume"
+               class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all"
                style="background-color: var(--dead-bg); color: var(--dead-text); border-color: var(--dead-stroke);">
-            <i class="fas fa-exclamation-circle mr-2.5"></i><%= flash[:alert] %>
+            <div class="flex items-center space-x-2.5">
+              <i class="fas fa-exclamation-circle"></i>
+              <span><%= flash[:alert] %></span>
+            </div>
+            <button type="button" data-action="click->flash#dismiss" class="ml-2 text-current opacity-70 hover:opacity-100 cursor-pointer p-0.5">
+              <i class="fas fa-times text-xs"></i>
+            </button>
           </div>
         <% end %>
       </div>

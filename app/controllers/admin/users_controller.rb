@@ -3,7 +3,7 @@ module Admin
     before_action :require_admin
 
     def index
-      @users = User.order(created_at: :desc)
+      @pagy, @users = pagy(User.order(created_at: :desc))
       @admin_count = User.where(role: :admin).count
       @operator_count = User.where(role: :operator).count
     end

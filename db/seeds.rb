@@ -404,13 +404,15 @@ warehouses_data = [
   }
 ]
 
+all_seeded_locations = Location.all.to_a
+
 warehouses_data.each do |data|
   wh = Warehouse.find_or_initialize_by(name: data[:name])
   wh.assign_attributes(data.except(:resources_json))
   wh.resources_json = data[:resources_json]
 
-  # Link to closest seeded location
-  closest_loc = Location.all.min_by { |l|
+  # Link to closest seeded location using preloaded in-memory records
+  closest_loc = all_seeded_locations.min_by { |l|
     dlat = (l.latitude - data[:latitude]).abs
     dlon = (l.longitude - data[:longitude]).abs
     dlat + dlon
@@ -525,6 +527,10 @@ puts "Configured #{LogisticsRoute.count} initial logistics routes."
 
 # --- User Accounts (Authentication & Roles) ---
 puts "Seeding default authentication accounts for ENMA AI..."
+if Rails.env.production? && (ENV["ADMIN_PASSWORD"].blank? || ENV["OPERATOR_PASSWORD"].blank?)
+  abort("FATAL: In production, ADMIN_PASSWORD and OPERATOR_PASSWORD environment variables MUST be set before running seeds.")
+end
+
 admin_email = ENV["ADMIN_EMAIL"].presence || "admin@enma.ai"
 admin_pass  = ENV["ADMIN_PASSWORD"].presence || "password123"
 operator_email = ENV["OPERATOR_EMAIL"].presence || "operator@enma.ai"
