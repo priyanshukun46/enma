@@ -22,13 +22,13 @@ default: &default
 
 development:
   <<: *default
-  database: enma_development
+  database: res_q_way_development
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
   # When left blank, PostgreSQL will use the default role. This is
   # the same name as the operating system user running Rails.
-  #username: enma
+  #username: res_q_way
 
   # The password associated with the PostgreSQL role (username).
   #password:
@@ -56,7 +56,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: enma_test
+  database: res_q_way_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -87,18 +87,18 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: enma_production
-    username: enma
-    password: <%= ENV["ENMA_DATABASE_PASSWORD"] %>
+    database: res_q_way_production
+    username: res_q_way
+    password: <%= ENV["RESQWAY_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
-    database: enma_production_cache
+    database: res_q_way_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: enma_production_queue
+    database: res_q_way_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: enma_production_cable
+    database: res_q_way_production_cable
     migrations_paths: db/cable_migrate

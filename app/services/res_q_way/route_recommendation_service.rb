@@ -1,7 +1,7 @@
 module ResQWay
   class RouteRecommendationService
     EARTH_RADIUS_KM = 6371.0
-    PROFILES_PATH = Rails.root.join("config", "enma_route_profiles.yml")
+    PROFILES_PATH = Rails.root.join("config", "res_q_way_route_profiles.yml")
 
     attr_reader :origin, :destination, :priority_mode, :vehicle_type, :cargo_type, :options
 

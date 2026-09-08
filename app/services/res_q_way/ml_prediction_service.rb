@@ -29,8 +29,8 @@ module ResQWay
         @road = road_or_data
       end
 
-      @service_url = service_url || ENV["ENMA_ML_SERVICE_URL"].presence || DEFAULT_SERVICE_URL
-      @timeout = timeout || ENV["ENMA_ML_TIMEOUT"].to_f.nonzero? || DEFAULT_TIMEOUT_SECONDS
+      @service_url = service_url || ENV["RESQWAY_ML_SERVICE_URL"].presence || DEFAULT_SERVICE_URL
+      @timeout = timeout || ENV["RESQWAY_ML_TIMEOUT"].to_f.nonzero? || DEFAULT_TIMEOUT_SECONDS
     end
 
     def self.predict_for(road)
