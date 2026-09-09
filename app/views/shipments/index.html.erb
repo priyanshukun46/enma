@@ -90,7 +90,7 @@
     <% if @shipments.any? %>
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-[var(--line)] text-left text-xs">
-          <thead class="bg-paper font-bold text-mute uppercase tracking-wider text-[10px]">
+          <thead class="bg-paper font-bold text-mute uppercase tracking-wider text-[10px] whitespace-nowrap">
             <tr>
               <th class="px-5 py-3">Tracking &amp; Vehicle</th>
               <th class="px-5 py-3">Cargo &amp; Priority</th>
@@ -101,7 +101,7 @@
               <th class="px-5 py-3 text-right">Telemetry</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-[var(--line)] font-medium text-ink">
+          <tbody class="divide-y divide-[var(--line)] font-medium text-ink whitespace-nowrap">
             <% @shipments.each do |sh| %>
               <% meta = sh.cargo_meta %>
               <tr class="hover:bg-ink/5 transition-colors">
