@@ -9,7 +9,7 @@ class RouteOptimizationService
     },
     "emergency vehicle" => {
       base_speed: 55.0,
-      label: "Disaster Response Unit (Priority Clearance)",
+      label: "Emergency Response Unit (Priority Clearance)",
       weights: { safety: 0.35, time: 0.35, accessibility: 0.15, environmental: 0.10, distance: 0.05 }
     },
     "truck" => {
