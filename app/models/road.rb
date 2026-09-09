@@ -312,7 +312,7 @@ class Road < ApplicationRecord
   end
 
   def network_impact_analysis
-    @network_impact_analysis ||= NetworkConnectivityService.new.simulate_road_closure(id)
+    @network_impact_analysis ||= ResQWay::NetworkConnectivityService.new.simulate_road_closure(id)
   end
 
   private

@@ -45,7 +45,7 @@ module ResQWay
       @roads = roads || Road.all.to_a
       @predictive_service = predictive_service
       @predictive_analysis = predictive_analysis
-      @network_service = network_service || NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+      @network_service = network_service || ResQWay::NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
       @cache_hits = 0
     end
 
@@ -67,7 +67,7 @@ module ResQWay
         @roads = Road.where(id: @roads.map(&:id)).to_a
         @warehouses = Warehouse.where(id: @warehouses.map(&:id)).to_a if @warehouses.first.is_a?(ActiveRecord::Base)
         @locations = Location.where(id: @locations.map(&:id)).to_a if @locations.first.is_a?(ActiveRecord::Base)
-        @network_service = NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+        @network_service = ResQWay::NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
       end
 
       # 1. Obtain predictive cascade intelligence (with fast-path cache)

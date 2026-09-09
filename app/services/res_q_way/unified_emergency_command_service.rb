@@ -58,7 +58,7 @@ module ResQWay
       @roads = roads || (defined?(Road) ? Road.all.to_a : [])
       @predictive_service = predictive_service
       @response_service = response_service
-      @network_service = network_service || NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+      @network_service = network_service || ResQWay::NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
       @previous_snapshot = previous_snapshot
       @command_decision = command_decision
       @session_store = session_store || {}

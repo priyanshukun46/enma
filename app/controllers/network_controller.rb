@@ -3,7 +3,7 @@
 class NetworkController < ApplicationController
   def index
     @simulated_road_ids = Array(params[:simulated_road_id]).compact_blank.map(&:to_i)
-    @service = NetworkConnectivityService.new
+    @service = ResQWay::NetworkConnectivityService.new
     @network_data = @service.analyze(simulated_road_ids: @simulated_road_ids)
 
     @simulation_result = if @simulated_road_ids.any?
@@ -33,7 +33,7 @@ class NetworkController < ApplicationController
 
   def simulate
     road_ids = Array(params[:road_id]).compact_blank.map(&:to_i)
-    service = NetworkConnectivityService.new
+    service = ResQWay::NetworkConnectivityService.new
     @simulation_result = service.simulate_road_closure(road_ids)
 
     respond_to do |format|
