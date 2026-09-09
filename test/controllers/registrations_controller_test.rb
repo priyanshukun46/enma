@@ -16,7 +16,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       post sign_up_url, params: {
         user: {
           name: "Dr. Deepa Das",
-          email_address: "deepa.das@enma.ai",
+          email_address: "deepa.das@resqway.ai",
           password: "password123",
           password_confirmation: "password123"
         }
@@ -34,7 +34,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       post sign_up_url, params: {
         user: {
           name: "Dr. Deepa Das",
-          email_address: "deepa.das@enma.ai",
+          email_address: "deepa.das@resqway.ai",
           password: "password123",
           password_confirmation: "mismatched"
         }

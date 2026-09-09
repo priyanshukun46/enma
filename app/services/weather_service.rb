@@ -129,7 +129,7 @@ class WeatherService
   def fetch(force_refresh: false)
     return fallback_data if latitude.blank? || longitude.blank?
 
-    cache_key = "enma_weather_v1_#{latitude.round(3)}_#{longitude.round(3)}"
+    cache_key = "resqway_weather_v1_#{latitude.round(3)}_#{longitude.round(3)}"
 
     # In-memory instant cache check
     if !force_refresh && @@memory_cache[cache_key].present?
@@ -181,7 +181,7 @@ class WeatherService
     http.read_timeout = TIMEOUT_SECONDS
 
     request = Net::HTTP::Get.new(uri.request_uri)
-    request["User-Agent"] = "ENMA-AI-Logistics/1.0 (Hackathon Disaster Response Platform)"
+    request["User-Agent"] = "ResQWay-Logistics/1.0 (Logistics Weather Platform)"
 
     response = http.request(request)
 

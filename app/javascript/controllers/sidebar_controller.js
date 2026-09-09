@@ -34,16 +34,16 @@ export default class extends Controller {
     // The open attribute updates immediately after the click event
     setTimeout(() => {
       try {
-        const state = JSON.parse(localStorage.getItem("enma_sidebar_categories") || "{}")
+        const state = JSON.parse(localStorage.getItem("resqway_sidebar_categories") || localStorage.getItem("enma_sidebar_categories") || "{}")
         state[key] = details.open
-        localStorage.setItem("enma_sidebar_categories", JSON.stringify(state))
+        localStorage.setItem("resqway_sidebar_categories", JSON.stringify(state))
       } catch (e) {}
     }, 20)
   }
 
   restoreCategoryState() {
     try {
-      const state = JSON.parse(localStorage.getItem("enma_sidebar_categories") || "{}")
+      const state = JSON.parse(localStorage.getItem("resqway_sidebar_categories") || localStorage.getItem("enma_sidebar_categories") || "{}")
       this.element.querySelectorAll("details[data-category-key]").forEach((el) => {
         const key = el.dataset.categoryKey
         // If this section contains the current active route link, keep it open

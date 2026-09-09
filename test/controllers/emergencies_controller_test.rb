@@ -68,7 +68,7 @@ class EmergenciesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", @emergency.title
     assert_select "div[data-controller='emergency-map']"
-    assert_select "h3", text: /Why ENMA AI|Affected Communities Priority Ranking|ENMA AI Decision Timeline/
+    assert_select "h3", text: /Why (ResQWay|ENMA AI)|Affected Communities Priority Ranking|(ResQWay|ENMA AI) Decision Timeline/
   end
 
   test "should update emergency status" do

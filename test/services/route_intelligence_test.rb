@@ -126,7 +126,7 @@ class RouteIntelligenceTest < ActiveSupport::TestCase
 
     rec = result[:recommendation]
     assert_not_nil rec[:recommended_type]
-    # When severe disaster intersection occurs on the fastest route, ENMA AI does not choose the fatal route
+    # When severe disaster intersection occurs on the fastest route, ResQWay does not choose the fatal route
     assert_includes [:safest, :balanced], rec[:recommended_type]
     assert rec[:reasons].any?
     assert rec[:confidence_percentage] >= 75

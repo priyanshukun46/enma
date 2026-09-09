@@ -10,7 +10,7 @@ module ResQWay
 
       @officer = User.create!(
         name: "Capt. Wangchuk",
-        email_address: "wangchuk_#{SecureRandom.hex(4)}@enma.ai",
+        email_address: "wangchuk_#{SecureRandom.hex(4)}@resqway.ai",
         password: "password123",
         role: :operator
       )
@@ -463,7 +463,7 @@ module ResQWay
     test "scenario 18: reporter reliability assigns neutral baseline 6/10 to new user with no history" do
       new_user = User.create!(
         name: "New Cadet",
-        email_address: "cadet_#{SecureRandom.hex(4)}@enma.ai",
+        email_address: "cadet_#{SecureRandom.hex(4)}@resqway.ai",
         password: "password123"
       )
       @incident.user = new_user

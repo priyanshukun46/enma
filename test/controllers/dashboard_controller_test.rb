@@ -4,7 +4,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(
       name: "Dashboard Test User",
-      email_address: "dash_test@enma.ai",
+      email_address: "dash_test@resqway.ai",
       password: "password123",
       role: :operator
     )

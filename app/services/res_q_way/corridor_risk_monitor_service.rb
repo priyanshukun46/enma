@@ -94,7 +94,7 @@ module ResQWay
         location_name: incident.location_name || "En-route Corridor",
         latitude: incident.latitude,
         longitude: incident.longitude,
-        recommended_action: "Review ENMA AI rerouting recommendation to avoid blocked mountain cut.",
+        recommended_action: "Review ResQWay rerouting recommendation to avoid blocked mountain cut.",
         dedup_key: dedup_key
       )
     end

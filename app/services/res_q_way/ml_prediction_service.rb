@@ -41,7 +41,7 @@ module ResQWay
       Road.find_each do |road|
         new(road).predict
       rescue StandardError => e
-        Rails.logger.warn("[ENMA ML] Network prediction error for road #{road.id}: #{e.message}")
+        Rails.logger.warn("[ResQWay ML] Network prediction error for road #{road.id}: #{e.message}")
       end
     end
 
@@ -55,10 +55,10 @@ module ResQWay
         record_fallback_prediction(payload, "ML service unavailable or invalid response")
       end
     rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Errno::EHOSTUNREACH => e
-      Rails.logger.warn("[ENMA ML] Service connection issue at #{service_url}: #{e.message}")
+      Rails.logger.warn("[ResQWay ML] Service connection issue at #{service_url}: #{e.message}")
       record_fallback_prediction(payload, "ML prediction service offline (#{e.class.name})")
     rescue StandardError => e
-      Rails.logger.error("[ENMA ML] Unexpected prediction error: #{e.message}\n#{e.backtrace&.first(3)&.join("\n")}")
+      Rails.logger.error("[ResQWay ML] Unexpected prediction error: #{e.message}\n#{e.backtrace&.first(3)&.join("\n")}")
       record_fallback_prediction(payload, "Inference error: #{e.message}")
     end
 
@@ -112,7 +112,7 @@ module ResQWay
       if response.is_a?(Net::HTTPSuccess)
         JSON.parse(response.body)
       else
-        Rails.logger.warn("[ENMA ML] HTTP #{response.code} received from #{uri}: #{response.body}")
+        Rails.logger.warn("[ResQWay ML] HTTP #{response.code} received from #{uri}: #{response.body}")
         nil
       end
     end

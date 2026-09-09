@@ -4,7 +4,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(
       name: "Reset Tester",
-      email_address: "reset.test@enma.ai",
+      email_address: "reset.test@resqway.ai",
       password: "password123"
     )
   end

@@ -4,7 +4,7 @@ class UserTest < ActiveSupport::TestCase
   test "valid user saves with secure password and defaults to operator" do
     user = User.new(
       name: "Captain Roy",
-      email_address: "roy@enma.ai",
+      email_address: "roy@resqway.ai",
       password: "password123",
       password_confirmation: "password123"
     )
@@ -18,13 +18,13 @@ class UserTest < ActiveSupport::TestCase
   test "validates required fields and email uniqueness" do
     user1 = User.create!(
       name: "Officer 1",
-      email_address: "unique@enma.ai",
+      email_address: "unique@resqway.ai",
       password: "password123"
     )
 
     user2 = User.new(
       name: "Officer 2",
-      email_address: "UNIQUE@enma.ai",
+      email_address: "UNIQUE@resqway.ai",
       password: "password123"
     )
     assert_not user2.valid?
@@ -34,7 +34,7 @@ class UserTest < ActiveSupport::TestCase
   test "validates minimum password length" do
     user = User.new(
       name: "Short Pass",
-      email_address: "short@enma.ai",
+      email_address: "short@resqway.ai",
       password: "123"
     )
     assert_not user.valid?
@@ -47,14 +47,14 @@ class UserTest < ActiveSupport::TestCase
       uid: "123456789",
       info: {
         name: "Google Officer",
-        email: "google.officer@enma.ai",
+        email: "google.officer@resqway.ai",
         image: "https://example.com/avatar.png"
       }
     )
 
     # 1. First time OAuth user creation
     user = User.from_omniauth(auth)
-    assert_equal "google.officer@enma.ai", user.email_address
+    assert_equal "google.officer@resqway.ai", user.email_address
     assert_equal "google_oauth2", user.provider
     assert_equal "123456789", user.uid
     assert_equal "operator", user.role
@@ -66,7 +66,7 @@ class UserTest < ActiveSupport::TestCase
     # 3. Linking existing email/password user with OAuth
     existing = User.create!(
       name: "Existing Admin",
-      email_address: "admin.link@enma.ai",
+      email_address: "admin.link@resqway.ai",
       password: "password123",
       role: :admin
     )
@@ -76,7 +76,7 @@ class UserTest < ActiveSupport::TestCase
       uid: "987654321",
       info: {
         name: "Existing Admin GitHub",
-        email: "admin.link@enma.ai"
+        email: "admin.link@resqway.ai"
       }
     )
 
@@ -88,7 +88,7 @@ class UserTest < ActiveSupport::TestCase
   test "generates and verifies password reset token" do
     user = User.create!(
       name: "Token User",
-      email_address: "token@enma.ai",
+      email_address: "token@resqway.ai",
       password: "password123"
     )
 

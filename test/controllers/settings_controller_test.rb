@@ -4,7 +4,7 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(
       name: "Security Officer",
-      email_address: "security@enma.ai",
+      email_address: "security@resqway.ai",
       password: "password123",
       password_confirmation: "password123",
       role: :operator

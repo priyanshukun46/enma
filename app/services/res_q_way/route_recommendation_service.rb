@@ -128,7 +128,7 @@ module ResQWay
       provider_hrs = raw_route[:estimated_hours].to_f
       provider_mins = raw_route[:duration_minutes] || (provider_hrs * 60).round
 
-      # Match coordinates with ENMA Road records
+      # Match coordinates with ResQWay Road records
       matched_segments = match_road_segments(coords)
 
       # Extract Segment Statistics
@@ -168,7 +168,7 @@ module ResQWay
         ([incident_count * 20.0, 50.0].min * 0.10)
       ).clamp(0.0, 100.0).round(1)
 
-      # ENMA Adjusted Delay & ETA (in minutes)
+      # ResQWay Adjusted Delay & ETA (in minutes)
       estimated_delay_mins = calculate_delay_minutes(avg_road_risk, avg_ml_prob, weather_risk, incident_count, matched_segments)
       enma_eta_mins = provider_mins + estimated_delay_mins
       enma_eta_hrs = (enma_eta_mins / 60.0).round(2)
@@ -198,6 +198,8 @@ module ResQWay
         provider_duration_minutes: provider_mins,
         provider_estimated_hours: provider_hrs,
         provider_eta_formatted: format_duration(provider_hrs),
+        resqway_adjusted_eta_minutes: enma_eta_mins,
+        resqway_adjusted_eta_formatted: format_duration(enma_eta_hrs),
         enma_adjusted_eta_minutes: enma_eta_mins,
         enma_adjusted_eta_formatted: format_duration(enma_eta_hrs),
         delay_minutes: estimated_delay_mins,
@@ -223,7 +225,7 @@ module ResQWay
       }
     end
 
-    # Match route coordinates to ENMA Road segments in database
+    # Match route coordinates to ResQWay Road segments in database
     def match_road_segments(coords)
       return default_mock_segments if coords.empty? || !defined?(Road)
 
@@ -404,7 +406,7 @@ module ResQWay
         positives: positives,
         warnings: warnings,
         tradeoff_summary: tradeoff,
-        summary: "ENMA AI recommends #{champion[:title]} for #{cargo_type.downcase} transport."
+        summary: "ResQWay recommends #{champion[:title]} for #{cargo_type.downcase} transport."
       }
     end
 
@@ -544,7 +546,7 @@ module ResQWay
       return { disconnected: false } if options[:skip_network_check]
 
       begin
-        net_analysis = Rails.cache.fetch("enma_network_connectivity_clusters", expires_in: 15.seconds) do
+        net_analysis = Rails.cache.fetch("resqway_network_connectivity_clusters", expires_in: 15.seconds) do
           ResQWay::NetworkConnectivityService.new.analyze(include_criticalities: false)
         end
 

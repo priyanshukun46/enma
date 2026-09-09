@@ -11,7 +11,7 @@ class DashboardController < ApplicationController
     @avg_accessibility = Location.average(:accessibility_score)&.round(1) || 72.5
     @total_routes_count = LogisticsRoute.count > 0 ? (LogisticsRoute.count * 124) : 1248
 
-    # ENMA Road Risk Intelligence Metrics
+    # ResQWay Road Risk Intelligence Metrics
     @total_roads_analyzed = Road.count
     @critical_risk_roads_count = Road.where(risk_level: "critical").count
     @high_risk_roads_count = Road.where(risk_level: "high").count

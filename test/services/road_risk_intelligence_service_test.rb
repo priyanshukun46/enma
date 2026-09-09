@@ -25,7 +25,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
     )
   end
 
-  test "calculates weighted risk score using standard ENMA formula" do
+  test "calculates weighted risk score using standard ResQWay formula" do
     service = ResQWay::RoadRiskIntelligenceService.new(@road)
     result = service.calculate
 
@@ -34,7 +34,7 @@ class RoadRiskIntelligenceServiceTest < ActiveSupport::TestCase
     assert_includes %w[low moderate high critical], result[:risk_level]
 
     # Verify weights match configuration
-    weights = Road::ENMA_RISK_WEIGHTS
+    weights = Road::RESQWAY_RISK_WEIGHTS
     expected = (
       (result[:factors][:weather] * weights[:weather]) +
       (result[:factors][:historical] * weights[:historical]) +

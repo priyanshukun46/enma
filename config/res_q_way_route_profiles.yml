@@ -1,4 +1,4 @@
-# ENMA AI Risk-Aware Route Optimization Profiles
+# ResQWay Risk-Aware Route Optimization Profiles
 # Each profile defines normalized weights (sum to 1.0) for multi-criteria logistics routing.
 
 fastest:

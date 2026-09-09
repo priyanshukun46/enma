@@ -5,7 +5,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(
       name: "Commander Singh",
       username: "commander_singh",
-      email_address: "singh@enma.ai",
+      email_address: "singh@resqway.ai",
       password: "password123",
       role: :operator
     )
@@ -21,7 +21,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should login with valid email credentials and redirect" do
     post login_url, params: {
-      login: "singh@enma.ai",
+      login: "singh@resqway.ai",
       password: "password123"
     }
     assert_redirected_to dashboard_url
@@ -45,7 +45,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
   test "should reject invalid credentials" do
     post login_url, params: {
-      login: "singh@enma.ai",
+      login: "singh@resqway.ai",
       password: "wrongpassword"
     }
     assert_response :unprocessable_entity
@@ -99,7 +99,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       uid: "google_uid_9988",
       info: {
         name: "Google Officer Roy",
-        email: "roy.google@enma.ai",
+        email: "roy.google@resqway.ai",
         image: "https://lh3.googleusercontent.com/avatar.png"
       }
     })
@@ -111,7 +111,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to dashboard_url
     assert_not_nil session[:user_id]
     user = User.find(session[:user_id])
-    assert_equal "roy.google@enma.ai", user.email
+    assert_equal "roy.google@resqway.ai", user.email
     assert_equal "google_oauth2", user.provider
   end
 
@@ -122,7 +122,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
       uid: "github_uid_4455",
       info: {
         name: "GitHub Developer Singh",
-        email: "singh.github@enma.ai",
+        email: "singh.github@resqway.ai",
         image: "https://avatars.githubusercontent.com/u/123?v=4"
       }
     })
@@ -134,7 +134,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to dashboard_url
     assert_not_nil session[:user_id]
     user = User.find(session[:user_id])
-    assert_equal "singh.github@enma.ai", user.email
+    assert_equal "singh.github@resqway.ai", user.email
     assert_equal "github", user.provider
   end
 

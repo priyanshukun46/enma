@@ -13,7 +13,7 @@ class PasswordsController < ApplicationController
       token = user.generate_token_for(:password_reset)
       reset_url = edit_password_url(token)
       Rails.logger.info("==========================================")
-      Rails.logger.info("ENMA AI PASSWORD RESET URL: #{reset_url}")
+      Rails.logger.info("ResQWay PASSWORD RESET URL: #{reset_url}")
       Rails.logger.info("==========================================")
     end
 
