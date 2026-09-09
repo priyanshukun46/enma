@@ -9,7 +9,7 @@ class HealthController < ApplicationController
 
     render json: {
       status: (status == :ok ? "healthy" : "degraded"),
-      app: "ENMA AI",
+      app: "ResQWay",
       version: "1.0.0",
       environment: Rails.env,
       timestamp: Time.current.iso8601,

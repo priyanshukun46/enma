@@ -78,7 +78,7 @@ class RoutingService
     http.read_timeout = TIMEOUT_SECONDS
 
     request = Net::HTTP::Get.new(uri.request_uri)
-    request["User-Agent"] = "ENMA-AI-Logistics/2.0 (Smart India Hackathon 2026)"
+    request["User-Agent"] = "ResQWay-Logistics/2.0 (Predictive Logistics Route Optimization)"
 
     response = http.request(request)
     return nil unless response.is_a?(Net::HTTPSuccess)

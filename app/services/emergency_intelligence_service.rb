@@ -356,7 +356,7 @@ class EmergencyIntelligenceService
         negative_factors: [],
         waypoints: [[warehouse.longitude, warehouse.latitude], [target_loc.longitude, target_loc.latitude]],
         source: "demo_fallback",
-        selection_reason: "ENMA AI designated this corridor for tactical emergency dispatch."
+        selection_reason: "ResQWay designated this corridor for tactical emergency dispatch."
       }
     end
 
@@ -387,7 +387,7 @@ class EmergencyIntelligenceService
         negative_factors: safest[:negative_factors],
         waypoints: safest[:geometry] || safest[:coordinates],
         source: safest[:source],
-        selection_reason: "ENMA AI selected the Safest Route to guarantee emergency responder arrival while bypassing active hazard bottlenecks and landslide cuts."
+        selection_reason: "ResQWay selected the Safest Route to guarantee emergency responder arrival while bypassing active hazard bottlenecks and landslide cuts."
       }
     rescue StandardError => e
       # Graceful fallback corridor

@@ -21,7 +21,7 @@ Devise.setup do |config|
   # config.parent_controller = 'DeviseController'
 
   # ==> Mailer Configuration
-  config.mailer_sender = 'support@enma.ai'
+  config.mailer_sender = 'support@resqway.ai'
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'

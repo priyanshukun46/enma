@@ -1,4 +1,4 @@
-# Pagy 9 Configuration for ENMA AI
+# Pagy 9 Configuration for ResQWay
 require "pagy"
 require "pagy/extras/overflow"
 

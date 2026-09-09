@@ -19,13 +19,14 @@ class Road < ApplicationRecord
     "critical" => 100.0
   }.freeze
 
-  ENMA_RISK_WEIGHTS = {
+  RESQWAY_RISK_WEIGHTS = {
     weather: 0.30,
     historical: 0.20,
     incidents: 0.25,
     condition: 0.15,
     geographic: 0.10
   }.freeze
+  ENMA_RISK_WEIGHTS = RESQWAY_RISK_WEIGHTS
 
   STATES = [
     "Assam",
@@ -284,7 +285,7 @@ class Road < ApplicationRecord
         condition: condition_risk.round(1),
         geographic: geographic_risk.round(1)
       },
-      weights: ENMA_RISK_WEIGHTS,
+      weights: RESQWAY_RISK_WEIGHTS,
       primary_factors: explanation[:primary_factors],
       summary_reason: explanation[:narrative_summary].presence || reason.presence || "Nominal conditions along corridor.",
       length_km: length_km,
@@ -312,7 +313,7 @@ class Road < ApplicationRecord
   end
 
   def network_impact_analysis
-    @network_impact_analysis ||= NetworkConnectivityService.new.simulate_road_closure(id)
+    @network_impact_analysis ||= ResQWay::NetworkConnectivityService.new.simulate_road_closure(id)
   end
 
   private

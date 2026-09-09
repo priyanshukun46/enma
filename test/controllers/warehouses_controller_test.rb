@@ -14,7 +14,7 @@ class WarehousesControllerTest < ActionDispatch::IntegrationTest
     @user = users(:one) if respond_to?(:users)
     @user ||= User.first || User.create!(
       name: "Admin User",
-      email_address: "admin_test@enma.ai",
+      email_address: "admin_test@resqway.ai",
       username: "admintest",
       password: "password123",
       password_confirmation: "password123",

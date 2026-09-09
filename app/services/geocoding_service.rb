@@ -33,7 +33,7 @@ class GeocodingService
     end
 
     # 2. Check Rails Cache
-    cache_key = "enma_geocode_v1_#{query.parameterize}"
+    cache_key = "resqway_geocode_v1_#{query.parameterize}"
     if force_refresh
       Rails.cache.delete(cache_key)
     else
@@ -72,7 +72,7 @@ class GeocodingService
     http.read_timeout = TIMEOUT_SECONDS
 
     request = Net::HTTP::Get.new(uri.request_uri)
-    request["User-Agent"] = "ENMA-AI-Logistics/2.0 (Smart India Disaster Logistics)"
+    request["User-Agent"] = "ResQWay-Logistics/2.0 (Predictive Logistics Intelligence)"
 
     response = http.request(request)
     return nil unless response.is_a?(Net::HTTPSuccess)

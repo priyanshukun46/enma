@@ -21,7 +21,7 @@ module Routing
       http.read_timeout = options[:timeout] || DEFAULT_TIMEOUT
 
       request = Net::HTTP::Get.new(uri.request_uri)
-      request["User-Agent"] = "ENMA-AI-Routing-Engine/2.0"
+      request["User-Agent"] = "ResQWay-Routing-Engine/2.0"
 
       response = http.request(request)
       return nil unless response.is_a?(Net::HTTPSuccess)

@@ -4,14 +4,14 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @admin = User.create!(
       name: "Super Admin",
-      email_address: "super.admin@enma.ai",
+      email_address: "super.admin@resqway.ai",
       password: "password123",
       role: :admin
     )
 
     @operator = User.create!(
       name: "Field Operator",
-      email_address: "field.operator@enma.ai",
+      email_address: "field.operator@resqway.ai",
       password: "password123",
       role: :operator
     )

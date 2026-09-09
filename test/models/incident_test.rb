@@ -4,7 +4,7 @@ class IncidentTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(
       name: "Field Officer Tawang",
-      email_address: "officer_tawang@enma.ai",
+      email_address: "officer_tawang@resqway.ai",
       password: "password123",
       role: :operator
     )

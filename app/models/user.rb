@@ -91,9 +91,9 @@ class User < ApplicationRecord
     provider = auth.provider.to_s
     uid = auth.uid.to_s
     info = auth.info || {}
-    email = info.email.presence || "#{provider}_#{uid}@oauth.enma.ai"
+    email = info.email.presence || "#{provider}_#{uid}@oauth.resqway.ai"
     nickname = info.nickname.presence
-    name = info.name.presence || nickname || "ENMA Intelligence Officer"
+    name = info.name.presence || nickname || "ResQWay Intelligence Officer"
     avatar = info.image.presence
 
     # First attempt: find by existing provider + UID

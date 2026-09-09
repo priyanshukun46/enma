@@ -4,7 +4,7 @@ class IncidentsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(
       name: "Field Officer Tawang",
-      email_address: "officer_test@enma.ai",
+      email_address: "officer_test@resqway.ai",
       password: "password123",
       role: :operator
     )

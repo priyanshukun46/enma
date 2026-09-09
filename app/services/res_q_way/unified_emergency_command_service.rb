@@ -58,7 +58,7 @@ module ResQWay
       @roads = roads || (defined?(Road) ? Road.all.to_a : [])
       @predictive_service = predictive_service
       @response_service = response_service
-      @network_service = network_service || NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+      @network_service = network_service || ResQWay::NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
       @previous_snapshot = previous_snapshot
       @command_decision = command_decision
       @session_store = session_store || {}
@@ -927,7 +927,7 @@ module ResQWay
       }
 
       narrative = "The previous plan encountered #{plan_drift[:severity]} plan drift (score: #{plan_drift[:drift_score]}). " \
-                  "ENMA recommends shifting to #{rev_strat[:name] || 'Resilient Alternate Plan'}. " \
+                  "ResQWay recommends shifting to #{rev_strat[:name] || 'Resilient Alternate Plan'}. " \
                   "This improves projected plan resilience by #{improvement[:resilience_change]} and preserves life-safety support."
 
       {
@@ -1485,7 +1485,7 @@ module ResQWay
 
     def build_command_explainability(snapshot:, strategy:, drift:, assumptions:, uncertainty:, reoptimization:)
       {
-        situation_summary: "ENMA Command Intelligence evaluated #{snapshot[:active_incidents]} active incidents across #{snapshot[:available_warehouses]} depots. Threat level is #{snapshot[:threat_classification]}.",
+        situation_summary: "ResQWay Command Intelligence evaluated #{snapshot[:active_incidents]} active incidents across #{snapshot[:available_warehouses]} depots. Threat level is #{snapshot[:threat_classification]}.",
         why_this_plan: [
           "Protects maximum vulnerable population (#{strategy[:population_protected] || snapshot[:population_at_risk]} residents)",
           "Avoids high-risk infrastructure chokepoints with ML disruption probability >= 60%",
@@ -1524,7 +1524,7 @@ module ResQWay
         if @predictive_service
           return @predictive_service.analyze(forecast_hours: forecast_hours)
         else
-          cache_key = "enma/predictive_cascade_analysis/#{forecast_hours}/#{@roads.map { |r| r.try(:updated_at) }.compact.max.to_i}"
+          cache_key = "resqway/predictive_cascade_analysis/#{forecast_hours}/#{@roads.map { |r| r.try(:updated_at) }.compact.max.to_i}"
           if defined?(Rails) && Rails.cache
             cached = Rails.cache.read(cache_key)
             if cached

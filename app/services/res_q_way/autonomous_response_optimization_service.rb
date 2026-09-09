@@ -45,7 +45,7 @@ module ResQWay
       @roads = roads || Road.all.to_a
       @predictive_service = predictive_service
       @predictive_analysis = predictive_analysis
-      @network_service = network_service || NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+      @network_service = network_service || ResQWay::NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
       @cache_hits = 0
     end
 
@@ -67,7 +67,7 @@ module ResQWay
         @roads = Road.where(id: @roads.map(&:id)).to_a
         @warehouses = Warehouse.where(id: @warehouses.map(&:id)).to_a if @warehouses.first.is_a?(ActiveRecord::Base)
         @locations = Location.where(id: @locations.map(&:id)).to_a if @locations.first.is_a?(ActiveRecord::Base)
-        @network_service = NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
+        @network_service = ResQWay::NetworkConnectivityService.new(roads: @roads, locations: @locations, warehouses: @warehouses)
       end
 
       # 1. Obtain predictive cascade intelligence (with fast-path cache)
@@ -116,7 +116,7 @@ module ResQWay
       # Calculate actual plan resilience from simulated contingency outcomes
       response_resilience = calculate_plan_resilience(optimal_strategy, contingency_plans)
 
-      # 9. Step 9: Counterfactual Analysis (No Action vs Recommended ENMA Plan)
+      # 9. Step 9: Counterfactual Analysis (No Action vs Recommended ResQWay Plan)
       counterfactual_analysis = compute_counterfactual_analysis(
         priority_zones: priority_zones,
         optimal_strategy: optimal_strategy,
@@ -1027,7 +1027,7 @@ module ResQWay
     end
 
     # =========================================================================
-    # STEP 9: COUNTERFACTUAL ANALYSIS (NO ACTION VS ENMA PLAN)
+    # STEP 9: COUNTERFACTUAL ANALYSIS (NO ACTION VS RESQWAY PLAN)
     # =========================================================================
     def compute_counterfactual_analysis(priority_zones:, optimal_strategy:, predictive_analysis:)
       total_affected_pop = priority_zones.sum { |z| z[:population_at_risk] }
@@ -1038,7 +1038,7 @@ module ResQWay
       no_action_unserved_pop = total_affected_pop
       no_action_supply_continuity_pct = 15.0
 
-      # With ENMA Plan: rapid response, high protected population
+      # With ResQWay Plan: rapid response, high protected population
       plan_protected_pop = optimal_strategy ? optimal_strategy[:population_protected] : (total_affected_pop * 0.75).to_i
       plan_delayed_pop = [total_affected_pop - plan_protected_pop, 0].max
       plan_delay_hours = optimal_strategy ? optimal_strategy[:estimated_eta_hours] : 4.5
@@ -1048,6 +1048,14 @@ module ResQWay
       delay_improvement_pct = (((no_action_delay_hours - plan_delay_hours) / no_action_delay_hours) * 100.0).clamp(0.0, 95.0).round(1)
       population_improvement_pct = (((total_affected_pop - plan_delayed_pop) / total_affected_pop.to_f) * 100.0).clamp(0.0, 95.0).round(1)
 
+      plan_metrics = {
+        population_protected: plan_protected_pop,
+        population_delayed: plan_delayed_pop,
+        expected_response_delay_hours: plan_delay_hours,
+        supply_continuity_pct: plan_supply_continuity_pct,
+        plan_resilience_score: optimal_strategy ? optimal_strategy[:plan_resilience_score] : 75.0
+      }
+
       {
         model_disclaimer: "These metrics represent model-simulated operational estimates based on current graph topology and predictive hazard curves. Actual disaster outcomes may vary.",
         without_action: {
@@ -1056,13 +1064,8 @@ module ResQWay
           supply_continuity_pct: no_action_supply_continuity_pct,
           isolated_settlements: priority_zones.count { |z| z[:isolation_risk] == "CRITICAL" }
         },
-        with_enma_plan: {
-          population_protected: plan_protected_pop,
-          population_delayed: plan_delayed_pop,
-          expected_response_delay_hours: plan_delay_hours,
-          supply_continuity_pct: plan_supply_continuity_pct,
-          plan_resilience_score: optimal_strategy ? optimal_strategy[:plan_resilience_score] : 75.0
-        },
+        with_resqway_plan: plan_metrics,
+        with_enma_plan: plan_metrics,
         modeled_improvements: {
           delay_reduction_pct: delay_improvement_pct,
           population_protection_pct: population_improvement_pct,
@@ -1131,7 +1134,7 @@ module ResQWay
         phase: "NETWORK_REASSESSMENT",
         title: "Dynamic Graph & Weather Re-evaluation",
         action: "Re-run network connectivity algorithms to incorporate updated Doppler radar scans and telemetry check-ins.",
-        responsible_agency: "ENMA_AI_CORE",
+        responsible_agency: "RESQWAY_CORE",
         mandatory: true
       }
 
@@ -1259,7 +1262,7 @@ module ResQWay
         alert_type: alert_type,
         severity: overall_urgency >= 85.0 ? "critical" : "high",
         title: "Autonomous Response Recommended: #{optimal_strategy[:name]}",
-        message: "ENMA AI recommends #{optimal_strategy[:name]} for #{zone_name}. Urgency score: #{overall_urgency}/100. Awaiting human command approval.",
+        message: "ResQWay recommends #{optimal_strategy[:name]} for #{zone_name}. Urgency score: #{overall_urgency}/100. Awaiting human command approval.",
         status: "active",
         metadata_json: {
           strategy_id: optimal_strategy[:strategy_id],
@@ -1313,7 +1316,7 @@ module ResQWay
 
     def fetch_or_compute_predictive_analysis(forecast_hours)
       max_updated = @roads.map { |r| r.try(:updated_at) }.compact.max.to_i
-      cache_key = "enma/predictive_cascade_analysis/#{forecast_hours}/#{max_updated}"
+      cache_key = "resqway/predictive_cascade_analysis/#{forecast_hours}/#{max_updated}"
 
       if defined?(Rails) && Rails.cache
         cached = Rails.cache.read(cache_key)
@@ -1355,6 +1358,7 @@ module ResQWay
         response_resilience: { score: 100.0, classification: "HIGHLY_RESILIENT" },
         counterfactual_analysis: {
           without_action: { population_affected: 0, expected_response_delay_hours: 0.0 },
+          with_resqway_plan: { population_protected: 0, expected_response_delay_hours: 0.0 },
           with_enma_plan: { population_protected: 0, expected_response_delay_hours: 0.0 },
           modeled_improvements: { delay_reduction_pct: 0.0, population_protection_pct: 0.0 }
         },

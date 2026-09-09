@@ -9,7 +9,7 @@ class RouteOptimizationService
     },
     "emergency vehicle" => {
       base_speed: 55.0,
-      label: "Disaster Response Unit (Priority Clearance)",
+      label: "Emergency Response Unit (Priority Clearance)",
       weights: { safety: 0.35, time: 0.35, accessibility: 0.15, environmental: 0.10, distance: 0.05 }
     },
     "truck" => {
@@ -54,7 +54,7 @@ class RouteOptimizationService
       source_provider = raw_alternatives.first&.dig(:source) || "fallback_haversine"
       fallback_used = raw_alternatives.first&.dig(:fallback_used) || false
 
-      # 2. Analyze and score each candidate route using ENMA AI multi-criteria intelligence
+      # 2. Analyze and score each candidate route using ResQWay multi-criteria intelligence
       analyzed_routes = raw_alternatives.map.with_index do |route_candidate, idx|
         analyze_single_route(route_candidate, idx, active_emergencies)
       end
@@ -65,7 +65,7 @@ class RouteOptimizationService
       # 3. Categorize into Fastest, Safest, and Most Efficient
       classified_routes = categorize_routes(ensured_routes)
 
-      # 4. Determine ENMA AI Recommended Route
+      # 4. Determine ResQWay Recommended Route
       recommended_type, recommendation_data = determine_best_recommendation(classified_routes, active_emergencies)
 
       # Mark is_recommended flag
@@ -178,7 +178,7 @@ class RouteOptimizationService
     # 6. Environmental Score
     environmental_score = (100.0 - (landslide_penalty + rainfall_penalty)).clamp(0.0, 100.0).round(1)
 
-    # 7. ENMA AI Overall Score: 45% Safety + 30% Accessibility + 25% Efficiency
+    # 7. ResQWay Overall Score: 45% Safety + 30% Accessibility + 25% Efficiency
     raw_overall = (
       (safety_score * 0.45) +
       (accessibility_score * 0.30) +
@@ -518,7 +518,7 @@ class RouteOptimizationService
     ]
 
     # Safety Principle: If the fastest route passes through high/critical hazard zones (risk >= 40.0),
-    # ENMA AI must NEVER recommend the high-risk route over a safe detour!
+    # ResQWay must NEVER recommend the high-risk route over a safe detour!
     if fastest[:risk_score] >= 40.0 && safest[:risk_score] < fastest[:risk_score]
       best_type = :safest
       best_route = safest
@@ -539,7 +539,7 @@ class RouteOptimizationService
       recommended_route: best_route,
       confidence_percentage: [85 + (best_route[:scores][:overall_intelligence] * 0.12).round, 98].min,
       vehicle_context: vehicle_profile[:label],
-      summary: "Based on real multi-criteria routing, live risk buffering, and #{vehicle_profile[:label]} dynamics, the #{best_route[:title]} is recommended by ENMA AI.",
+      summary: "Based on real multi-criteria routing, live risk buffering, and #{vehicle_profile[:label]} dynamics, the #{best_route[:title]} is recommended by ResQWay.",
       reasons: reasons,
       trade_off: trade_off
     }
@@ -582,7 +582,7 @@ class RouteOptimizationService
       time_diff = chosen_route[:duration_minutes] - fastest[:duration_minutes]
       dist_diff = (chosen_route[:distance_km] - fastest[:distance_km]).round(1)
       risk_reduction_pct = (((fastest[:risk_score] - chosen_route[:risk_score]) / [fastest[:risk_score], 1.0].max) * 100.0).round
-      "#{chosen_route[:title]} is recommended by ENMA AI because it has #{risk_reduction_pct > 0 ? "#{risk_reduction_pct}% lower environmental risk" : 'lower risk'} and better accessibility (#{chosen_route[:scores][:accessibility]}/100) despite adding #{time_diff} minutes of travel time."
+      "#{chosen_route[:title]} is recommended by ResQWay because it has #{risk_reduction_pct > 0 ? "#{risk_reduction_pct}% lower environmental risk" : 'lower risk'} and better accessibility (#{chosen_route[:scores][:accessibility]}/100) despite adding #{time_diff} minutes of travel time."
     elsif chosen_type == :fastest && chosen_route[:risk_score] <= 35.0
       "Fastest Route is recommended because corridor weather and landslide telemetry indicate nominal conditions with manageable risk (#{chosen_route[:risk_score]}/100)."
     else

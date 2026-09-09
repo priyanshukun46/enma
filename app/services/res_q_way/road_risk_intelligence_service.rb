@@ -24,7 +24,7 @@ module ResQWay
       condition_score = calculate_condition_risk
       geographic_score = calculate_geographic_risk
 
-      weights = Road::ENMA_RISK_WEIGHTS
+      weights = Road::RESQWAY_RISK_WEIGHTS
 
       weighted_score = (
         (weather_score * weights[:weather]) +

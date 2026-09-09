@@ -116,7 +116,7 @@ class RoutesController < ApplicationController
   end
 
   # =========================================================================
-  # ENMA AI TRIPLE-BUFFER ROUTE CACHE ARCHITECTURE
+  # ResQWay TRIPLE-BUFFER ROUTE CACHE ARCHITECTURE
   # =========================================================================
   # Buffer 1: L1 Active In-Memory Ring Buffer (< 0.05ms zero-IO read)
   # Buffer 2: L2 Speculative Staging Buffer (Pre-warmed return corridors & sibling vehicle profiles)
@@ -203,8 +203,9 @@ class RoutesController < ApplicationController
       )
       @results = opt_service.calculate
 
-      # Enhance @results with ENMA ML Disruption & Segment Intelligence
+      # Enhance @results with ResQWay ML Disruption & Segment Intelligence
       @recommendation_result = recommendation_res
+      @results[:resqway_recommendation] = recommendation_res
       @results[:enma_recommendation] = recommendation_res
 
       # 3. Persist or Reuse Route Analysis Record
