@@ -145,9 +145,9 @@ export default class extends Controller {
       .bindPopup(`
         <div class="p-2 min-w-[180px]">
           <span class="text-[10px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Point A (Origin)</span>
-          <h4 class="font-black text-base text-gray-900 mt-1">${orig.name}</h4>
-          <p class="text-xs text-gray-600">${orig.district}, ${orig.state}</p>
-          <p class="text-xs text-gray-500 mt-1">Accessibility: <strong>${orig.accessibility_score}/100</strong></p>
+          <h4 class="font-black text-base text-ink mt-1">${orig.name}</h4>
+          <p class="text-xs text-mute">${orig.district}, ${orig.state}</p>
+          <p class="text-xs text-sketch mt-1">Accessibility: <strong>${orig.accessibility_score}/100</strong></p>
         </div>
       `)
       .addTo(this.map)
@@ -175,9 +175,9 @@ export default class extends Controller {
       .bindPopup(`
         <div class="p-2 min-w-[180px]">
           <span class="text-[10px] font-black uppercase text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Point B (Destination)</span>
-          <h4 class="font-black text-base text-gray-900 mt-1">${dest.name}</h4>
-          <p class="text-xs text-gray-600">${dest.district}, ${dest.state}</p>
-          <p class="text-xs text-gray-500 mt-1">Accessibility: <strong>${dest.accessibility_score}/100</strong></p>
+          <h4 class="font-black text-base text-ink mt-1">${dest.name}</h4>
+          <p class="text-xs text-mute">${dest.district}, ${dest.state}</p>
+          <p class="text-xs text-sketch mt-1">Accessibility: <strong>${dest.accessibility_score}/100</strong></p>
         </div>
       `)
       .addTo(this.map)
@@ -240,8 +240,8 @@ export default class extends Controller {
           }).bindPopup(`
             <div class="p-2 min-w-[200px]">
               <span class="text-[10px] font-black uppercase" style="color: ${cfg.color}">${rData.title}</span>
-              <h4 class="font-bold text-sm text-gray-900 mt-0.5">${rData.summary || rData.name}</h4>
-              <div class="mt-2 space-y-1 text-xs text-gray-600">
+              <h4 class="font-bold text-sm text-ink mt-0.5">${rData.summary || rData.name}</h4>
+              <div class="mt-2 space-y-1 text-xs text-mute">
                 <p><strong>Distance:</strong> ${rData.distance_km} km</p>
                 <p><strong>Est. Time:</strong> ${rData.estimated_time_formatted}</p>
                 <p><strong>Risk Score:</strong> ${rData.risk_score}/100 (${rData.risk_level})</p>
@@ -484,7 +484,7 @@ export default class extends Controller {
     const steps = route?.steps || []
 
     if (steps.length === 0) {
-      this.turnListTarget.innerHTML = `<p class="text-xs text-gray-500 p-4 text-center">Standard highway corridor route active.</p>`
+      this.turnListTarget.innerHTML = `<p class="text-xs text-sketch p-4 text-center">Standard highway corridor route active.</p>`
       return
     }
 
@@ -494,8 +494,8 @@ export default class extends Controller {
           ${st.step_number}
         </div>
         <div class="flex-1">
-          <p class="font-bold text-gray-900">${st.instruction}</p>
-          <span class="text-[11px] text-gray-500">${st.road_name} • ${st.distance_km || (st.distance_m / 1000.0).toFixed(1)} km</span>
+          <p class="font-bold text-ink">${st.instruction}</p>
+          <span class="text-[11px] text-sketch">${st.road_name} • ${st.distance_km || (st.distance_m / 1000.0).toFixed(1)} km</span>
         </div>
       </div>
     `).join("")

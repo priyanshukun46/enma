@@ -69,9 +69,9 @@ export default class extends Controller {
           <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-red-100 text-red-800 border border-red-300">
             ${em.severity} SEVERITY
           </span>
-          <h4 class="font-black text-sm text-gray-900 mt-1">${em.title}</h4>
-          <p class="text-xs text-gray-600 mt-0.5"><strong>Type:</strong> ${em.emergency_type}</p>
-          <p class="text-xs text-gray-600"><strong>Affected Radius:</strong> ${em.affected_radius} km</p>
+          <h4 class="font-black text-sm text-ink mt-1">${em.title}</h4>
+          <p class="text-xs text-mute mt-0.5"><strong>Type:</strong> ${em.emergency_type}</p>
+          <p class="text-xs text-mute"><strong>Affected Radius:</strong> ${em.affected_radius} km</p>
           <p class="text-xs text-red-600 font-bold mt-1">Status: ${em.status}</p>
         </div>
       `)
@@ -110,19 +110,19 @@ export default class extends Controller {
         .bindPopup(`
           <div class="p-2 min-w-[200px]">
             <div class="flex items-center justify-between border-b pb-1 mb-1">
-              <h4 class="font-black text-sm text-gray-900">${comm.name}</h4>
+              <h4 class="font-black text-sm text-ink">${comm.name}</h4>
               <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded ${badgeBg}">${comm.priority_level}</span>
             </div>
-            <p class="text-xs text-gray-600"><strong>State:</strong> ${comm.state}</p>
-            <p class="text-xs text-gray-600"><strong>Population:</strong> ${Number(comm.population).toLocaleString()}</p>
-            <p class="text-xs text-gray-600"><strong>Distance from Epicenter:</strong> ${comm.distance_km} km</p>
+            <p class="text-xs text-mute"><strong>State:</strong> ${comm.state}</p>
+            <p class="text-xs text-mute"><strong>Population:</strong> ${Number(comm.population).toLocaleString()}</p>
+            <p class="text-xs text-mute"><strong>Distance from Epicenter:</strong> ${comm.distance_km} km</p>
             <div class="mt-2 pt-1 border-t flex justify-between items-center text-xs">
-              <span class="text-gray-600">Priority Score:</span>
+              <span class="text-mute">Priority Score:</span>
               <span class="font-black text-red-600 text-sm">${comm.priority_score}/100</span>
             </div>
             <div class="text-xs flex justify-between items-center mt-0.5">
-              <span class="text-gray-600">Accessibility:</span>
-              <span class="font-bold text-gray-800">${comm.accessibility_score}/100</span>
+              <span class="text-mute">Accessibility:</span>
+              <span class="font-bold text-ink">${comm.accessibility_score}/100</span>
             </div>
           </div>
         `)
@@ -147,9 +147,9 @@ export default class extends Controller {
             <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
               ⭐ RECOMMENDED RELIEF HUB
             </span>
-            <h4 class="font-black text-sm text-gray-900 mt-1">${warehouse.name}</h4>
-            <p class="text-xs text-gray-600 mt-1"><strong>Stock Capacity:</strong> ${Number(warehouse.capacity).toLocaleString()} units</p>
-            <p class="text-xs text-gray-600"><strong>Distance to Epicenter:</strong> ${warehouse.distance_km} km</p>
+            <h4 class="font-black text-sm text-ink mt-1">${warehouse.name}</h4>
+            <p class="text-xs text-mute mt-1"><strong>Stock Capacity:</strong> ${Number(warehouse.capacity).toLocaleString()} units</p>
+            <p class="text-xs text-mute"><strong>Distance to Epicenter:</strong> ${warehouse.distance_km} km</p>
             <p class="text-xs text-emerald-700 font-semibold mt-1">Status: Operational Staging Node</p>
           </div>
         `)
@@ -172,11 +172,11 @@ export default class extends Controller {
       }).bindPopup(`
         <div class="p-2">
           <span class="text-[10px] font-black uppercase text-emerald-700">Priority Response Corridor</span>
-          <h4 class="font-black text-xs text-gray-900 mt-0.5">${route.route_title}</h4>
-          <p class="text-xs text-gray-600 mt-1"><strong>From:</strong> ${route.origin_name}</p>
-          <p class="text-xs text-gray-600"><strong>To Target:</strong> ${route.destination_name}</p>
-          <p class="text-xs text-gray-600"><strong>Distance:</strong> ${route.distance_km} km</p>
-          <p class="text-xs text-gray-600"><strong>Est. Time:</strong> ${route.estimated_time}</p>
+          <h4 class="font-black text-xs text-ink mt-0.5">${route.route_title}</h4>
+          <p class="text-xs text-mute mt-1"><strong>From:</strong> ${route.origin_name}</p>
+          <p class="text-xs text-mute"><strong>To Target:</strong> ${route.destination_name}</p>
+          <p class="text-xs text-mute"><strong>Distance:</strong> ${route.distance_km} km</p>
+          <p class="text-xs text-mute"><strong>Est. Time:</strong> ${route.estimated_time}</p>
         </div>
       `).addTo(this.map)
     }
