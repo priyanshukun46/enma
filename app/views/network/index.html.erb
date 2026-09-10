@@ -168,52 +168,52 @@
 
     <!-- Simulation Output Banner (Matches User Spec) -->
     <% if @simulation_result %>
-      <div class="mt-4 rounded-2xl bg-[#18120E] text-[#ECE5D6] p-5 border-2 border-accent/40 shadow-xl space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[#2D2319] pb-3">
+      <div class="mt-4 rounded-2xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white p-5 border-2 border-accent/40 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-accent animate-ping"></span>
             <span class="font-mono text-xs font-black uppercase tracking-widest text-accent">NETWORK IMPACT ANALYSIS</span>
           </div>
-          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-accent/20 text-accent font-black border border-accent/30">
+          <span class="text-xs font-mono px-2.5 py-0.5 rounded bg-accent/10 dark:bg-accent/20 text-accent font-black border border-accent/30">
             Criticality: <%= @simulation_result[:criticality_score] %>/100
           </span>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
           <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Road Corridor</span>
-            <strong class="text-sm text-white font-bold"><%= @simulation_result[:target_road_names] %></strong>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Road Corridor</span>
+            <strong class="text-sm text-slate-900 dark:text-white font-bold"><%= @simulation_result[:target_road_names] %></strong>
           </div>
           <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Simulated Status</span>
-            <strong class="text-sm text-red-400 font-bold">BLOCKED / SEVERED</strong>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Simulated Status</span>
+            <strong class="text-sm text-red-600 dark:text-red-400 font-bold">BLOCKED / SEVERED</strong>
           </div>
           <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Connectivity Impact</span>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Connectivity Impact</span>
             <strong class="text-sm text-accent font-black"><%= @simulation_result[:connectivity_impact] %></strong>
           </div>
           <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Alternative Access</span>
-            <strong class="text-sm text-slate-200"><%= @simulation_result[:alternative_access] %></strong>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Alternative Access</span>
+            <strong class="text-sm text-slate-700 dark:text-slate-300"><%= @simulation_result[:alternative_access] %></strong>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-[#221A14] p-3.5 rounded-xl text-xs">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-3.5 rounded-xl text-xs">
           <div>
-            <span class="text-slate-400 block text-[10px]">Previously Connected Settlements:</span>
-            <strong class="text-emerald-400 font-mono text-sm"><%= @simulation_result[:pre_connected_settlements] %></strong>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Previously Connected Settlements:</span>
+            <strong class="text-emerald-600 dark:text-emerald-400 font-mono text-sm"><%= @simulation_result[:pre_connected_settlements] %></strong>
           </div>
           <div>
-            <span class="text-slate-400 block text-[10px]">Currently Isolated Settlements:</span>
-            <strong class="text-red-400 font-mono text-sm"><%= @simulation_result[:newly_isolated_count] %> (<%= @simulation_result[:newly_isolated_settlements].join(", ").presence || "None newly isolated" %>)</strong>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Currently Isolated Settlements:</span>
+            <strong class="text-red-600 dark:text-red-400 font-mono text-sm"><%= @simulation_result[:newly_isolated_count] %> (<%= @simulation_result[:newly_isolated_settlements].join(", ").presence || "None newly isolated" %>)</strong>
           </div>
           <div>
-            <span class="text-slate-400 block text-[10px]">Affected Warehouses:</span>
-            <strong class="text-amber-400 font-mono text-sm"><%= @simulation_result[:affected_warehouses_count] %> (<%= @simulation_result[:affected_warehouses].join(", ").presence || "None cut off" %>)</strong>
+            <span class="text-slate-500 dark:text-slate-400 block text-[10px]">Affected Warehouses:</span>
+            <strong class="text-amber-600 dark:text-amber-400 font-mono text-sm"><%= @simulation_result[:affected_warehouses_count] %> (<%= @simulation_result[:affected_warehouses].join(", ").presence || "None cut off" %>)</strong>
           </div>
         </div>
 
-        <div class="text-xs pt-1 flex items-start gap-2 text-slate-200">
+        <div class="text-xs pt-1 flex items-start gap-2 text-slate-700 dark:text-slate-300">
           <i class="fas fa-bullhorn text-accent mt-0.5 text-xs"></i>
           <div>
             <span class="font-bold text-accent">Recommended Action:</span>

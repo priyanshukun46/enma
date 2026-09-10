@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h2>CRITICAL EMERGENCY ALERT</h2>
+    <p>A new critical emergency has been logged in ResQWay.</p>
+    
+    <ul>
+      <li><strong>Title:</strong> <%= @emergency.title %></li>
+      <li><strong>Severity:</strong> <%= @emergency.severity %></li>
+      <li><strong>Type:</strong> <%= @emergency.emergency_type %></li>
+      <li><strong>Location:</strong> <%= @emergency.location&.name || "Lat: #{@emergency.latitude}, Lng: #{@emergency.longitude}" %></li>
+    </ul>
+
+    <p>
+      <%= link_to 'View Full Emergency Report & Response Plan', emergency_url(@emergency), style: "padding: 10px 15px; background-color: #e11d48; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;" %>
+    </p>
+
+    <br>
+    <p style="font-size: 12px; color: #666;">
+      Automated by ResQWay Intelligence Engine
+    </p>
+  </body>
+</html>
