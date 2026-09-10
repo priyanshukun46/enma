@@ -2,8 +2,8 @@
 <html lang="en" data-theme="light">
   <head>
     <title><%= content_for(:title) || "Sign In — ResQWay Emergency Intelligence" %></title>
-    <%= tag.link rel: "icon", href: image_path("logo.jpg"), type: "image/jpeg" %>
-    <%= tag.link rel: "apple-touch-icon", href: image_path("logo.jpg") %>
+    <%= tag.link rel: "icon", href: image_path("logo.png"), type: "image/png" %>
+    <%= tag.link rel: "apple-touch-icon", href: image_path("logo.png") %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -116,7 +116,7 @@
       <div class="w-full px-4 sm:px-8 lg:px-12 py-3.5 sm:py-4 flex items-center justify-between">
         <!-- Logo linking back to root -->
         <%= link_to root_path, class: "flex items-center space-x-2 group" do %>
-          <%= image_tag "logo.jpg", alt: "ResQWay", class: "h-12 w-auto rounded-xl mix-blend-multiply dark:mix-blend-normal" %>
+          <%= image_tag "logo.png", alt: "ResQWay", class: "h-12 w-auto rounded-xl" %>
         <% end %>
 
         <!-- Right Controls: Back Link + Theme Toggle -->

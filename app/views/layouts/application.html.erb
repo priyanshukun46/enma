@@ -2,8 +2,8 @@
 <html lang="en" class="h-full">
   <head>
     <title>ResQWay - North East Smart Logistics &amp; Accessibility Intelligence</title>
-    <%= tag.link rel: "icon", href: image_path("logo.jpg"), type: "image/jpeg" %>
-    <%= tag.link rel: "apple-touch-icon", href: image_path("logo.jpg") %>
+    <%= tag.link rel: "icon", href: image_path("logo.png"), type: "image/png" %>
+    <%= tag.link rel: "apple-touch-icon", href: image_path("logo.png") %>
     <link rel="manifest" href="/manifest">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
@@ -112,7 +112,7 @@
 
       <!-- Brand Logo -->
       <%= link_to dashboard_path, class: "flex items-center gap-2 group" do %>
-        <%= image_tag "logo.jpg", alt: "ResQWay", class: "h-10 w-auto rounded-xl mix-blend-multiply dark:mix-blend-normal" %>
+        <%= image_tag "logo.png", alt: "ResQWay", class: "h-10 w-auto rounded-xl" %>
       <% end %>
       <p class="font-sketch text-xs text-mute mt-1">logistics &amp; accessibility intelligence</p>
 
