@@ -117,11 +117,11 @@ export default class extends Controller {
       L.marker([loc.latitude, loc.longitude], { icon: icon })
         .bindPopup(`
           <div class="p-2 min-w-[180px]">
-            <h4 class="font-bold text-sm text-gray-900">${loc.name}</h4>
-            <p class="text-xs text-gray-500">${loc.state}</p>
+            <h4 class="font-bold text-sm text-ink">${loc.name}</h4>
+            <p class="text-xs text-sketch">${loc.state}</p>
             <div class="mt-2 pt-1 border-t flex justify-between items-center text-xs">
-              <span class="text-gray-600">Accessibility:</span>
-              <span class="font-bold text-sm ${score < 40 ? 'text-red-600' : 'text-gray-900'}">${score}/100</span>
+              <span class="text-mute">Accessibility:</span>
+              <span class="font-bold text-sm ${score < 40 ? 'text-red-600' : 'text-ink'}">${score}/100</span>
             </div>
             <span class="mt-1 inline-block text-[10px] px-2 py-0.5 rounded ${badgeClass} font-bold">${loc.accessibility_category}</span>
           </div>
@@ -163,13 +163,13 @@ export default class extends Controller {
       L.marker([loc.latitude, loc.longitude], { icon: icon })
         .bindPopup(`
           <div class="p-2 min-w-[180px]">
-            <h4 class="font-bold text-sm text-gray-900">${loc.name}</h4>
-            <p class="text-xs text-gray-500">${loc.state}</p>
+            <h4 class="font-bold text-sm text-ink">${loc.name}</h4>
+            <p class="text-xs text-sketch">${loc.state}</p>
             <div class="mt-2 pt-1 border-t flex justify-between items-center text-xs">
-              <span class="text-gray-600">Predicted Risk:</span>
+              <span class="text-mute">Predicted Risk:</span>
               <span class="font-black text-sm text-red-600">${Math.round(risk)}/100</span>
             </div>
-            <p class="text-[11px] text-gray-600 mt-0.5"><strong>Primary Threat:</strong> ${loc.primary_risk_factor || 'Landslide'}</p>
+            <p class="text-[11px] text-mute mt-0.5"><strong>Primary Threat:</strong> ${loc.primary_risk_factor || 'Landslide'}</p>
             <span class="mt-1 inline-block text-[10px] px-2 py-0.5 rounded ${badgeClass} font-bold">${threatLevel}</span>
           </div>
         `)
@@ -194,9 +194,9 @@ export default class extends Controller {
             <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-red-100 text-red-800 border border-red-300">
               ${em.severity} SEVERITY
             </span>
-            <h4 class="font-black text-sm text-gray-900 mt-1">${em.title}</h4>
-            <p class="text-xs text-gray-600"><strong>Type:</strong> ${em.emergency_type}</p>
-            <p class="text-xs text-gray-600"><strong>Affected Radius:</strong> ${em.affected_radius || 50} km</p>
+            <h4 class="font-black text-sm text-ink mt-1">${em.title}</h4>
+            <p class="text-xs text-mute"><strong>Type:</strong> ${em.emergency_type}</p>
+            <p class="text-xs text-mute"><strong>Affected Radius:</strong> ${em.affected_radius || 50} km</p>
             <p class="text-xs text-red-600 font-bold mt-1">Status: ${em.status}</p>
           </div>
         `)
@@ -231,8 +231,8 @@ export default class extends Controller {
             <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">
               LOGISTICS DEPOT
             </span>
-            <h4 class="font-black text-sm text-gray-900 mt-1">${wh.name}</h4>
-            <p class="text-xs text-gray-600 mt-1"><strong>Stock Capacity:</strong> ${Number(wh.capacity).toLocaleString()} units</p>
+            <h4 class="font-black text-sm text-ink mt-1">${wh.name}</h4>
+            <p class="text-xs text-mute mt-1"><strong>Stock Capacity:</strong> ${Number(wh.capacity).toLocaleString()} units</p>
             <p class="text-xs text-emerald-700 font-semibold mt-1">Status: Operational Staging Hub</p>
           </div>
         `)
