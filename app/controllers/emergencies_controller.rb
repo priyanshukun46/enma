@@ -1,5 +1,5 @@
 class EmergenciesController < ApplicationController
-  before_action :set_emergency, only: [:show, :update_status, :generate_plan, :export_briefing]
+  before_action :set_emergency, only: [:show, :update_status, :generate_plan, :export_briefing, :send_test_email]
 
   def index
     @status_filter = params[:status].presence || "all"
@@ -46,6 +46,15 @@ class EmergenciesController < ApplicationController
 
     if @emergency.save
       @emergency.generate_response_plan!
+      
+      if @emergency.severity.to_s.casecmp?("critical")
+        begin
+          EmergencyAlertMailer.critical_alert(@emergency).deliver_now
+        rescue StandardError => e
+          Rails.logger.error("Failed to send critical emergency email alert: #{e.message}")
+        end
+      end
+      
       flash[:notice] = "Emergency scenario successfully initialized & automated AI Response Plan generated."
       redirect_to emergency_path(@emergency)
     else
@@ -86,6 +95,17 @@ class EmergenciesController < ApplicationController
       flash[:notice] = "Emergency status updated to #{new_status}."
     else
       flash[:alert] = "Invalid status specified."
+    end
+    redirect_to emergency_path(@emergency)
+  end
+
+  def send_test_email
+    begin
+      EmergencyAlertMailer.critical_alert(@emergency).deliver_now
+      flash[:notice] = "Test Email Alert dispatched successfully."
+    rescue StandardError => e
+      Rails.logger.error("Failed to send test email alert: #{e.message}")
+      flash[:alert] = "Failed to dispatch test email alert. Check logs."
     end
     redirect_to emergency_path(@emergency)
   end

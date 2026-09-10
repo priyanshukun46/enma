@@ -92,6 +92,7 @@ Rails.application.routes.draw do
       patch :update_status
       post :generate_plan
       get :export_briefing
+      post :send_test_email
     end
     collection do
       post :demo_scenario
