@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get "health" => "health#show", as: :health_check
 
+  # Render dynamic PWA files from app/views/pwa/*
+  get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
+  get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
+
   # Defines the root path route ("/")
   root "pages#landing"
   match "/", to: "pages#landing", via: [:post]
