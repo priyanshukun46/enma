@@ -1,3 +1,4 @@
+let simulatedOffline = false;
 const CACHE_NAME = 'resqway-shell-v1';
 const CORE_ASSETS = [
   '/manifest',
@@ -5,6 +6,13 @@ const CORE_ASSETS = [
   '/routes',
   // You might want to cache specific icons here, e.g. '/icon.png'
 ];
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SIMULATE_OFFLINE_TOGGLE") {
+    simulatedOffline = event.data.value;
+    console.log('[Service Worker] Simulated offline mode set to:', simulatedOffline);
+  }
+});
 
 // Install event: Cache core assets (App Shell)
 self.addEventListener('install', (event) => {
@@ -41,19 +49,22 @@ self.addEventListener('fetch', (event) => {
   // 1. Navigation requests (HTML pages) - Network first, fallback to cache
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Clone the response and save it to the cache for future offline use
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
-          });
-          return response;
-        })
-        .catch(() => {
-          // If network fails, return the cached page if available
+      (async () => {
+        if (simulatedOffline) {
+          console.log('[Service Worker] Simulated offline navigation fallback');
           return caches.match(request);
-        })
+        }
+
+        try {
+          const response = await fetch(request);
+          const responseToCache = response.clone();
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, responseToCache);
+          return response;
+        } catch (error) {
+          return caches.match(request);
+        }
+      })()
     );
     return;
   }
@@ -65,6 +76,12 @@ self.addEventListener('fetch', (event) => {
         if (cachedResponse) {
           return cachedResponse;
         }
+        
+        if (simulatedOffline) {
+          // If offline and not in cache, let it fail natively
+          return Promise.reject('Simulated offline: asset not in cache');
+        }
+
         return fetch(request).then((response) => {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
