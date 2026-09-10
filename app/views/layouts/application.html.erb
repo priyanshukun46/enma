@@ -108,14 +108,9 @@
         </button>
       </div>
 
-      <!-- Brand Logo in ChaiCode font-hand style -->
-      <%= link_to dashboard_path, class: "flex items-center gap-2 font-hand text-3xl text-ink leading-none group" do %>
-        <div class="w-8 h-8 rounded-lg bg-accent text-white flex items-center justify-center font-black text-xs shadow-sm">
-          <i class="fas fa-brain text-sm"></i>
-        </div>
-        <span class="inline-flex items-baseline gap-1">
-          ResQWay
-        </span>
+      <!-- Brand Logo -->
+      <%= link_to dashboard_path, class: "flex items-center gap-2 group" do %>
+        <%= image_tag "logo.jpg", alt: "ResQWay", class: "h-10 w-auto rounded-xl mix-blend-multiply dark:mix-blend-normal" %>
       <% end %>
       <p class="font-sketch text-xs text-mute mt-1">logistics &amp; accessibility intelligence</p>
 
