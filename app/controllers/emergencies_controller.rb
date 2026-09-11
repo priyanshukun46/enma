@@ -100,12 +100,13 @@ class EmergenciesController < ApplicationController
   end
 
   def send_test_email
+    recipient = params[:email].presence || "pkfb46@proton.me"
     begin
-      EmergencyAlertMailer.critical_alert(@emergency).deliver_now
-      flash[:notice] = "Test Email Alert dispatched successfully."
+      EmergencyAlertMailer.critical_alert(@emergency, recipient).deliver_now
+      flash[:notice] = "Test Email Alert dispatched successfully to #{recipient}."
     rescue StandardError => e
-      Rails.logger.error("Failed to send test email alert: #{e.message}")
-      flash[:alert] = "Failed to dispatch test email alert. Check logs."
+      Rails.logger.error("Failed to send test email alert to #{recipient}: #{e.message}")
+      flash[:alert] = "Failed to dispatch test email alert to #{recipient}: #{e.message}"
     end
     redirect_to emergency_path(@emergency)
   end

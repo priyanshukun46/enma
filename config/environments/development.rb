@@ -37,15 +37,20 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   # Gmail SMTP Delivery Method
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
-    port: 587,
-    user_name: ENV["GMAIL_SMTP_USERNAME"],
-    password: ENV["GMAIL_SMTP_APP_PASSWORD"],
-    authentication: "plain",
-    enable_starttls_auto: true
-  }
+  if ENV["GMAIL_SMTP_USERNAME"].present? && ENV["GMAIL_SMTP_APP_PASSWORD"].present?
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+      address: "smtp.gmail.com",
+      port: 587,
+      user_name: ENV["GMAIL_SMTP_USERNAME"],
+      password: ENV["GMAIL_SMTP_APP_PASSWORD"],
+      authentication: "plain",
+      enable_starttls_auto: true
+    }
+  else
+    config.action_mailer.delivery_method = :file
+    config.action_mailer.file_settings = { location: Rails.root.join("tmp/mails") }
+  end
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
