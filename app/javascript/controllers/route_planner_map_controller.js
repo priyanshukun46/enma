@@ -350,28 +350,34 @@ export default class extends Controller {
     if (this.hasRouteCardTargets) {
       this.routeCardTargets.forEach(card => {
         const isMatch = (card.dataset.routeType === typeKey)
-        // Clean all possible active styling
-        card.classList.remove(
-          "border-indigo-600", "dark:border-indigo-500",
-          "bg-indigo-50/20", "bg-indigo-50/30", "bg-indigo-50/40", "bg-indigo-50/60",
-          "dark:bg-indigo-950/20", "dark:bg-indigo-950/30", "dark:bg-indigo-950/40", "dark:bg-indigo-950/60",
-          "ring-2", "ring-indigo-500/20", "ring-indigo-500/30", "ring-indigo-500", "ring-indigo-600",
-          "shadow-md", "shadow-lg", "opacity-50", "opacity-60", "border-slate-200", "dark:border-slate-800"
-        )
 
         if (isMatch) {
-          card.classList.add(
-            "border-indigo-600", "dark:border-indigo-500",
-            "bg-indigo-50/40", "dark:bg-indigo-950/60",
-            "ring-2", "ring-indigo-500",
-            "shadow-md",
-            "scale-[1.01]"
+          card.classList.remove(
+            "border-slate-200", "border-slate-300", "opacity-60", "opacity-75", "opacity-85"
           )
+          card.classList.add(
+            "border-2", "border-[#FF471D]", "bg-[#FF471D]/5",
+            "shadow-md", "opacity-100", "scale-[1.01]"
+          )
+          card.style.setProperty("border", "2px solid #FF471D", "important")
+          card.style.setProperty("box-shadow", "0 0 0 3px rgba(255, 71, 29, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.08)", "important")
+          card.style.setProperty("opacity", "1", "important")
+          card.style.setProperty("background-color", "rgba(255, 71, 29, 0.04)", "important")
         } else {
-          card.classList.add(
-            "border-slate-200", "dark:border-slate-800",
-            "opacity-60", "hover:opacity-100"
+          card.classList.remove(
+            "border-2", "border-[#FF471D]", "border-accent",
+            "bg-[#FF471D]/5", "bg-accent/5",
+            "ring-1", "ring-2", "ring-accent/40", "ring-[#FF471D]/30", "ring-[#FF471D]/40",
+            "shadow-md", "scale-[1.01]"
           )
+          card.classList.add(
+            "border", "border-slate-200", "bg-white",
+            "opacity-75", "hover:opacity-100", "shadow-sm"
+          )
+          card.style.setProperty("border", "1px solid rgba(16, 46, 57, 0.15)", "important")
+          card.style.setProperty("box-shadow", "0 1px 2px 0 rgba(0, 0, 0, 0.04)", "important")
+          card.style.setProperty("opacity", "0.75", "important")
+          card.style.setProperty("background-color", "#FFFFFF", "important")
         }
       })
     }

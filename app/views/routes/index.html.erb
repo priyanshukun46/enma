@@ -190,7 +190,8 @@
             <div data-route-planner-map-target="routeCard"
                  data-route-type="<%= type_key %>"
                  data-action="click->route-planner-map#selectRoute"
-                 class="p-4 rounded-2xl bg-surface sketch-border cursor-pointer transition-all shadow-sm <%= is_recommended ? 'border-accent bg-accent/5 ring-1 ring-accent/40' : 'opacity-85 hover:opacity-100 hover:border-accent/40' %> space-y-3">
+                 class="p-4 rounded-2xl bg-white border cursor-pointer transition-all space-y-3 <%= is_recommended ? 'border-2 border-[#FF471D] bg-[#FF471D]/5 shadow-md opacity-100' : 'border-slate-200 opacity-75 hover:opacity-100 shadow-sm' %>"
+                 style="<%= is_recommended ? 'border: 2px solid #FF471D !important; box-shadow: 0 0 0 3px rgba(255, 71, 29, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.08) !important; opacity: 1 !important;' : 'border: 1px solid rgba(16, 46, 57, 0.15) !important; opacity: 0.75 !important;' %>">
               
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
