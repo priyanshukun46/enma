@@ -28,12 +28,12 @@
 }
 
 body {
-  font-family: 'Montserrat', 'Nobile', system-ui, -apple-system, sans-serif !important;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif !important;
   background-color: #FFFFFF !important;
   color: #212121 !important;
   transition: background-color 0.25s ease, color 0.25s ease;
   letter-spacing: -0.011em;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .dark [class*="dark:text-white"],
@@ -103,39 +103,21 @@ main {
   color: rgb(var(--ink)) !important;
 }
 
-/* Hover effect on interactive cards: Lift up, highlight border, reveal hard offset shadow (Pic 1) */
+/* Hover effect on interactive cards: Lift up, highlight border, reveal hard offset shadow */
 .chai-card:hover,
-.sketch-card:hover,
-a.bg-surface:hover,
-button.bg-surface:hover,
-.bg-surface[class*="hover:"]:hover,
-.sketch-border[class*="hover:"]:hover,
-.bg-white[class*="hover:"]:hover,
-.dark\:bg-slate-900[class*="hover:"]:hover {
-  transform: translate(-3px, -3px) !important;
+.sketch-card:hover {
+  transform: translate(-2px, -2px) !important;
   border-color: rgb(var(--accent)) !important;
-  box-shadow: 5px 5px 0px 0px rgb(var(--ink) / 0.9) !important;
+  box-shadow: 4px 4px 0px 0px rgb(var(--ink) / 0.8) !important;
 }
 
 .dark .chai-card:hover,
 .dark .sketch-card:hover,
-.dark a.bg-surface:hover,
-.dark button.bg-surface:hover,
 [data-theme=dark] .chai-card:hover,
-[data-theme=dark] .sketch-card:hover,
-[data-theme=dark] a.bg-surface:hover,
-[data-theme=dark] button.bg-surface:hover,
-.dark .bg-surface[class*="hover:"]:hover,
-[data-theme=dark] .bg-surface[class*="hover:"]:hover,
-.dark .sketch-border[class*="hover:"]:hover,
-[data-theme=dark] .sketch-border[class*="hover:"]:hover,
-.dark .bg-white[class*="hover:"]:hover,
-[data-theme=dark] .bg-white[class*="hover:"]:hover,
-.dark .dark\:bg-slate-900[class*="hover:"]:hover,
-[data-theme=dark] .dark\:bg-slate-900[class*="hover:"]:hover {
-  transform: translate(-3px, -3px) !important;
+[data-theme=dark] .sketch-card:hover {
+  transform: translate(-2px, -2px) !important;
   border-color: rgb(var(--accent)) !important;
-  box-shadow: 5px 5px 0px 0px #000000 !important;
+  box-shadow: 4px 4px 0px 0px #000000 !important;
 }
 
 /* Universal Color Uniformity across all views */

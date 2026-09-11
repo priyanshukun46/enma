@@ -327,35 +327,35 @@
         <% end %>
 
         <!-- Turn-by-Turn Instruction Accordion -->
-        <div class="bg-surface sketch-border rounded-2xl shadow-sm p-4 sm:p-5 space-y-3.5">
-          <div class="flex items-center justify-between border-b border-[var(--line)] pb-3 px-1">
-            <h4 class="text-xs font-bold uppercase text-ink tracking-wider flex items-center gap-2">
+        <div class="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white">
+            <h4 class="text-xs font-bold uppercase text-[#212121] tracking-wider flex items-center gap-2">
               <i class="fas fa-list-ol text-accent text-sm"></i>
               <span>Turn-by-Turn Directions</span>
             </h4>
-            <span class="text-[11px] text-mute font-medium tracking-wide">Active Corridor</span>
+            <span class="text-[11px] text-slate-500 font-semibold tracking-wide">Active Corridor</span>
           </div>
 
-          <div data-route-planner-map-target="turnList" class="max-h-96 overflow-y-auto divide-y divide-[var(--line)] pr-1 -mr-1">
+          <div data-route-planner-map-target="turnList" class="divide-y divide-slate-100 max-h-[420px] overflow-y-auto bg-white">
             <% current_rec = @results[:routes][@results[:recommended_route_type]] %>
             <% if current_rec && current_rec[:steps].any? %>
               <% current_rec[:steps].each do |st| %>
-                <div class="py-3.5 px-3 hover:bg-slate-50/70 transition-colors flex items-start gap-3.5 text-xs rounded-xl">
-                  <div class="w-7 h-7 min-w-[1.75rem] rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5 border border-accent/20">
+                <div class="py-3 px-4 flex items-start gap-3.5 hover:bg-slate-50/60 transition-colors">
+                  <div class="w-7 h-7 min-w-[1.75rem] rounded-full bg-slate-100 text-[#102E39] font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5 border border-slate-200">
                     <%= st[:step_number] %>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="font-bold text-ink text-xs sm:text-sm leading-snug tracking-normal"><%= st[:instruction] %></p>
-                    <div class="flex items-center gap-2 mt-1.5 text-xs text-mute font-medium">
+                    <p class="font-bold text-[#212121] text-xs sm:text-sm leading-snug"><%= st[:instruction] %></p>
+                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
                       <span class="truncate"><%= st[:road_name] %></span>
-                      <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                      <span class="font-mono flex-shrink-0"><%= st[:distance_km] || (st[:distance_m].to_f / 1000).round(1) %> km</span>
-                    </div>
+                      <span class="text-slate-300">•</span>
+                      <span class="font-medium text-slate-600 flex-shrink-0"><%= st[:distance_km] || (st[:distance_m].to_f / 1000).round(1) %> km</span>
+                    </p>
                   </div>
                 </div>
               <% end %>
             <% else %>
-              <p class="text-xs text-mute p-6 text-center">Highway corridor active.</p>
+              <p class="text-xs text-slate-400 p-6 text-center">Highway corridor active.</p>
             <% end %>
           </div>
         </div>
@@ -372,8 +372,8 @@
       <% end %>
     </div>
 
-    <!-- RIGHT COLUMN: Interactive Leaflet Map & Full-Screen Navigation HUD -->
-    <div class="w-full flex-1 min-w-0 space-y-4">
+    <!-- RIGHT COLUMN: Interactive Leaflet Map & Full-Screen Navigation HUD (Sticky to avoid empty white space) -->
+    <div class="w-full lg:flex-1 min-w-0 lg:sticky lg:top-24 space-y-4">
       
       <!-- The Map Card with Floating Navigation HUD -->
       <div class="bg-surface sketch-border rounded-2xl shadow-sm overflow-hidden relative w-full">
@@ -447,8 +447,8 @@
 
         <!-- The Leaflet Map Canvas -->
         <div data-route-planner-map-target="container"
-             style="min-height: 340px; width: 100%; display: block;"
-             class="w-full z-10 h-[380px] sm:h-[500px] lg:h-[700px]">
+             style="min-height: 400px; width: 100%; display: block;"
+             class="w-full z-10 h-[380px] sm:h-[500px] lg:h-[calc(100vh-220px)] min-h-[500px]">
         </div>
       </div>
 
