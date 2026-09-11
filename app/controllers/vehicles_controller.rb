@@ -28,12 +28,20 @@ class VehiclesController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def update
     if @vehicle.update(vehicle_params)
       redirect_to vehicle_path(@vehicle), notice: "Vehicle details updated successfully."
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    @vehicle.destroy
+    redirect_to vehicles_path, notice: "Vehicle #{@vehicle.registration_number} was successfully removed."
   end
 
   private
