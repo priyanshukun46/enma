@@ -56,7 +56,7 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
   background-color: rgb(var(--paper)) !important;
   color: rgb(var(--ink)) !important;
   transition: background-color 0.25s ease, color 0.25s ease;

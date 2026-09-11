@@ -10,7 +10,7 @@
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
@@ -36,7 +36,7 @@
               }
             },
             fontFamily: {
-              sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+              sans: ['"Poppins"', 'system-ui', '-apple-system', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'monospace'],
             }
           }
@@ -54,6 +54,7 @@
       body {
         background-color: #FFFFFF !important;
         color: #212121 !important;
+        font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
       }
       .reveal-on-scroll {
         opacity: 0;
