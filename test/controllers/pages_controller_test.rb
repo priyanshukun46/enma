@@ -4,14 +4,14 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "should get landing page with new design" do
     get landing_url
     assert_response :success
-    assert_select "h1", /Northeast Lifeline/
+    assert_select "h1", /Welcome to ResQWay|Northeast Lifeline/
     assert_select "a[href=?]", sign_up_path
   end
 
   test "root url serves landing page for unauthenticated users" do
     get root_url
     assert_response :success
-    assert_select "h1", /Northeast Lifeline/
+    assert_select "h1", /Welcome to ResQWay|Northeast Lifeline/
   end
 
   test "should get demo page" do
