@@ -25,9 +25,19 @@ export default class extends Controller {
     if (!this.hasNavbarTarget) return
     const scrolled = window.scrollY > 20
     if (scrolled) {
-      this.navbarTarget.classList.add("shadow-xl", "backdrop-blur-md")
+      this.navbarTarget.classList.add("shadow-xl", "backdrop-blur-md", "bg-[#212121]/95")
     } else {
-      this.navbarTarget.classList.remove("shadow-xl", "backdrop-blur-md")
+      this.navbarTarget.classList.remove("shadow-xl", "backdrop-blur-md", "bg-[#212121]/95")
+    }
+  }
+
+  scrollToContent(event) {
+    if (event) event.preventDefault()
+    const targetEl = this.element.querySelector("#main-content-start")
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth" })
+    } else {
+      window.scrollTo({ top: window.innerHeight - 64, behavior: "smooth" })
     }
   }
 
