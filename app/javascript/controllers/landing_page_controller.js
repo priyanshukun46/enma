@@ -1,17 +1,57 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "counter", "mobileMenu", "progressBar", "tabBtn", "tabPane", "dropdown" ]
+  static targets = [ "counter", "mobileMenu", "progressBar", "tabBtn", "tabPane", "dropdown", "navbar" ]
 
   connect() {
     this.animateCounters()
     this.animateBars()
     this.boundHandleOutsideClick = this.handleOutsideClick.bind(this)
     document.addEventListener("click", this.boundHandleOutsideClick)
+
+    this.boundHandleScroll = this.handleScroll.bind(this)
+    window.addEventListener("scroll", this.boundHandleScroll, { passive: true })
+    this.handleScroll()
+
+    this.initScrollReveals()
   }
 
   disconnect() {
     document.removeEventListener("click", this.boundHandleOutsideClick)
+    window.removeEventListener("scroll", this.boundHandleScroll)
+  }
+
+  handleScroll() {
+    if (!this.hasNavbarTarget) return
+    const scrolled = window.scrollY > 20
+    if (scrolled) {
+      this.navbarTarget.classList.add("bg-[#0c1713]/95", "backdrop-blur-md", "shadow-xl", "border-[#1b3328]")
+      this.navbarTarget.classList.remove("bg-[#0c1713]/75")
+    } else {
+      this.navbarTarget.classList.add("bg-[#0c1713]/75")
+      this.navbarTarget.classList.remove("bg-[#0c1713]/95", "shadow-xl")
+    }
+  }
+
+  initScrollReveals() {
+    const reveals = this.element.querySelectorAll(".reveal-on-scroll")
+    if (reveals.length === 0) return
+
+    if (!("IntersectionObserver" in window)) {
+      reveals.forEach(el => el.classList.add("revealed"))
+      return
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed")
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" })
+
+    reveals.forEach(el => observer.observe(el))
   }
 
   // --- Hero Tab Switching ---
@@ -23,10 +63,10 @@ export default class extends Controller {
     this.tabBtnTargets.forEach(btn => {
       const isSelected = btn.dataset.tab === targetTab
       if (isSelected) {
-        btn.classList.add("bg-[#182938]", "text-white")
+        btn.classList.add("bg-[#0f261d]", "text-white")
         btn.classList.remove("bg-white", "text-slate-700", "hover:bg-slate-50")
       } else {
-        btn.classList.remove("bg-[#182938]", "text-white")
+        btn.classList.remove("bg-[#0f261d]", "text-white")
         btn.classList.add("bg-white", "text-slate-700", "hover:bg-slate-50")
       }
       btn.setAttribute("aria-selected", isSelected ? "true" : "false")

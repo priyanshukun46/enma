@@ -32,10 +32,22 @@
         }
       }
     </script>
+    <style>
+      .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+      .reveal-on-scroll.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
   </head>
 
-  <body class="min-h-screen antialiased selection:bg-orange-500 selection:text-white flex flex-col justify-between bg-[#111315] text-slate-100"
-        style="background-color: #111315 !important; color: #f1f5f9 !important;"
+  <body class="min-h-screen antialiased selection:bg-orange-500 selection:text-white flex flex-col justify-between bg-[#0c1612] text-slate-100"
+        style="background-color: #0c1612 !important; color: #f1f5f9 !important;"
         data-controller="search-modal">
     
     <% if flash[:notice].present? || flash[:alert].present? %>
@@ -80,10 +92,10 @@
 
     <div data-search-modal-target="modal"
          class="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 hidden pointer-events-none">
-      <div class="pointer-events-auto max-w-xl w-full bg-[#1c1f24] border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-slate-200">
+      <div class="pointer-events-auto max-w-xl w-full bg-[#0c1713] border border-[#1b3328] rounded-2xl shadow-2xl overflow-hidden flex flex-col text-slate-200 backdrop-blur-md">
         
         <!-- Modal Search Header Input -->
-        <div class="p-3.5 border-b border-slate-700/60 flex items-center gap-3 bg-[#181a1e]">
+        <div class="p-3.5 border-b border-[#1b3328] flex items-center gap-3 bg-[#0f2119]">
           <i class="fas fa-search text-orange-500 text-sm ml-1"></i>
           <input type="text"
                  data-search-modal-target="input"
@@ -93,19 +105,19 @@
                  class="w-full bg-transparent text-white placeholder:text-slate-500 text-sm font-medium focus:outline-none">
           <button type="button"
                   data-action="click->search-modal#close"
-                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-800 border border-slate-700 text-slate-400 hover:text-white cursor-pointer">
+                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-[#132a21] border border-[#1b3328] text-slate-400 hover:text-white cursor-pointer">
             ESC
           </button>
         </div>
 
         <!-- Quick Filter Tags -->
-        <div class="px-4 py-2 border-b border-slate-800 bg-[#14161a] flex items-center gap-1.5 overflow-x-auto text-[11px]">
+        <div class="px-4 py-2 border-b border-[#1b3328] bg-[#0a1511] flex items-center gap-1.5 overflow-x-auto text-[11px]">
           <span class="text-[10px] font-bold text-slate-500 uppercase mr-1 flex-shrink-0">Quick:</span>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🚢 Fleet</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">📍 Tawang</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="NH-27" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🛣️ NH-27</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Depot" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🏢 Warehouses</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Landslide" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🚨 Incidents</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-[#1b3328] bg-[#10241b] hover:border-emerald-500 hover:text-emerald-300 text-slate-300 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚢 Fleet</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-[#1b3328] bg-[#10241b] hover:border-emerald-500 hover:text-emerald-300 text-slate-300 text-[11px] cursor-pointer flex-shrink-0 transition-colors">📍 Tawang</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="NH-27" class="px-2.5 py-0.5 rounded-full border border-[#1b3328] bg-[#10241b] hover:border-emerald-500 hover:text-emerald-300 text-slate-300 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🛣️ NH-27</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Depot" class="px-2.5 py-0.5 rounded-full border border-[#1b3328] bg-[#10241b] hover:border-emerald-500 hover:text-emerald-300 text-slate-300 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🏢 Warehouses</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Landslide" class="px-2.5 py-0.5 rounded-full border border-[#1b3328] bg-[#10241b] hover:border-emerald-500 hover:text-emerald-300 text-slate-300 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚨 Incidents</button>
         </div>
 
         <!-- Suggestions List -->
@@ -114,11 +126,11 @@
         </ul>
 
         <!-- Modal Footer -->
-        <div class="px-4 py-2.5 bg-[#14161a] border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+        <div class="px-4 py-2.5 bg-[#0a1511] border-t border-[#1b3328] flex items-center justify-between text-[11px] text-slate-500 font-mono">
           <div class="flex items-center space-x-3">
-            <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">↑↓</kbd> navigate</span>
-            <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">↵</kbd> open</span>
-            <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">esc</kbd> close</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-[#10241b] border border-[#1b3328] text-slate-300 font-mono">↑↓</kbd> navigate</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-[#10241b] border border-[#1b3328] text-slate-300 font-mono">↵</kbd> open</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-[#10241b] border border-[#1b3328] text-slate-300 font-mono">esc</kbd> close</span>
           </div>
           <span class="text-[10px] text-orange-400 font-semibold">ResQWay Operational Index</span>
         </div>

@@ -1,4 +1,4 @@
-<div data-controller="landing-page" class="w-full relative bg-[#111315] text-slate-100 min-h-screen selection:bg-orange-500 selection:text-white font-sans">
+<div data-controller="landing-page" class="w-full relative bg-[#0c1612] text-slate-100 min-h-screen selection:bg-orange-500 selection:text-white font-sans">
 
   <!-- ============================================================== -->
   <!-- TOP ACCENT BAR & STICKY NAVIGATION                             -->
@@ -7,7 +7,7 @@
     <!-- Thin 3px orange accent line -->
     <div class="h-[3px] w-full bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500"></div>
 
-    <header class="w-full bg-[#181a1d] resqway-dark-header border-b border-slate-800 shadow-md transition-colors" style="background-color: #181a1d !important; border-bottom: 1px solid #282c34 !important;">
+    <header data-landing-page-target="navbar" class="w-full bg-[#0c1713]/85 resqway-dark-header border-b border-[#1b3328] shadow-md transition-all duration-300 backdrop-blur-sm" style="background-color: rgba(12, 23, 19, 0.90) !important; border-bottom: 1px solid #1c3328 !important;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 sm:h-20">
           
@@ -26,41 +26,41 @@
             <div class="relative" data-landing-page-target="dropdown">
               <button type="button"
                       data-action="click->landing-page#toggleDropdown"
-                      class="px-3.5 py-2 rounded-lg hover:bg-slate-800/80 hover:text-white flex items-center space-x-1.5 transition-colors focus:outline-none cursor-pointer">
+                      class="px-3.5 py-2 rounded-lg hover:bg-[#132a21] hover:text-emerald-300 flex items-center space-x-1.5 transition-all focus:outline-none cursor-pointer">
                 <span>Operational Engine</span>
                 <i data-dropdown-arrow class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
               </button>
 
-              <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-200/90 py-2 z-50">
-                <%= link_to dashboard_path, class: "block px-4 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+              <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-[#0c1713] text-slate-200 rounded-xl shadow-2xl border border-[#1b3328] py-2 z-50 backdrop-blur-md">
+                <%= link_to dashboard_path, class: "block px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Dashboard
                 <% end %>
-                <%= link_to map_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to map_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Intelligence Map
                 <% end %>
-                <%= link_to accessibility_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to accessibility_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Predictive Risks
                 <% end %>
-                <%= link_to network_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to network_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Network Graph
                 <% end %>
-                <%= link_to intelligence_predictions_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to intelligence_predictions_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Cascade Predictions
                 <% end %>
-                <%= link_to intelligence_response_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to intelligence_response_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Autonomous Response
                 <% end %>
-                <%= link_to intelligence_command_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to intelligence_command_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Unified Command
                 <% end %>
-                <%= link_to routes_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to routes_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Smart Routes
                 <% end %>
-                <%= link_to shipments_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to shipments_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Live Fleet Telemetry
                 <% end %>
-                <div class="border-t border-slate-100 my-1"></div>
-                <%= link_to dashboard_path, class: "block px-4 py-2 text-xs font-black text-orange-600 uppercase tracking-wider hover:bg-orange-50 transition-colors" do %>
+                <div class="border-t border-[#1b3328] my-1"></div>
+                <%= link_to dashboard_path, class: "block px-4 py-2 text-xs font-black text-orange-500 uppercase tracking-wider hover:bg-[#132a21] hover:text-orange-400 transition-colors" do %>
                   All Operational Tools &rarr;
                 <% end %>
               </div>
@@ -70,26 +70,26 @@
             <div class="relative" data-landing-page-target="dropdown">
               <button type="button"
                       data-action="click->landing-page#toggleDropdown"
-                      class="px-3.5 py-2 rounded-lg hover:bg-slate-800/80 hover:text-white flex items-center space-x-1.5 transition-colors focus:outline-none cursor-pointer">
+                      class="px-3.5 py-2 rounded-lg hover:bg-[#132a21] hover:text-emerald-300 flex items-center space-x-1.5 transition-all focus:outline-none cursor-pointer">
                 <span>Tactical Response</span>
                 <i data-dropdown-arrow class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
               </button>
 
-              <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-200/90 py-2 z-50">
-                <%= link_to emergencies_path, class: "block px-4 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+              <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-[#0c1713] text-slate-200 rounded-xl shadow-2xl border border-[#1b3328] py-2 z-50 backdrop-blur-md">
+                <%= link_to emergencies_path, class: "block px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Emergency Center
                 <% end %>
-                <%= link_to incidents_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to incidents_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Field Incidents (Photo Dispatch)
                 <% end %>
-                <%= link_to warehouses_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to warehouses_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Relief Depots &amp; Stock
                 <% end %>
-                <%= link_to logistics_alerts_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to logistics_alerts_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Corridor Disruption Alerts
                 <% end %>
-                <div class="border-t border-slate-100 my-1"></div>
-                <%= link_to intelligence_command_path, class: "block px-4 py-2 text-xs font-black text-orange-600 uppercase tracking-wider hover:bg-orange-50 transition-colors" do %>
+                <div class="border-t border-[#1b3328] my-1"></div>
+                <%= link_to intelligence_command_path, class: "block px-4 py-2 text-xs font-black text-orange-500 uppercase tracking-wider hover:bg-[#132a21] hover:text-orange-400 transition-colors" do %>
                   Live Convoy Dispatch &rarr;
                 <% end %>
               </div>
@@ -99,27 +99,27 @@
             <div class="relative" data-landing-page-target="dropdown">
               <button type="button"
                       data-action="click->landing-page#toggleDropdown"
-                      class="px-3.5 py-2 rounded-lg hover:bg-slate-800/80 hover:text-white flex items-center space-x-1.5 transition-colors focus:outline-none cursor-pointer">
+                      class="px-3.5 py-2 rounded-lg hover:bg-[#132a21] hover:text-emerald-300 flex items-center space-x-1.5 transition-all focus:outline-none cursor-pointer">
                 <span>Insights and Simulations</span>
                 <i data-dropdown-arrow class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
               </button>
 
-              <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-200/90 py-2 z-50">
-                <%= link_to analytics_path, class: "block px-4 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+              <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-[#0c1713] text-slate-200 rounded-xl shadow-2xl border border-[#1b3328] py-2 z-50 backdrop-blur-md">
+                <%= link_to analytics_path, class: "block px-4 py-2.5 text-xs font-semibold text-slate-200 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Historical Performance Analytics
                 <% end %>
-                <%= link_to demo_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to demo_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Interactive Demo Scenario
                 <% end %>
-                <%= link_to architecture_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to architecture_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   System Architecture
                 <% end %>
-                <%= link_to overview_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                <%= link_to overview_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                   Smart India Hackathon Overview
                 <% end %>
                 <% if authenticated? && current_user.admin? %>
-                  <div class="border-t border-slate-100 my-1"></div>
-                  <%= link_to admin_users_path, class: "block px-4 py-2 text-xs font-bold text-orange-600 hover:bg-orange-50 transition-colors" do %>
+                  <div class="border-t border-[#1b3328] my-1"></div>
+                  <%= link_to admin_users_path, class: "block px-4 py-2 text-xs font-bold text-orange-500 hover:bg-[#132a21] hover:text-orange-400 transition-colors" do %>
                     User Administration
                   <% end %>
                 <% end %>
@@ -135,39 +135,39 @@
             <div class="relative" data-landing-page-target="dropdown">
               <button type="button"
                       data-action="click->landing-page#toggleDropdown"
-                      class="px-3 py-1.5 rounded-lg hover:bg-slate-800/80 text-slate-200 hover:text-white flex items-center space-x-2 text-sm font-medium transition-colors focus:outline-none cursor-pointer">
+                      class="px-3 py-1.5 rounded-lg hover:bg-[#132a21] text-slate-200 hover:text-emerald-300 flex items-center space-x-2 text-sm font-medium transition-all focus:outline-none cursor-pointer">
                 <span><%= authenticated? ? (current_user.first_name || "Account") : "Sign Up/Log In" %></span>
-                <div class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+                <div class="w-7 h-7 rounded-full bg-[#132a21] border border-[#1b3328] flex items-center justify-center text-slate-300">
                   <i class="far fa-user text-xs"></i>
                 </div>
                 <i data-dropdown-arrow class="fas fa-chevron-down text-[9px] text-slate-400 transition-transform duration-200"></i>
               </button>
 
-              <div data-dropdown-menu class="hidden absolute top-full right-0 mt-1.5 w-56 bg-white text-slate-900 rounded-xl shadow-2xl border border-slate-200/90 py-2 z-50">
+              <div data-dropdown-menu class="hidden absolute top-full right-0 mt-1.5 w-56 bg-[#0c1713] text-slate-200 rounded-xl shadow-2xl border border-[#1b3328] py-2 z-50 backdrop-blur-md">
                 <% if authenticated? %>
-                  <div class="px-4 py-2 border-b border-slate-100">
+                  <div class="px-4 py-2 border-b border-[#1b3328]">
                     <p class="text-[11px] text-slate-400 uppercase font-mono tracking-wider">Signed in as</p>
-                    <p class="text-xs font-bold text-slate-800 truncate"><%= current_user.email %></p>
+                    <p class="text-xs font-bold text-white truncate"><%= current_user.email %></p>
                   </div>
-                  <%= link_to dashboard_path, class: "block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
-                    <i class="fas fa-chart-line mr-2 text-slate-400"></i> Live Dashboard
+                  <%= link_to dashboard_path, class: "block px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
+                    <i class="fas fa-chart-line mr-2 text-emerald-400"></i> Live Dashboard
                   <% end %>
-                  <%= link_to profile_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                  <%= link_to profile_path, class: "block px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                     <i class="fas fa-user-gear mr-2 text-slate-400"></i> Profile Settings
                   <% end %>
-                  <div class="border-t border-slate-100 my-1"></div>
-                  <%= button_to logout_path, method: :delete, class: "w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer" do %>
-                    <i class="fas fa-sign-out-alt mr-2 text-rose-500"></i> Sign Out
+                  <div class="border-t border-[#1b3328] my-1"></div>
+                  <%= button_to logout_path, method: :delete, class: "w-full text-left px-4 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer" do %>
+                    <i class="fas fa-sign-out-alt mr-2 text-rose-400"></i> Sign Out
                   <% end %>
                 <% else %>
-                  <%= link_to login_path, class: "block px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-100 hover:text-orange-600 transition-colors" do %>
+                  <%= link_to login_path, class: "block px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-[#132a21] hover:text-emerald-400 transition-colors" do %>
                     Sign In
                   <% end %>
-                  <%= link_to sign_up_path, class: "block px-4 py-2 text-xs font-semibold text-orange-600 hover:bg-orange-50 transition-colors" do %>
+                  <%= link_to sign_up_path, class: "block px-4 py-2 text-xs font-semibold text-orange-500 hover:bg-[#132a21] hover:text-orange-400 transition-colors" do %>
                     Create Account
                   <% end %>
-                  <div class="border-t border-slate-100 my-1"></div>
-                  <%= button_to demo_sso_login_path, method: :post, class: "w-full text-left px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer" do %>
+                  <div class="border-t border-[#1b3328] my-1"></div>
+                  <%= button_to demo_sso_login_path, method: :post, class: "w-full text-left px-4 py-2 text-xs font-medium text-slate-300 hover:bg-[#132a21] hover:text-white transition-colors cursor-pointer" do %>
                     <i class="fas fa-bolt text-amber-500 mr-1.5"></i> 1-Click Demo SSO
                   <% end %>
                 <% end %>
@@ -178,7 +178,7 @@
             <button type="button"
                     data-action="click->search-modal#open"
                     title="Search Corridors, Vessels & Emergencies (⌘K)"
-                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none cursor-pointer">
+                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#132a21] transition-all focus:outline-none cursor-pointer">
               <i class="fas fa-search text-sm"></i>
             </button>
           </div>
@@ -188,12 +188,12 @@
             <button type="button"
                     data-action="click->search-modal#open"
                     title="Search (⌘K)"
-                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors">
+                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#132a21] transition-colors">
               <i class="fas fa-search text-sm"></i>
             </button>
             <button type="button"
                     data-action="click->landing-page#toggleMobileMenu"
-                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none"
+                    class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#132a21] transition-colors focus:outline-none"
                     aria-label="Toggle navigation">
               <i class="fas fa-bars text-lg"></i>
             </button>
@@ -203,7 +203,7 @@
       </div>
 
       <!-- Mobile Dropdown Slide-Out -->
-      <div data-landing-page-target="mobileMenu" class="hidden lg:hidden border-t border-slate-800 bg-[#16181b] px-6 py-5 space-y-4 shadow-2xl">
+      <div data-landing-page-target="mobileMenu" class="hidden lg:hidden border-t border-[#1b3328] bg-[#0c1713] px-6 py-5 space-y-4 shadow-2xl">
         <div class="space-y-2">
           <p class="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-bold">Navigation</p>
           <div class="space-y-1 text-sm font-medium">
@@ -220,13 +220,13 @@
           </div>
         </div>
 
-        <div class="pt-3 border-t border-slate-800 space-y-2">
+        <div class="pt-3 border-t border-[#1b3328] space-y-2">
           <% if authenticated? %>
-            <%= link_to "Open Live Dashboard", dashboard_path, class: "w-full flex items-center justify-center py-3 rounded-xl text-xs font-bold text-white bg-orange-600 hover:bg-orange-500 shadow-md" %>
+            <%= link_to "Open Live Dashboard", dashboard_path, class: "w-full flex items-center justify-center py-3 rounded-xl text-xs font-bold text-white bg-orange-600 hover:bg-orange-500 shadow-md transition-all" %>
           <% else %>
             <div class="grid grid-cols-2 gap-2">
-              <%= link_to "Sign In", login_path, class: "flex items-center justify-center py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-slate-800 hover:bg-slate-700" %>
-              <%= link_to "Open Account", sign_up_path, class: "flex items-center justify-center py-2.5 rounded-xl text-xs font-bold text-white bg-orange-600 hover:bg-orange-500 shadow" %>
+              <%= link_to "Sign In", login_path, class: "flex items-center justify-center py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-[#132a21] hover:bg-[#1a382c] transition-colors" %>
+              <%= link_to "Open Account", sign_up_path, class: "flex items-center justify-center py-2.5 rounded-xl text-xs font-bold text-white bg-orange-600 hover:bg-orange-500 shadow transition-colors" %>
             </div>
           <% end %>
         </div>
@@ -238,7 +238,7 @@
   <!-- HERO SECTION WITH BACKGROUND & MULTI-TAB TELEMETRY CARD        -->
   <!-- ============================================================== -->
   <section class="relative pt-24 sm:pt-28 min-h-[760px] flex flex-col justify-between overflow-hidden bg-cover bg-no-repeat"
-           style="background-image: linear-gradient(to bottom, rgba(15, 17, 20, 0.45) 0%, rgba(15, 17, 20, 0.30) 40%, rgba(17, 19, 21, 0.85) 85%, #111315 100%), url('<%= image_path("hero_bg.jpg") %>'); background-position: center 30%;">
+           style="background-image: linear-gradient(to bottom, rgba(12, 22, 18, 0.60) 0%, rgba(12, 22, 18, 0.32) 36%, rgba(12, 22, 18, 0.88) 85%, #0c1612 100%), url('<%= image_path("hero_bg.jpg") %>'); background-position: center 34%;">
     
     <!-- Hero Center Headline -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-10 sm:pt-16 pb-8 relative z-10">
@@ -252,7 +252,7 @@
 
     <!-- Floating Interactive Multi-Tab Telemetry Widget -->
     <div class="w-full max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
-      <div class="bg-white rounded-t-2xl shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-white rounded-t-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] overflow-hidden border border-slate-200/80 transition-all duration-300 hover:shadow-[0_30px_70px_-10px_rgba(16,185,129,0.18)]">
         
         <!-- Tab Navigation Bar -->
         <div class="grid grid-cols-3 border-b border-slate-200 text-center text-xs font-bold uppercase tracking-wider">
@@ -262,7 +262,7 @@
                   data-landing-page-target="tabBtn"
                   data-tab="smart_route"
                   data-action="click->landing-page#switchTab"
-                  class="py-3.5 px-4 bg-white text-slate-700 hover:bg-slate-50 flex items-center justify-center space-x-2 transition-colors focus:outline-none cursor-pointer">
+                  class="py-3.5 px-4 bg-white text-slate-700 hover:bg-emerald-50/50 hover:text-emerald-900 flex items-center justify-center space-x-2 transition-all focus:outline-none cursor-pointer">
             <i class="fas fa-route text-slate-500"></i>
             <span class="truncate">Smart Route</span>
           </button>
@@ -272,7 +272,7 @@
                   data-landing-page-target="tabBtn"
                   data-tab="live_fleet"
                   data-action="click->landing-page#switchTab"
-                  class="py-3.5 px-4 bg-[#182938] text-white flex items-center justify-center space-x-2 transition-colors focus:outline-none cursor-pointer"
+                  class="py-3.5 px-4 bg-[#0f261d] text-white flex items-center justify-center space-x-2 transition-all focus:outline-none cursor-pointer"
                   aria-selected="true">
             <i class="fas fa-ship text-slate-300"></i>
             <span class="truncate">Live Fleet</span>
@@ -283,7 +283,7 @@
                   data-landing-page-target="tabBtn"
                   data-tab="field_incidence"
                   data-action="click->landing-page#switchTab"
-                  class="py-3.5 px-4 bg-white text-slate-700 hover:bg-slate-50 flex items-center justify-center space-x-2 transition-colors focus:outline-none cursor-pointer">
+                  class="py-3.5 px-4 bg-white text-slate-700 hover:bg-emerald-50/50 hover:text-emerald-900 flex items-center justify-center space-x-2 transition-all focus:outline-none cursor-pointer">
             <i class="fas fa-triangle-exclamation text-slate-500"></i>
             <span class="truncate">Field Incidence</span>
           </button>
@@ -323,7 +323,7 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span>Real-time terrain gradient analysis</span>
               </span>
-              <%= link_to routes_path, class: "px-5 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider shadow transition-all flex items-center space-x-1.5" do %>
+              <%= link_to routes_path, class: "px-5 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider shadow hover:shadow-orange-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center space-x-1.5" do %>
                 <span>Calculate Smart Routes</span>
                 <i class="fas fa-arrow-right text-[10px]"></i>
               <% end %>
@@ -371,7 +371,7 @@
                 <span>Real-time GPS telemetry active</span>
               </div>
 
-              <%= link_to shipments_path, class: "w-full sm:w-auto px-6 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all flex items-center justify-center space-x-1.5" do %>
+              <%= link_to shipments_path, class: "w-full sm:w-auto px-6 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-orange-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-1.5" do %>
                 <span>View Live Fleet</span>
                 <i class="fas fa-arrow-right text-[10px]"></i>
               <% end %>
@@ -410,7 +410,7 @@
                 <i class="fas fa-camera text-orange-500 text-xs"></i>
                 <span>Geo-tagged photos attached to dispatch models</span>
               </span>
-              <%= link_to incidents_path, class: "px-5 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider shadow transition-all flex items-center space-x-1.5" do %>
+              <%= link_to incidents_path, class: "px-5 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs uppercase tracking-wider shadow hover:shadow-orange-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center space-x-1.5" do %>
                 <span>View Field Incidents</span>
                 <i class="fas fa-arrow-right text-[10px]"></i>
               <% end %>
@@ -423,11 +423,11 @@
 
     <!-- Centered Scroll to Explore Indicator -->
     <div class="pt-6 pb-4 text-center relative z-10">
-      <a href="#explore" class="inline-flex flex-col items-center space-y-1 text-slate-300 hover:text-white transition-colors group">
-        <span class="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-300/90 group-hover:text-white">
+      <a href="#explore" class="inline-flex flex-col items-center space-y-1 text-slate-300 hover:text-emerald-300 transition-colors group">
+        <span class="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-slate-300/90 group-hover:text-emerald-300">
           Scroll to explore
         </span>
-        <i class="fas fa-chevron-down text-xs text-slate-300 group-hover:text-white animate-bounce"></i>
+        <i class="fas fa-chevron-down text-xs text-slate-300 group-hover:text-emerald-300 animate-bounce"></i>
       </a>
     </div>
 
@@ -436,14 +436,16 @@
   <!-- ============================================================== -->
   <!-- SPLIT PROMOTIONAL CALLOUT BANNER                               -->
   <!-- ============================================================== -->
-  <section id="explore" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 pt-8 pb-16 relative z-20">
-    <div class="rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-slate-800">
+  <section id="explore" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-2 pt-8 pb-16 relative z-20 reveal-on-scroll">
+    <div class="rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-[#1b3328] transition-all duration-300 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-950/40">
       
-      <!-- Left Panel: Dark Teal/Navy Priority Offer -->
-      <div class="bg-[#122836] text-white p-8 sm:p-12 md:w-2/3 flex flex-col justify-between space-y-6">
-        <div class="space-y-4">
+      <!-- Left Panel: Dark Forest Pine Priority Offer -->
+      <div class="bg-[#0f261d] text-white p-8 sm:p-12 md:w-2/3 flex flex-col justify-between space-y-6 relative overflow-hidden">
+        <div class="absolute -right-16 -top-16 w-56 h-56 rounded-full bg-emerald-500/5 blur-2xl pointer-events-none"></div>
+
+        <div class="space-y-4 relative z-10">
           <!-- Discount Tag Icon -->
-          <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-500 flex items-center justify-center text-xl">
+          <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-500 flex items-center justify-center text-xl transition-transform duration-300 hover:scale-110 hover:rotate-6 shadow-inner">
             <i class="fas fa-tag"></i>
           </div>
 
@@ -458,16 +460,16 @@
         </div>
 
         <!-- Disclaimers -->
-        <div class="space-y-1 pt-4 text-[10px] sm:text-[11px] text-slate-400 border-t border-white/10">
+        <div class="space-y-1 pt-4 text-[10px] sm:text-[11px] text-slate-400 border-t border-[#1b3328] relative z-10">
           <p>*This discount doesn't apply to freight-forwarders, re-sellers and organizations shipping dangerous goods or valuable items.</p>
           <p class="font-semibold">*Terms &amp; Conditions apply.</p>
         </div>
       </div>
 
-      <!-- Right Panel: Crisp Off-White with Open Account Action -->
-      <div class="bg-[#f4f6f8] text-slate-900 p-8 sm:p-12 md:w-1/3 flex items-center justify-center text-center">
+      <!-- Right Panel: Crisp Misty Off-White with Open Account Action -->
+      <div class="bg-[#f4f7f5] text-slate-900 p-8 sm:p-12 md:w-1/3 flex items-center justify-center text-center">
         <div class="space-y-4 w-full">
-          <%= link_to sign_up_path, class: "w-full block py-4 px-8 rounded-full bg-[#f24e1e] hover:bg-orange-600 text-white font-black text-sm uppercase tracking-wider shadow-lg hover:shadow-orange-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 text-center" do %>
+          <%= link_to sign_up_path, class: "w-full block py-4 px-8 rounded-full bg-[#ff5500] hover:bg-[#e04b00] text-white font-black text-sm uppercase tracking-wider shadow-lg hover:shadow-orange-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] text-center" do %>
             Open an Account
           <% end %>
           <p class="text-xs text-slate-500 font-medium">
@@ -482,7 +484,7 @@
   <!-- ============================================================== -->
   <!-- OPERATIONAL INTELLIGENCE & RESOURCES SECTION                   -->
   <!-- ============================================================== -->
-  <section class="py-16 sm:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14">
+  <section class="py-16 sm:py-24 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 reveal-on-scroll">
     
     <!-- Section Headline -->
     <div class="text-center max-w-3xl mx-auto space-y-2">
@@ -498,26 +500,26 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
       
       <!-- Feature Card 1: Global Fleet & GIS Mapping -->
-      <div class="bg-[#181a1d] rounded-2xl overflow-hidden border border-slate-800 shadow-xl flex flex-col group hover:border-slate-700 transition-all">
+      <div class="bg-[#0f1d17] rounded-2xl overflow-hidden border border-[#1b3328] shadow-xl flex flex-col group hover:border-emerald-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/50 transition-all duration-300">
         <div class="h-48 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80"
                alt="Global Maritime"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-[#181a1d] via-transparent to-transparent"></div>
-          <span class="absolute bottom-3 left-4 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-300 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded">
+               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0f1d17] via-transparent to-transparent"></div>
+          <span class="absolute bottom-3 left-4 text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-300 bg-[#0c1612]/80 border border-[#1b3328] backdrop-blur-xs px-2.5 py-1 rounded">
             Global Maritime
           </span>
         </div>
         <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
           <div class="space-y-2">
-            <h3 class="text-lg font-bold text-white tracking-tight">
+            <h3 class="text-lg font-bold text-white group-hover:text-emerald-300 tracking-tight transition-colors">
               Global Fleet &amp; GIS Mapping
             </h3>
             <p class="text-xs text-slate-400 leading-relaxed">
               Track transpacific and transatlantic cargo vessels with real-time SATCOM AIS telemetry, live port congestion layers, and chokepoint monitoring.
             </p>
           </div>
-          <%= link_to map_path, class: "inline-flex items-center space-x-1 text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider pt-2 group-hover:translate-x-1 transition-transform" do %>
+          <%= link_to map_path, class: "inline-flex items-center space-x-1 text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider pt-2 group-hover:translate-x-1.5 transition-transform duration-200" do %>
             <span>Explore Intelligence Map</span>
             <i class="fas fa-arrow-right text-[10px]"></i>
           <% end %>
@@ -525,26 +527,26 @@
       </div>
 
       <!-- Feature Card 2: Predictive Risk & Disruption AI -->
-      <div class="bg-[#181a1d] rounded-2xl overflow-hidden border border-slate-800 shadow-xl flex flex-col group hover:border-slate-700 transition-all">
+      <div class="bg-[#0f1d17] rounded-2xl overflow-hidden border border-[#1b3328] shadow-xl flex flex-col group hover:border-emerald-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/50 transition-all duration-300">
         <div class="h-48 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=800&q=80"
                alt="Predictive Risk"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-[#181a1d] via-transparent to-transparent"></div>
-          <span class="absolute bottom-3 left-4 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-300 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded">
+               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0f1d17] via-transparent to-transparent"></div>
+          <span class="absolute bottom-3 left-4 text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-300 bg-[#0c1612]/80 border border-[#1b3328] backdrop-blur-xs px-2.5 py-1 rounded">
             Disruption AI
           </span>
         </div>
         <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
           <div class="space-y-2">
-            <h3 class="text-lg font-bold text-white tracking-tight">
+            <h3 class="text-lg font-bold text-white group-hover:text-emerald-300 tracking-tight transition-colors">
               Predictive Risk &amp; Disruption AI
             </h3>
             <p class="text-xs text-slate-400 leading-relaxed">
               Anticipate typhoon paths, canal congestion, and customs hold risks with proactive early warnings up to 72 hours before schedules are impacted.
             </p>
           </div>
-          <%= link_to accessibility_path, class: "inline-flex items-center space-x-1 text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider pt-2 group-hover:translate-x-1 transition-transform" do %>
+          <%= link_to accessibility_path, class: "inline-flex items-center space-x-1 text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider pt-2 group-hover:translate-x-1.5 transition-transform duration-200" do %>
             <span>View Risk Radar</span>
             <i class="fas fa-arrow-right text-[10px]"></i>
           <% end %>
@@ -552,26 +554,26 @@
       </div>
 
       <!-- Feature Card 3: Tactical Response & Relief Depots -->
-      <div class="bg-[#181a1d] rounded-2xl overflow-hidden border border-slate-800 shadow-xl flex flex-col group hover:border-slate-700 transition-all">
+      <div class="bg-[#0f1d17] rounded-2xl overflow-hidden border border-[#1b3328] shadow-xl flex flex-col group hover:border-emerald-500/50 hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-950/50 transition-all duration-300">
         <div class="h-48 overflow-hidden relative">
           <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80"
                alt="Cargo Logistics"
-               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-          <div class="absolute inset-0 bg-gradient-to-t from-[#181a1d] via-transparent to-transparent"></div>
-          <span class="absolute bottom-3 left-4 text-[10px] font-mono font-bold uppercase tracking-widest text-slate-300 bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded">
+               class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0f1d17] via-transparent to-transparent"></div>
+          <span class="absolute bottom-3 left-4 text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-300 bg-[#0c1612]/80 border border-[#1b3328] backdrop-blur-xs px-2.5 py-1 rounded">
             Cargo Logistics
           </span>
         </div>
         <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
           <div class="space-y-2">
-            <h3 class="text-lg font-bold text-white tracking-tight">
+            <h3 class="text-lg font-bold text-white group-hover:text-emerald-300 tracking-tight transition-colors">
               Tactical Response &amp; Relief Depots
             </h3>
             <p class="text-xs text-slate-400 leading-relaxed">
               Activate 24/7 emergency dispatch, coordinate rapid cargo diversions, and deploy pre-staged humanitarian and medical inventory seamlessly.
             </p>
           </div>
-          <%= link_to emergencies_path, class: "inline-flex items-center space-x-1 text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider pt-2 group-hover:translate-x-1 transition-transform" do %>
+          <%= link_to emergencies_path, class: "inline-flex items-center space-x-1 text-xs font-bold text-orange-500 hover:text-orange-400 uppercase tracking-wider pt-2 group-hover:translate-x-1.5 transition-transform duration-200" do %>
             <span>Access Emergency Center</span>
             <i class="fas fa-arrow-right text-[10px]"></i>
           <% end %>
@@ -581,37 +583,37 @@
     </div>
 
     <!-- Dual Showcase: Mountain Corridor Photography + High-Tech Dashboard Telemetry -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 reveal-on-scroll">
       
       <!-- Left Showcase: Mountain Corridors (Forest) -->
-      <div class="rounded-2xl overflow-hidden border border-slate-800 shadow-xl relative min-h-[340px] flex items-end">
+      <div class="rounded-2xl overflow-hidden border border-[#1b3328] shadow-xl relative min-h-[340px] flex items-end group hover:border-emerald-500/40 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-950/50 transition-all duration-300">
         <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80"
              alt="Himalayan Corridors"
-             class="absolute inset-0 w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent"></div>
+             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0c1612]/95 via-[#0c1612]/40 to-transparent"></div>
         <div class="relative z-10 p-6 sm:p-8 space-y-1 text-white">
           <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-orange-400">
             Geospatial Topography
           </span>
-          <h4 class="text-xl font-bold">Alpine &amp; Mountain Corridors</h4>
+          <h4 class="text-xl font-bold group-hover:text-emerald-300 transition-colors">Alpine &amp; Mountain Corridors</h4>
           <p class="text-xs text-slate-300 leading-relaxed">
             Continuous elevation and precipitation analysis monitoring over 700km of remote high-altitude routes.
           </p>
         </div>
       </div>
 
-      <!-- Right Showcase: Analytics Dashboard UI (Teal/Cyan Visual Dashboard) -->
-      <div class="rounded-2xl overflow-hidden border border-slate-800 bg-[#0d1117] p-6 sm:p-7 shadow-xl space-y-5 text-white flex flex-col justify-between">
+      <!-- Right Showcase: Analytics Dashboard UI (Deep Pine & Emerald Visual Dashboard) -->
+      <div class="rounded-2xl overflow-hidden border border-[#1b3328] bg-[#0c1913] p-6 sm:p-7 shadow-xl space-y-5 text-white flex flex-col justify-between hover:border-emerald-500/40 transition-all duration-300">
         
         <!-- Header -->
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center justify-between border-b border-[#1b3328] pb-3">
           <div class="flex items-center space-x-2">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-300">
               Users: Last 7 Days Using Median
             </span>
             <i class="fas fa-chevron-down text-[10px] text-slate-500"></i>
           </div>
-          <span class="text-[11px] font-mono text-cyan-400 font-bold bg-cyan-950/60 border border-cyan-800/60 px-2 py-0.5 rounded">
+          <span class="text-[11px] font-mono text-emerald-300 font-bold bg-emerald-950/70 border border-emerald-700/60 px-2 py-0.5 rounded shadow-sm">
             Live Stream
           </span>
         </div>
@@ -625,42 +627,42 @@
 
           <!-- Bar distribution visual -->
           <div class="h-24 flex items-end justify-between gap-1.5 pt-4">
-            <div class="w-full bg-cyan-500/20 hover:bg-cyan-400 rounded-t h-[35%] transition-all"></div>
-            <div class="w-full bg-cyan-500/30 hover:bg-cyan-400 rounded-t h-[45%] transition-all"></div>
-            <div class="w-full bg-cyan-500/40 hover:bg-cyan-400 rounded-t h-[65%] transition-all"></div>
-            <div class="w-full bg-cyan-500/60 hover:bg-cyan-400 rounded-t h-[80%] transition-all"></div>
-            <div class="w-full bg-cyan-400 rounded-t h-[95%] shadow-md shadow-cyan-500/30 transition-all"></div>
-            <div class="w-full bg-cyan-500/70 hover:bg-cyan-400 rounded-t h-[75%] transition-all"></div>
-            <div class="w-full bg-cyan-500/50 hover:bg-cyan-400 rounded-t h-[55%] transition-all"></div>
-            <div class="w-full bg-cyan-500/30 hover:bg-cyan-400 rounded-t h-[40%] transition-all"></div>
-            <div class="w-full bg-cyan-500/20 hover:bg-cyan-400 rounded-t h-[25%] transition-all"></div>
+            <div class="w-full bg-emerald-500/20 hover:bg-emerald-400 rounded-t h-[35%] transition-all duration-300 cursor-pointer" title="Day 1"></div>
+            <div class="w-full bg-emerald-500/30 hover:bg-emerald-400 rounded-t h-[45%] transition-all duration-300 cursor-pointer" title="Day 2"></div>
+            <div class="w-full bg-emerald-500/40 hover:bg-emerald-400 rounded-t h-[65%] transition-all duration-300 cursor-pointer" title="Day 3"></div>
+            <div class="w-full bg-emerald-500/60 hover:bg-emerald-400 rounded-t h-[80%] transition-all duration-300 cursor-pointer" title="Day 4"></div>
+            <div class="w-full bg-emerald-400 rounded-t h-[95%] shadow-lg shadow-emerald-500/40 transition-all duration-300 cursor-pointer" title="Day 5 Peak"></div>
+            <div class="w-full bg-emerald-500/70 hover:bg-emerald-400 rounded-t h-[75%] transition-all duration-300 cursor-pointer" title="Day 6"></div>
+            <div class="w-full bg-emerald-500/50 hover:bg-emerald-400 rounded-t h-[55%] transition-all duration-300 cursor-pointer" title="Day 7"></div>
+            <div class="w-full bg-emerald-500/30 hover:bg-emerald-400 rounded-t h-[40%] transition-all duration-300 cursor-pointer" title="Day 8"></div>
+            <div class="w-full bg-emerald-500/20 hover:bg-emerald-400 rounded-t h-[25%] transition-all duration-300 cursor-pointer" title="Day 9"></div>
           </div>
         </div>
 
         <!-- Metric Cards Row -->
-        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2 border-t border-slate-800 text-center font-mono">
-          <div class="space-y-0.5">
-            <span class="text-[10px] text-slate-500 block uppercase">Page Load</span>
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-2 border-t border-[#1b3328] text-center font-mono">
+          <div class="space-y-0.5 p-1 rounded-lg hover:bg-[#10241b] transition-colors">
+            <span class="text-[10px] text-slate-400 block uppercase">Page Load</span>
             <span class="text-xs font-bold text-white">0.7s</span>
           </div>
-          <div class="space-y-0.5">
-            <span class="text-[10px] text-slate-500 block uppercase">Pageviews</span>
-            <span class="text-xs font-bold text-cyan-400">2.7Mpvs</span>
+          <div class="space-y-0.5 p-1 rounded-lg hover:bg-[#10241b] transition-colors">
+            <span class="text-[10px] text-slate-400 block uppercase">Pageviews</span>
+            <span class="text-xs font-bold text-emerald-400">2.7Mpvs</span>
           </div>
-          <div class="space-y-0.5">
-            <span class="text-[10px] text-slate-500 block uppercase">Bounce Rate</span>
+          <div class="space-y-0.5 p-1 rounded-lg hover:bg-[#10241b] transition-colors">
+            <span class="text-[10px] text-slate-400 block uppercase">Bounce Rate</span>
             <span class="text-xs font-bold text-white">40.6%</span>
           </div>
-          <div class="space-y-0.5">
-            <span class="text-[10px] text-slate-500 block uppercase">Sessions</span>
-            <span class="text-xs font-bold text-cyan-400">479K</span>
+          <div class="space-y-0.5 p-1 rounded-lg hover:bg-[#10241b] transition-colors">
+            <span class="text-[10px] text-slate-400 block uppercase">Sessions</span>
+            <span class="text-xs font-bold text-emerald-400">479K</span>
           </div>
-          <div class="space-y-0.5">
-            <span class="text-[10px] text-slate-500 block uppercase">Session Len</span>
+          <div class="space-y-0.5 p-1 rounded-lg hover:bg-[#10241b] transition-colors">
+            <span class="text-[10px] text-slate-400 block uppercase">Session Len</span>
             <span class="text-xs font-bold text-white">17min</span>
           </div>
-          <div class="space-y-0.5">
-            <span class="text-[10px] text-slate-500 block uppercase">Per Session</span>
+          <div class="space-y-0.5 p-1 rounded-lg hover:bg-[#10241b] transition-colors">
+            <span class="text-[10px] text-slate-400 block uppercase">Per Session</span>
             <span class="text-xs font-bold text-white">2pvs</span>
           </div>
         </div>
@@ -674,17 +676,17 @@
   <!-- ============================================================== -->
   <!-- OPERATIONAL ADVISORIES & QUICK ACTIONS                         -->
   <!-- ============================================================== -->
-  <section class="py-16 sm:py-20 border-t border-slate-800/80 bg-[#141619]">
+  <section class="py-16 sm:py-20 border-t border-[#182d23] bg-[#0a1410] reveal-on-scroll">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
       
       <!-- Top Quick Links -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 font-bold text-xs sm:text-sm uppercase tracking-wider text-orange-500">
-        <%= link_to routes_path, class: "hover:text-orange-400 transition-colors flex items-center space-x-1.5" do %>
+        <%= link_to routes_path, class: "hover:text-orange-400 hover:translate-x-1 transition-all flex items-center space-x-1.5" do %>
           <span>Calculate Smart Routes</span>
           <i class="fas fa-arrow-right text-xs"></i>
         <% end %>
 
-        <%= link_to demo_path, class: "hover:text-orange-400 transition-colors flex items-center space-x-1.5" do %>
+        <%= link_to demo_path, class: "hover:text-orange-400 hover:translate-x-1 transition-all flex items-center space-x-1.5" do %>
           <span>Launch Scenarios Sandbox</span>
           <i class="fas fa-arrow-right text-xs"></i>
         <% end %>
@@ -695,7 +697,7 @@
         
         <!-- Advisory Item 1 -->
         <div class="space-y-1">
-          <%= link_to emergencies_path, class: "text-base sm:text-lg font-semibold text-orange-500 hover:text-orange-400 underline underline-offset-4 decoration-orange-500/60 hover:decoration-orange-400 transition-colors block" do %>
+          <%= link_to emergencies_path, class: "text-base sm:text-lg font-semibold text-orange-500 hover:text-orange-400 underline underline-offset-4 decoration-orange-500/60 hover:decoration-orange-400 hover:translate-x-0.5 transition-all block" do %>
             Global Maritime Corridor Advisory: Red Sea &amp; Cape of Good Hope transit routing updates
           <% end %>
           <p class="text-xs text-slate-400">
@@ -705,7 +707,7 @@
 
         <!-- Advisory Item 2 -->
         <div class="space-y-1 pt-2">
-          <%= link_to logistics_alerts_path, class: "text-base sm:text-lg font-bold text-white hover:text-orange-400 transition-colors block" do %>
+          <%= link_to logistics_alerts_path, class: "text-base sm:text-lg font-bold text-white hover:text-orange-400 hover:translate-x-0.5 transition-all block" do %>
             Port Congestion Index: Terminal container dwell times &amp; rail intermodal delays
           <% end %>
           <p class="text-xs text-slate-400">
@@ -715,7 +717,7 @@
 
         <!-- View All Button -->
         <div class="pt-4">
-          <%= link_to emergencies_path, class: "inline-block px-8 py-3 rounded-full border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-extrabold text-xs uppercase tracking-wider transition-colors shadow-sm" do %>
+          <%= link_to emergencies_path, class: "inline-block px-8 py-3 rounded-full border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-extrabold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-orange-500/30 hover:scale-105 active:scale-95" do %>
             View All Operational Advisories
           <% end %>
         </div>
@@ -728,7 +730,7 @@
   <!-- ============================================================== -->
   <!-- COMPREHENSIVE GLOBAL FOOTER                                    -->
   <!-- ============================================================== -->
-  <footer class="bg-[#121416] border-t border-slate-800 text-slate-400 text-xs pt-16 pb-12">
+  <footer class="bg-[#070e0b] border-t border-[#14261d] text-slate-400 text-xs pt-16 pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       
       <!-- 5 Column Grid -->
@@ -738,13 +740,13 @@
         <div class="space-y-3">
           <p class="text-xs font-black uppercase tracking-wider text-white">Our Company</p>
           <ul class="space-y-2">
-            <li><%= link_to "About ResQWay", about_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "Global Route Network", routes_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "Fleet Telemetry & Careers", shipments_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "International Transit Schedules", analytics_path, class: "hover:text-white transition-colors" %></li>
-            <li><a href="#" class="hover:text-white transition-colors">Conditions of Carriage &amp; Claims</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Binding Corporate Rules</a></li>
-            <li><%= link_to "MEISA Logistics Newsroom", overview_path, class: "hover:text-white transition-colors" %></li>
+            <li><%= link_to "About ResQWay", about_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "Global Route Network", routes_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "Fleet Telemetry & Careers", shipments_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "International Transit Schedules", analytics_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Conditions of Carriage &amp; Claims</a></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Binding Corporate Rules</a></li>
+            <li><%= link_to "MEISA Logistics Newsroom", overview_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
           </ul>
         </div>
 
@@ -752,10 +754,10 @@
         <div class="space-y-3">
           <p class="text-xs font-black uppercase tracking-wider text-white">New Customer</p>
           <ul class="space-y-2">
-            <li><%= link_to "Open an Account (Save 65%*)", sign_up_path, class: "text-orange-500 font-bold hover:text-orange-400 transition-colors" %></li>
-            <li><%= link_to "Register for a Login", sign_up_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "New Customer Center", overview_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "Demo Interactive Mode", demo_path, class: "hover:text-white transition-colors" %></li>
+            <li><%= link_to "Open an Account (Save 65%*)", sign_up_path, class: "text-orange-500 font-bold hover:text-orange-400 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "Register for a Login", sign_up_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "New Customer Center", overview_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "Demo Interactive Mode", demo_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
           </ul>
         </div>
 
@@ -763,11 +765,11 @@
         <div class="space-y-3">
           <p class="text-xs font-black uppercase tracking-wider text-white">Customer Support</p>
           <ul class="space-y-2">
-            <li><a href="#" class="hover:text-white transition-colors">Contact ResQWay (24/7 Hotline)</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Write to the Top</a></li>
-            <li><%= link_to "Emergency Response Dispatch", intelligence_command_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "Citizen Incident Reports", incidents_path, class: "hover:text-white transition-colors" %></li>
-            <li><a href="#" class="hover:text-white transition-colors">Claim Resolution Portal</a></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Contact ResQWay (24/7 Hotline)</a></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Write to the Top</a></li>
+            <li><%= link_to "Emergency Response Dispatch", intelligence_command_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "Citizen Incident Reports", incidents_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Claim Resolution Portal</a></li>
           </ul>
         </div>
 
@@ -775,12 +777,12 @@
         <div class="space-y-3">
           <p class="text-xs font-black uppercase tracking-wider text-white">More From ResQWay</p>
           <ul class="space-y-2">
-            <li><a href="#" class="hover:text-white transition-colors">Sign up for eNews &amp; Alerts</a></li>
-            <li><%= link_to "ResQWay Developer Portal", architecture_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "Fuel Surcharge Index", analytics_path, class: "hover:text-white transition-colors" %></li>
-            <li><a href="#" class="hover:text-white transition-colors">Rates &amp; Surcharges</a></li>
-            <li><%= link_to "Relief Depot Resources", warehouses_path, class: "hover:text-white transition-colors" %></li>
-            <li><%= link_to "ResQWay Locations &amp; Hubs", locations_path, class: "hover:text-white transition-colors" %></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Sign up for eNews &amp; Alerts</a></li>
+            <li><%= link_to "ResQWay Developer Portal", architecture_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "Fuel Surcharge Index", analytics_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><a href="#" class="hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block">Rates &amp; Surcharges</a></li>
+            <li><%= link_to "Relief Depot Resources", warehouses_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
+            <li><%= link_to "ResQWay Locations &amp; Hubs", locations_path, class: "hover:text-emerald-300 hover:translate-x-0.5 transition-all inline-block" %></li>
           </ul>
         </div>
 
@@ -794,7 +796,7 @@
             </div>
 
             <div class="relative">
-              <select class="w-full bg-[#1c1f24] border border-slate-700 text-slate-200 text-xs rounded-lg py-2 pl-3 pr-8 appearance-none focus:outline-none focus:border-orange-500 cursor-pointer">
+              <select class="w-full bg-[#0d1a14] border border-[#1b3328] text-slate-200 text-xs rounded-lg py-2 pl-3 pr-8 appearance-none hover:border-emerald-500/60 focus:outline-none focus:border-emerald-500 transition-colors cursor-pointer">
                 <option selected>English</option>
                 <option>Hindi (हिंदी)</option>
                 <option>Assamese (অসমীয়া)</option>
@@ -810,9 +812,9 @@
       </div>
 
       <!-- Bottom Bar: Logo & Copyright -->
-      <div class="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="pt-8 border-t border-[#14261d] flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center space-x-2.5">
-          <%= image_tag "logo_icon.png", alt: "ResQWay", class: "h-6 w-auto object-contain" %>
+          <%= image_tag "logo_icon.png", alt: "ResQWay", class: "h-6 w-auto object-contain transition-transform hover:scale-105" %>
           <span class="text-sm font-black tracking-tight text-white font-sans">ResQ<span class="text-[#ff5500]">Way</span></span>
           <span class="text-[11px] text-slate-500 ml-2">&copy; <%= Date.current.year %> ResQWay. All rights reserved.</span>
         </div>
