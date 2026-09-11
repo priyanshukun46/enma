@@ -267,12 +267,12 @@
         Engineered with resilient, modern frameworks built for mission-critical logistics and real-time emergency telemetry.
       </p>
 
-      <!-- 6 Tech Stack Badges in the Same Design Language & Effects -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8 mb-20 text-center">
+      <!-- 8 Tech Stack Badges in Clean Flat Style (No Drop Shadows, White Background) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 mb-20 text-center">
         
         <!-- 1: Ruby on Rails 8 -->
         <%= link_to architecture_path, class: "flex flex-col items-center group cursor-pointer" do %>
-          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-all duration-300 group-hover:scale-110 group-hover:border-[#FF471D] shadow-sm group-hover:shadow-md">
+          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
             <i class="fa-solid fa-gem text-2xl text-[#FF471D] transition-transform group-hover:rotate-12"></i>
           </div>
           <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
@@ -282,7 +282,7 @@
 
         <!-- 2: Python & PyTorch ML -->
         <%= link_to intelligence_predictions_path, class: "flex flex-col items-center group cursor-pointer" do %>
-          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-all duration-300 group-hover:scale-110 group-hover:border-[#FF471D] shadow-sm group-hover:shadow-md">
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
             <i class="fa-brands fa-python text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
           </div>
           <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
@@ -290,9 +290,29 @@
           </span>
         <% end %>
 
-        <!-- 3: Hotwire & Stimulus -->
+        <!-- 3: NOSTR Protocol -->
+        <%= link_to network_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-satellite-dish text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            NOSTR PROTOCOL<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Decentralized Mesh</span>
+          </span>
+        <% end %>
+
+        <!-- 4: Active Mailer -->
+        <%= link_to emergencies_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-envelope-circle-check text-2xl text-[#FF471D] transition-transform group-hover:scale-110"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            ACTIVE MAILER<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Instant Alerting</span>
+          </span>
+        <% end %>
+
+        <!-- 5: Hotwire & Stimulus -->
         <%= link_to dashboard_path, class: "flex flex-col items-center group cursor-pointer" do %>
-          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-all duration-300 group-hover:scale-110 group-hover:border-[#FF471D] shadow-sm group-hover:shadow-md">
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
             <i class="fa-solid fa-bolt text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
           </div>
           <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
@@ -300,9 +320,9 @@
           </span>
         <% end %>
 
-        <!-- 4: Tailwind CSS -->
+        <!-- 6: Tailwind CSS -->
         <%= link_to overview_path, class: "flex flex-col items-center group cursor-pointer" do %>
-          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-all duration-300 group-hover:scale-110 group-hover:border-[#FF471D] shadow-sm group-hover:shadow-md">
+          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
             <i class="fa-brands fa-css3-alt text-2xl text-[#FF471D] transition-transform group-hover:scale-110"></i>
           </div>
           <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
@@ -310,9 +330,9 @@
           </span>
         <% end %>
 
-        <!-- 5: Leaflet GIS Engine -->
+        <!-- 7: Leaflet GIS Engine -->
         <%= link_to map_path, class: "flex flex-col items-center group cursor-pointer" do %>
-          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-all duration-300 group-hover:scale-110 group-hover:border-[#FF471D] shadow-sm group-hover:shadow-md">
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
             <i class="fa-solid fa-map-location-dot text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
           </div>
           <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
@@ -320,9 +340,9 @@
           </span>
         <% end %>
 
-        <!-- 6: PostgreSQL Database -->
+        <!-- 8: PostgreSQL Database -->
         <%= link_to analytics_path, class: "flex flex-col items-center group cursor-pointer" do %>
-          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-all duration-300 group-hover:scale-110 group-hover:border-[#FF471D] shadow-sm group-hover:shadow-md">
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
             <i class="fa-solid fa-database text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
           </div>
           <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
