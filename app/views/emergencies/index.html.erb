@@ -29,10 +29,10 @@
   </div>
 
   <!-- Main Layout: Active Incidents List + Resource Availability -->
-  <div class="flex flex-col lg:flex-row gap-5 items-start w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
     
     <!-- Left Column: Incident Cards -->
-    <div class="w-full lg:flex-1 min-w-0 space-y-4">
+    <div class="col-span-1 lg:col-span-7 xl:col-span-8 min-w-0 space-y-4 w-full">
       <div class="flex items-center justify-between px-1">
         <div class="flex items-center space-x-2">
           <span class="text-xs font-black uppercase text-slate-800 dark:text-slate-200 tracking-wider">Live Incident Feed</span>
@@ -114,7 +114,7 @@
     </div>
 
     <!-- Right Column: Resource Availability Card -->
-    <div class="w-full lg:w-[380px] xl:w-[420px] lg:flex-shrink-0 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
+    <div class="col-span-1 lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5 w-full">
       <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
         <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
           <i class="fas fa-cubes text-accent dark:text-accent mr-2 text-xs"></i>

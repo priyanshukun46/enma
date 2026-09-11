@@ -27,10 +27,10 @@
   </div>
 
   <!-- Main Dual Layout (Left: Search & Intelligence Cards, Right: Leaflet GIS Map) -->
-  <div class="flex flex-col lg:flex-row gap-6 items-start w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
     
     <!-- LEFT COLUMN: Directions Search, Vehicle Mode, Priority Selector & Route Options -->
-    <div class="w-full lg:w-[440px] flex-shrink-0 space-y-4">
+    <div class="col-span-1 lg:col-span-5 xl:col-span-5 space-y-4 w-full">
       
       <!-- Directions Input Card (ChaiCode Surface Card) -->
       <div class="bg-surface sketch-border rounded-2xl shadow-sm p-5 space-y-4">
@@ -374,7 +374,7 @@
     </div>
 
     <!-- RIGHT COLUMN: Interactive Leaflet Map & Full-Screen Navigation HUD (Sticky to avoid empty white space) -->
-    <div class="w-full lg:flex-1 min-w-0 lg:sticky lg:top-24 space-y-4">
+    <div class="col-span-1 lg:col-span-7 xl:col-span-7 min-w-0 lg:sticky lg:top-24 space-y-4 w-full">
       
       <!-- The Map Card with Floating Navigation HUD -->
       <div class="bg-surface sketch-border rounded-2xl shadow-sm overflow-hidden relative w-full">
