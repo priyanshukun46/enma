@@ -16,6 +16,7 @@
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
     <script nonce="<%= request.content_security_policy_nonce %>">
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             colors: {
@@ -55,6 +56,24 @@
         background-color: #FFFFFF !important;
         color: #212121 !important;
         font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
+      }
+      .dark {
+        color-scheme: light !important;
+      }
+      .dark body {
+        background-color: #FFFFFF !important;
+        color: #212121 !important;
+      }
+      .dark [class*="dark:text-white"],
+      .dark [class*="dark:text-slate-100"],
+      .dark [class*="dark:text-slate-200"],
+      .dark [class*="dark:text-slate-300"] {
+        color: #212121 !important;
+      }
+      .dark [class*="dark:bg-slate-900"],
+      .dark [class*="dark:bg-slate-800"],
+      .dark [class*="dark:bg-slate-950"] {
+        background-color: #FFFFFF !important;
       }
       .reveal-on-scroll {
         opacity: 0;

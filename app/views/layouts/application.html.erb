@@ -16,6 +16,7 @@
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
     <script nonce="<%= request.content_security_policy_nonce %>">
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             colors: {
@@ -50,7 +51,7 @@
     </script>
     <style>
       :root {
-        --paper: 234 238 240;      /* #EAEEF0 Main background */
+        --paper: 255 255 255;      /* #FFFFFF Pure white */
         --surface: 255 255 255;    /* #FFFFFF Crisp cards */
         --ink: 33 33 33;           /* #212121 Headers, Footers & Text */
         --sketch: 55 65 81;
@@ -59,19 +60,38 @@
         --accent2: 16 46 57;       /* #102E39 Essence & small designs */
         --line: rgba(16, 46, 57, 0.12);
         --line-hi: rgba(16, 46, 57, 0.25);
-        --card: rgba(255, 255, 255, 0.95);
+        --card: #FFFFFF;
         --card-hi: #FFFFFF;
       }
       body {
-        background-color: #EAEEF0 !important;
+        background-color: #FFFFFF !important;
         color: #212121 !important;
         font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
+      }
+      .dark {
+        color-scheme: light !important;
+      }
+      .dark body {
+        background-color: #FFFFFF !important;
+        color: #212121 !important;
+      }
+      /* Prevent dark classes from rendering white text on white canvas or dark boxes */
+      .dark [class*="dark:text-white"],
+      .dark [class*="dark:text-slate-100"],
+      .dark [class*="dark:text-slate-200"],
+      .dark [class*="dark:text-slate-300"] {
+        color: #212121 !important;
+      }
+      .dark [class*="dark:bg-slate-900"],
+      .dark [class*="dark:bg-slate-800"],
+      .dark [class*="dark:bg-slate-950"] {
+        background-color: #FFFFFF !important;
       }
     </style>
   </head>
 
-  <body class="min-h-screen flex flex-col bg-[#EAEEF0] text-[#212121] antialiased selection:bg-[#FF471D] selection:text-white font-sans"
-        style="background-color: #EAEEF0 !important; color: #212121 !important;"
+  <body class="min-h-screen flex flex-col bg-white text-[#212121] antialiased selection:bg-[#FF471D] selection:text-white font-sans"
+        style="background-color: #FFFFFF !important; color: #212121 !important;"
         data-controller="landing-page search-modal qr-modal connectivity">
 
     <!-- Offline Indicator Banner -->

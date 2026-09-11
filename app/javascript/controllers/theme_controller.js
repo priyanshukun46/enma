@@ -8,30 +8,18 @@ export default class extends Controller {
   }
 
   get currentTheme() {
-    const saved = localStorage.getItem("theme")
-    if (saved) return saved
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
+    return "light"
   }
 
   toggle() {
-    const isDark = document.documentElement.classList.contains("dark") || document.documentElement.dataset.theme === "dark"
-    const newTheme = isDark ? "light" : "dark"
-    this.applyTheme(newTheme)
+    this.applyTheme("light")
   }
 
   applyTheme(theme) {
-    const isDark = theme === "dark"
-    if (isDark) {
-      document.documentElement.classList.add("dark")
-      document.documentElement.dataset.theme = "dark"
-      localStorage.setItem("theme", "dark")
-      this.updateIcons(true)
-    } else {
-      document.documentElement.classList.remove("dark")
-      document.documentElement.dataset.theme = "light"
-      localStorage.setItem("theme", "light")
-      this.updateIcons(false)
-    }
+    document.documentElement.classList.remove("dark")
+    document.documentElement.dataset.theme = "light"
+    localStorage.setItem("theme", "light")
+    this.updateIcons(false)
   }
 
   updateIcons(isDark) {

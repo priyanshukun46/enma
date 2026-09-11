@@ -1,19 +1,19 @@
 /* ChaiCode (dsa.chaicode.com) Design System Tokens */
-:root, [data-theme=light] {
+:root, [data-theme=light], [data-theme=dark], .dark {
   color-scheme: light;
-  --paper: 250 246 238;          /* #FAF6EE warm parchment */
-  --surface: 255 252 247;        /* #FFFCF7 warm surface */
-  --ink: 24 18 14;               /* #18120E high-contrast espresso ink */
-  --sketch: 76 62 50;            /* #4C3E32 warm charcoal text */
-  --mute: 118 104 90;            /* #76685A deep legible taupe (>4.5:1 ratio) */
-  --accent: 226 84 56;           /* #E25438 rich warm reddish terracotta */
-  --accent2: 200 60 45;          /* #C83C2D deep rust red */
-  --border: 31 31 31;
-  --shadow: 31 31 31;
-  --card: rgba(31, 24, 18, 0.035);
-  --card-hi: rgba(31, 24, 18, 0.07);
-  --line: rgba(38, 30, 24, 0.15);
-  --line-hi: rgba(38, 30, 24, 0.30);
+  --paper: 255 255 255;          /* Pure White */
+  --surface: 255 255 255;        /* Pure White */
+  --ink: 33 33 33;               /* #212121 black typography */
+  --sketch: 55 65 81;
+  --mute: 100 116 139;
+  --accent: 255 71 29;           /* #FF471D buttons & accent */
+  --accent2: 16 46 57;           /* #102E39 essence */
+  --border: 226 232 240;
+  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+  --card: #FFFFFF;
+  --card-hi: #FFFFFF;
+  --line: rgba(16, 46, 57, 0.12);
+  --line-hi: rgba(16, 46, 57, 0.25);
   --done-bg: #DFF0E2;
   --done-text: #2F7D4A;
   --done-stroke: #3A9D5D;
@@ -23,43 +23,27 @@
   --gold-bg: #FFF4D6;
   --gold-text: #917400;
   --gold-stroke: #CAA400;
-  --compare-bg: #F5EBE6;
-  --radius-card: 16px;
-}
-
-[data-theme=dark], .dark {
-  color-scheme: dark;
-  --paper: 20 16 12;             /* #14100C dark espresso */
-  --surface: 27 22 17;           /* #1B1611 dark roasted surface */
-  --ink: 236 229 214;            /* #ECE5D6 warm cream ivory */
-  --sketch: 184 176 160;         /* #B8B0A0 warm parchment */
-  --mute: 146 138 123;           /* #928A7B muted cocoa */
-  --accent: 236 94 66;           /* #EC5E42 warm glowing reddish coral */
-  --accent2: 216 74 46;          /* #D84A2E rich terracotta red */
-  --border: 90 82 68;
-  --shadow: 0 0 0;
-  --card: rgba(255, 255, 255, 0.035);
-  --card-hi: rgba(255, 255, 255, 0.065);
-  --line: rgba(236, 229, 214, 0.12);
-  --line-hi: rgba(236, 229, 214, 0.22);
-  --done-bg: #17301F;
-  --done-text: #6FC28D;
-  --done-stroke: #4FB374;
-  --dead-bg: #351A1A;
-  --dead-text: #E88A8A;
-  --dead-stroke: #E06B6B;
-  --gold-bg: #332A12;
-  --gold-text: #D8B638;
-  --gold-stroke: #D8B638;
-  --compare-bg: #2C1E1A;
+  --compare-bg: #FFFFFF;
   --radius-card: 16px;
 }
 
 body {
   font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
-  background-color: rgb(var(--paper)) !important;
-  color: rgb(var(--ink)) !important;
+  background-color: #FFFFFF !important;
+  color: #212121 !important;
   transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.dark [class*="dark:text-white"],
+.dark [class*="dark:text-slate-100"],
+.dark [class*="dark:text-slate-200"],
+.dark [class*="dark:text-slate-300"] {
+  color: #212121 !important;
+}
+.dark [class*="dark:bg-slate-900"],
+.dark [class*="dark:bg-slate-800"],
+.dark [class*="dark:bg-slate-950"] {
+  background-color: #FFFFFF !important;
 }
 
 .landing-gradient-bg, html, body {
