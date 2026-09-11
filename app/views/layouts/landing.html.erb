@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full scroll-smooth">
   <head>
-    <title>ResQWay — AI Logistics &amp; Accessibility Intelligence for North East India</title>
+    <title>ResQWay - Logistics, Real-Time Tracking &amp; Risk Management</title>
     <%= tag.link rel: "icon", href: image_path("logo.png"), type: "image/png" %>
     <%= tag.link rel: "apple-touch-icon", href: image_path("logo.png") %>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -56,8 +56,8 @@
     <%= stylesheet_link_tag "chaicode", "data-turbo-track": "reload" %>
   </head>
 
-  <body class="min-h-screen antialiased selection:bg-accent selection:text-white flex flex-col justify-between"
-        data-controller="theme">
+  <body class="min-h-screen antialiased selection:bg-orange-500 selection:text-white flex flex-col justify-between bg-[#111315] text-slate-100"
+        data-controller="theme search-modal">
     
     <% if flash[:notice].present? || flash[:alert].present? %>
       <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4 pointer-events-none space-y-2">
@@ -65,10 +65,9 @@
           <div data-controller="flash"
                data-flash-timeout-value="2000"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
-               class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all"
-               style="background-color: var(--done-bg); color: var(--done-text); border-color: var(--done-stroke);">
+               class="pointer-events-auto px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all rounded-xl border border-emerald-500/30 bg-emerald-950/80 text-emerald-200">
             <div class="flex items-center space-x-2.5">
-              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-check-circle text-emerald-400"></i>
               <span><%= flash[:notice] %></span>
             </div>
             <button type="button" data-action="click->flash#dismiss" class="ml-2 text-current opacity-70 hover:opacity-100 cursor-pointer p-0.5">
@@ -80,10 +79,9 @@
           <div data-controller="flash"
                data-flash-timeout-value="2000"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
-               class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all"
-               style="background-color: var(--dead-bg); color: var(--dead-text); border-color: var(--dead-stroke);">
+               class="pointer-events-auto px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all rounded-xl border border-rose-500/30 bg-rose-950/80 text-rose-200">
             <div class="flex items-center space-x-2.5">
-              <i class="fas fa-exclamation-circle"></i>
+              <i class="fas fa-exclamation-circle text-rose-400"></i>
               <span><%= flash[:alert] %></span>
             </div>
             <button type="button" data-action="click->flash#dismiss" class="ml-2 text-current opacity-70 hover:opacity-100 cursor-pointer p-0.5">
@@ -95,5 +93,58 @@
     <% end %>
 
     <%= yield %>
+
+    <!-- Global Search Command Palette Modal (⌘K Spotlight) -->
+    <div data-search-modal-target="backdrop"
+         data-action="click->search-modal#close"
+         class="fixed inset-0 bg-black/80 z-50 hidden transition-opacity backdrop-blur-xs"></div>
+
+    <div data-search-modal-target="modal"
+         class="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 hidden pointer-events-none">
+      <div class="pointer-events-auto max-w-xl w-full bg-[#1c1f24] border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-slate-200">
+        
+        <!-- Modal Search Header Input -->
+        <div class="p-3.5 border-b border-slate-700/60 flex items-center gap-3 bg-[#181a1e]">
+          <i class="fas fa-search text-orange-500 text-sm ml-1"></i>
+          <input type="text"
+                 data-search-modal-target="input"
+                 data-action="input->search-modal#onInput keydown->search-modal#onKeydown"
+                 placeholder="Search vessels, routes, relief depots, emergencies..."
+                 autocomplete="off"
+                 class="w-full bg-transparent text-white placeholder:text-slate-500 text-sm font-medium focus:outline-none">
+          <button type="button"
+                  data-action="click->search-modal#close"
+                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-800 border border-slate-700 text-slate-400 hover:text-white cursor-pointer">
+            ESC
+          </button>
+        </div>
+
+        <!-- Quick Filter Tags -->
+        <div class="px-4 py-2 border-b border-slate-800 bg-[#14161a] flex items-center gap-1.5 overflow-x-auto text-[11px]">
+          <span class="text-[10px] font-bold text-slate-500 uppercase mr-1 flex-shrink-0">Quick:</span>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🚢 Fleet</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">📍 Tawang</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="NH-27" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🛣️ NH-27</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Depot" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🏢 Warehouses</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Landslide" class="px-2.5 py-0.5 rounded-full border border-slate-700 bg-slate-800/80 hover:border-orange-500 text-slate-300 text-[11px] cursor-pointer flex-shrink-0">🚨 Incidents</button>
+        </div>
+
+        <!-- Suggestions List -->
+        <ul data-search-modal-target="resultsList" class="p-2 space-y-0.5 max-h-[360px] overflow-y-auto">
+          <!-- Populated dynamically via search_modal_controller -->
+        </ul>
+
+        <!-- Modal Footer -->
+        <div class="px-4 py-2.5 bg-[#14161a] border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+          <div class="flex items-center space-x-3">
+            <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">↑↓</kbd> navigate</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">↵</kbd> open</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">esc</kbd> close</span>
+          </div>
+          <span class="text-[10px] text-orange-400 font-semibold">ResQWay Operational Index</span>
+        </div>
+
+      </div>
+    </div>
   </body>
 </html>
