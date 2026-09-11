@@ -7,14 +7,15 @@
     <!-- Thin 3px orange accent line -->
     <div class="h-[3px] w-full bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500"></div>
 
-    <header class="w-full bg-[#181a1d]/95 backdrop-blur-md border-b border-slate-800/80 shadow-lg transition-colors">
+    <header class="w-full bg-[#181a1d] resqway-dark-header border-b border-slate-800 shadow-md transition-colors" style="background-color: #181a1d !important; border-bottom: 1px solid #282c34 !important;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16 sm:h-20">
           
-          <!-- Brand Logo (Transparent Logo Uploaded by User) -->
+          <!-- Brand Logo (Horizontal Lockup matching reference design) -->
           <div class="flex items-center space-x-3 flex-shrink-0">
-            <%= link_to root_path, class: "flex items-center group focus:outline-none" do %>
-              <%= image_tag "logo.png", alt: "ResQWay", class: "h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-[1.02]" %>
+            <%= link_to root_path, class: "flex items-center space-x-2.5 group focus:outline-none" do %>
+              <%= image_tag "logo_icon.png", alt: "ResQWay", class: "h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105" %>
+              <span class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">ResQ<span class="text-[#ff5500]">Way</span></span>
             <% end %>
           </div>
 
@@ -236,15 +237,15 @@
   <!-- ============================================================== -->
   <!-- HERO SECTION WITH BACKGROUND & MULTI-TAB TELEMETRY CARD        -->
   <!-- ============================================================== -->
-  <section class="relative pt-24 sm:pt-28 min-h-[720px] flex flex-col justify-between overflow-hidden bg-cover bg-[center_top_25%] sm:bg-[center_top_35%] bg-no-repeat"
-           style="background-image: linear-gradient(to bottom, rgba(17, 19, 21, 0.35) 0%, rgba(17, 19, 21, 0.58) 65%, rgba(17, 19, 21, 0.95) 100%), url('<%= image_path("hero_bg.jpg") %>');">
+  <section class="relative pt-24 sm:pt-28 min-h-[760px] flex flex-col justify-between overflow-hidden bg-cover bg-no-repeat"
+           style="background-image: linear-gradient(to bottom, rgba(15, 17, 20, 0.45) 0%, rgba(15, 17, 20, 0.30) 40%, rgba(17, 19, 21, 0.85) 85%, #111315 100%), url('<%= image_path("hero_bg.jpg") %>'); background-position: center 30%;">
     
     <!-- Hero Center Headline -->
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-12 sm:pt-20 pb-8 relative z-10">
-      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white drop-shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-10 sm:pt-16 pb-8 relative z-10">
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]">
         Welcome to ResQWay
       </h1>
-      <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto font-medium mt-3 drop-shadow">
+      <p class="text-xs sm:text-sm text-slate-200 max-w-xl mx-auto font-medium mt-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
         Logistics, Real-Time Tracking &amp; Predictive Risk Intelligence Cockpit
       </p>
     </div>
@@ -334,9 +335,7 @@
             <!-- Active Global Fleets Counter -->
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <span class="text-3xl sm:text-4xl font-black text-slate-900 leading-none">
-                  <%= @total_vehicles.present? && @total_vehicles > 0 ? @total_vehicles * 4 : 48 %>
-                </span>
+                <span class="text-3xl sm:text-4xl font-black text-slate-900 leading-none">48</span>
                 <div class="flex items-center space-x-2">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                   <span class="text-xs font-extrabold uppercase tracking-wider text-slate-900">
@@ -812,9 +811,10 @@
 
       <!-- Bottom Bar: Logo & Copyright -->
       <div class="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div class="flex items-center space-x-3">
-          <%= image_tag "logo.png", alt: "ResQWay", class: "h-7 w-auto object-contain opacity-80" %>
-          <span class="text-[11px] text-slate-500">&copy; <%= Date.current.year %> ResQWay. All rights reserved.</span>
+        <div class="flex items-center space-x-2.5">
+          <%= image_tag "logo_icon.png", alt: "ResQWay", class: "h-6 w-auto object-contain" %>
+          <span class="text-sm font-black tracking-tight text-white font-sans">ResQ<span class="text-[#ff5500]">Way</span></span>
+          <span class="text-[11px] text-slate-500 ml-2">&copy; <%= Date.current.year %> ResQWay. All rights reserved.</span>
         </div>
         <div class="flex items-center space-x-4 text-[11px] text-slate-500">
           <span>Smart India Hackathon 2026 Ready</span>

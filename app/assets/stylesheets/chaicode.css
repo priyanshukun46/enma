@@ -73,9 +73,9 @@ aside {
   color: rgb(var(--ink)) !important;
 }
 
-header, .nav-blur {
-  background: rgb(var(--surface)) !important;
-  border-bottom: 1px solid var(--line) !important;
+header:not(.resqway-dark-header), .nav-blur {
+  background: rgb(var(--surface));
+  border-bottom: 1px solid var(--line);
 }
 
 main {

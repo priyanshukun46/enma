@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full scroll-smooth">
+<html lang="en" class="dark h-full scroll-smooth" data-theme="dark">
   <head>
     <title>ResQWay - Logistics, Real-Time Tracking &amp; Risk Management</title>
     <%= tag.link rel: "icon", href: image_path("logo.png"), type: "image/png" %>
@@ -12,39 +12,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Instant Theme Bootstrap (ChaiCode reference: dsa.chaicode.com) -->
     <script nonce="<%= request.content_security_policy_nonce %>">
-      try {
-        var t = localStorage.getItem('theme');
-        var isLight = (t === 'light');
-        document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
-        if (isLight) {
-          document.documentElement.classList.remove('dark');
-        } else {
-          document.documentElement.classList.add('dark');
-        }
-      } catch(e) {
-        document.documentElement.dataset.theme = 'dark';
-        document.documentElement.classList.add('dark');
-      }
+      document.documentElement.dataset.theme = 'dark';
+      document.documentElement.classList.add('dark');
     </script>
 
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
     <script nonce="<%= request.content_security_policy_nonce %>">
       tailwind.config = {
-        darkMode: ['class', '[data-theme="dark"]'],
+        darkMode: 'class',
         theme: {
           extend: {
-            colors: {
-              paper: 'rgb(var(--paper) / <alpha-value>)',
-              surface: 'rgb(var(--surface) / <alpha-value>)',
-              ink: 'rgb(var(--ink) / <alpha-value>)',
-              sketch: 'rgb(var(--sketch) / <alpha-value>)',
-              mute: 'rgb(var(--mute) / <alpha-value>)',
-              accent: 'rgb(var(--accent) / <alpha-value>)',
-              accent2: 'rgb(var(--accent2) / <alpha-value>)',
-            },
             fontFamily: {
               sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'monospace'],
@@ -53,11 +32,11 @@
         }
       }
     </script>
-    <%= stylesheet_link_tag "chaicode", "data-turbo-track": "reload" %>
   </head>
 
   <body class="min-h-screen antialiased selection:bg-orange-500 selection:text-white flex flex-col justify-between bg-[#111315] text-slate-100"
-        data-controller="theme search-modal">
+        style="background-color: #111315 !important; color: #f1f5f9 !important;"
+        data-controller="search-modal">
     
     <% if flash[:notice].present? || flash[:alert].present? %>
       <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4 pointer-events-none space-y-2">
