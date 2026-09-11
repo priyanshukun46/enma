@@ -176,8 +176,8 @@ class EmergenciesController < ApplicationController
     to_email = recipient.presence || "pkfb46@proton.me"
     mail = EmergencyAlertMailer.critical_alert(emergency, to_email)
 
-    smtp_user = ENV["GMAIL_SMTP_USERNAME"].presence
-    smtp_pass = ENV["GMAIL_SMTP_APP_PASSWORD"].presence
+    smtp_user = ENV["GMAIL_SMTP_USERNAME"].to_s.strip.presence
+    smtp_pass = ENV["GMAIL_SMTP_APP_PASSWORD"].to_s.gsub(/\s+/, "").presence
 
     if smtp_user.present? && smtp_pass.present?
       mail.delivery_method(:smtp, {
