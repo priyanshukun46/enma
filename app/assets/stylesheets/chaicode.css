@@ -28,10 +28,12 @@
 }
 
 body {
-  font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
+  font-family: 'Montserrat', 'Nobile', system-ui, -apple-system, sans-serif !important;
   background-color: #FFFFFF !important;
   color: #212121 !important;
   transition: background-color 0.25s ease, color 0.25s ease;
+  letter-spacing: -0.011em;
+  line-height: 1.6;
 }
 
 .dark [class*="dark:text-white"],
@@ -71,7 +73,6 @@ main {
 .sketch-card,
 .bg-surface,
 .sketch-border,
-.bg-white,
 .bg-slate-900,
 .dark\:bg-slate-900 {
   background: rgb(var(--surface)) !important;
@@ -90,8 +91,6 @@ main {
 [data-theme=dark] .bg-surface,
 .dark .sketch-border,
 [data-theme=dark] .sketch-border,
-.dark .bg-white,
-[data-theme=dark] .bg-white,
 .dark .bg-slate-900,
 [data-theme=dark] .bg-slate-900,
 .dark .dark\:bg-slate-900,

@@ -484,18 +484,24 @@ export default class extends Controller {
     const steps = route?.steps || []
 
     if (steps.length === 0) {
-      this.turnListTarget.innerHTML = `<p class="text-xs text-sketch p-4 text-center">Standard highway corridor route active.</p>`
+      this.turnListTarget.innerHTML = `<p class="text-xs text-mute p-6 text-center">Standard highway corridor route active.</p>`
       return
     }
 
+    const dist = (st) => st.distance_km || (st.distance_m / 1000.0).toFixed(1)
+
     const html = steps.map((st, i) => `
-      <div class="p-3 border-b border-gray-100 hover:bg-gray-50/80 transition-colors flex items-start space-x-3 text-xs">
-        <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-700 font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div class="py-3.5 px-3 hover:bg-slate-50/70 transition-colors flex items-start gap-3.5 text-xs rounded-xl">
+        <div class="w-7 h-7 min-w-[1.75rem] rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5 border border-accent/20">
           ${st.step_number}
         </div>
-        <div class="flex-1">
-          <p class="font-bold text-ink">${st.instruction}</p>
-          <span class="text-[11px] text-sketch">${st.road_name} • ${st.distance_km || (st.distance_m / 1000.0).toFixed(1)} km</span>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-ink text-xs sm:text-sm leading-snug tracking-normal">${st.instruction}</p>
+          <div class="flex items-center gap-2 mt-1.5 text-xs text-mute font-medium">
+            <span class="truncate">${st.road_name}</span>
+            <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+            <span class="font-mono flex-shrink-0">${dist(st)} km</span>
+          </div>
         </div>
       </div>
     `).join("")
