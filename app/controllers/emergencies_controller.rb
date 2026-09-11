@@ -49,7 +49,7 @@ class EmergenciesController < ApplicationController
       
       if @emergency.severity.to_s.casecmp?("critical")
         begin
-          EmergencyAlertMailer.critical_alert(@emergency).deliver_now
+          dispatch_emergency_email(@emergency)
         rescue StandardError => e
           Rails.logger.error("Failed to send critical emergency email alert: #{e.message}")
         end
@@ -100,12 +100,17 @@ class EmergenciesController < ApplicationController
   end
 
   def send_test_email
+    recipient = params[:email].presence || "pkfb46@proton.me"
     begin
-      EmergencyAlertMailer.critical_alert(@emergency).deliver_now
-      flash[:notice] = "Test Email Alert dispatched successfully."
+      mode = dispatch_emergency_email(@emergency, recipient)
+      if mode == :live_smtp
+        flash[:notice] = "Critical Emergency Alert successfully emailed live via Gmail SMTP to #{recipient}."
+      else
+        flash[:notice] = "Test Email Alert dispatched for #{recipient} (saved to tmp/mails). To deliver live emails to your ProtonMail inbox, add GMAIL_SMTP_USERNAME and GMAIL_SMTP_APP_PASSWORD to .env."
+      end
     rescue StandardError => e
-      Rails.logger.error("Failed to send test email alert: #{e.message}")
-      flash[:alert] = "Failed to dispatch test email alert. Check logs."
+      Rails.logger.error("Failed to send test email alert to #{recipient}: #{e.message}")
+      flash[:alert] = "Failed to dispatch test email alert to #{recipient}: #{e.message}"
     end
     redirect_to emergency_path(@emergency)
   end
@@ -152,5 +157,43 @@ class EmergenciesController < ApplicationController
       :description,
       :location_id
     )
+  end
+
+  def load_env_file_if_present
+    env_file = Rails.root.join(".env")
+    return unless File.exist?(env_file)
+
+    File.foreach(env_file) do |line|
+      line = line.strip
+      next if line.empty? || line.start_with?("#")
+      key, val = line.split("=", 2)
+      ENV[key.strip] = val.to_s.strip.gsub(/\A["']|["']\z/, "") if key
+    end
+  end
+
+  def dispatch_emergency_email(emergency, recipient = nil)
+    load_env_file_if_present
+    to_email = recipient.presence || "pkfb46@proton.me"
+    mail = EmergencyAlertMailer.critical_alert(emergency, to_email)
+
+    smtp_user = ENV["GMAIL_SMTP_USERNAME"].to_s.strip.presence
+    smtp_pass = ENV["GMAIL_SMTP_APP_PASSWORD"].to_s.gsub(/\s+/, "").presence
+
+    if smtp_user.present? && smtp_pass.present?
+      mail.delivery_method(:smtp, {
+        address: "smtp.gmail.com",
+        port: 587,
+        user_name: smtp_user,
+        password: smtp_pass,
+        authentication: "plain",
+        enable_starttls_auto: true
+      })
+      mail.deliver_now
+      :live_smtp
+    else
+      mail.delivery_method(:file, location: Rails.root.join("tmp/mails"))
+      mail.deliver_now
+      :saved_to_file
+    end
   end
 end

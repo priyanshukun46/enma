@@ -350,28 +350,34 @@ export default class extends Controller {
     if (this.hasRouteCardTargets) {
       this.routeCardTargets.forEach(card => {
         const isMatch = (card.dataset.routeType === typeKey)
-        // Clean all possible active styling
-        card.classList.remove(
-          "border-indigo-600", "dark:border-indigo-500",
-          "bg-indigo-50/20", "bg-indigo-50/30", "bg-indigo-50/40", "bg-indigo-50/60",
-          "dark:bg-indigo-950/20", "dark:bg-indigo-950/30", "dark:bg-indigo-950/40", "dark:bg-indigo-950/60",
-          "ring-2", "ring-indigo-500/20", "ring-indigo-500/30", "ring-indigo-500", "ring-indigo-600",
-          "shadow-md", "shadow-lg", "opacity-50", "opacity-60", "border-slate-200", "dark:border-slate-800"
-        )
 
         if (isMatch) {
-          card.classList.add(
-            "border-indigo-600", "dark:border-indigo-500",
-            "bg-indigo-50/40", "dark:bg-indigo-950/60",
-            "ring-2", "ring-indigo-500",
-            "shadow-md",
-            "scale-[1.01]"
+          card.classList.remove(
+            "border-slate-200", "border-slate-300", "opacity-60", "opacity-75", "opacity-85"
           )
+          card.classList.add(
+            "border-2", "border-[#FF471D]", "bg-[#FF471D]/5",
+            "shadow-md", "opacity-100", "scale-[1.01]"
+          )
+          card.style.setProperty("border", "2px solid #FF471D", "important")
+          card.style.setProperty("box-shadow", "0 0 0 3px rgba(255, 71, 29, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.08)", "important")
+          card.style.setProperty("opacity", "1", "important")
+          card.style.setProperty("background-color", "rgba(255, 71, 29, 0.04)", "important")
         } else {
-          card.classList.add(
-            "border-slate-200", "dark:border-slate-800",
-            "opacity-60", "hover:opacity-100"
+          card.classList.remove(
+            "border-2", "border-[#FF471D]", "border-accent",
+            "bg-[#FF471D]/5", "bg-accent/5",
+            "ring-1", "ring-2", "ring-accent/40", "ring-[#FF471D]/30", "ring-[#FF471D]/40",
+            "shadow-md", "scale-[1.01]"
           )
+          card.classList.add(
+            "border", "border-slate-200", "bg-white",
+            "opacity-75", "hover:opacity-100", "shadow-sm"
+          )
+          card.style.setProperty("border", "1px solid rgba(16, 46, 57, 0.15)", "important")
+          card.style.setProperty("box-shadow", "0 1px 2px 0 rgba(0, 0, 0, 0.04)", "important")
+          card.style.setProperty("opacity", "0.75", "important")
+          card.style.setProperty("background-color", "#FFFFFF", "important")
         }
       })
     }
@@ -484,18 +490,24 @@ export default class extends Controller {
     const steps = route?.steps || []
 
     if (steps.length === 0) {
-      this.turnListTarget.innerHTML = `<p class="text-xs text-sketch p-4 text-center">Standard highway corridor route active.</p>`
+      this.turnListTarget.innerHTML = `<p class="text-xs text-slate-400 p-6 text-center">Standard highway corridor route active.</p>`
       return
     }
 
+    const dist = (st) => st.distance_km || (st.distance_m / 1000.0).toFixed(1)
+
     const html = steps.map((st, i) => `
-      <div class="p-3 border-b border-gray-100 hover:bg-gray-50/80 transition-colors flex items-start space-x-3 text-xs">
-        <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-700 font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+      <div class="py-3 px-4 flex items-start gap-3.5 hover:bg-slate-50/60 transition-colors">
+        <div class="w-7 h-7 min-w-[1.75rem] rounded-full bg-slate-100 text-[#102E39] font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5 border border-slate-200">
           ${st.step_number}
         </div>
-        <div class="flex-1">
-          <p class="font-bold text-ink">${st.instruction}</p>
-          <span class="text-[11px] text-sketch">${st.road_name} • ${st.distance_km || (st.distance_m / 1000.0).toFixed(1)} km</span>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-[#212121] text-xs sm:text-sm leading-snug">${st.instruction}</p>
+          <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+            <span class="truncate">${st.road_name}</span>
+            <span class="text-slate-300">•</span>
+            <span class="font-medium text-slate-600 flex-shrink-0">${dist(st)} km</span>
+          </p>
         </div>
       </div>
     `).join("")

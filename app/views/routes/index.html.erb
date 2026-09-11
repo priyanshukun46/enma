@@ -27,10 +27,10 @@
   </div>
 
   <!-- Main Dual Layout (Left: Search & Intelligence Cards, Right: Leaflet GIS Map) -->
-  <div class="flex flex-col lg:flex-row gap-6 items-start w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
     
     <!-- LEFT COLUMN: Directions Search, Vehicle Mode, Priority Selector & Route Options -->
-    <div class="w-full lg:w-[440px] flex-shrink-0 space-y-4">
+    <div class="col-span-1 lg:col-span-5 xl:col-span-5 space-y-4 w-full">
       
       <!-- Directions Input Card (ChaiCode Surface Card) -->
       <div class="bg-surface sketch-border rounded-2xl shadow-sm p-5 space-y-4">
@@ -190,7 +190,8 @@
             <div data-route-planner-map-target="routeCard"
                  data-route-type="<%= type_key %>"
                  data-action="click->route-planner-map#selectRoute"
-                 class="p-4 rounded-2xl bg-surface sketch-border cursor-pointer transition-all shadow-sm <%= is_recommended ? 'border-accent bg-accent/5 ring-1 ring-accent/40' : 'opacity-85 hover:opacity-100 hover:border-accent/40' %> space-y-3">
+                 class="p-4 rounded-2xl bg-white border cursor-pointer transition-all space-y-3 <%= is_recommended ? 'border-2 border-[#FF471D] bg-[#FF471D]/5 shadow-md opacity-100' : 'border-slate-200 opacity-75 hover:opacity-100 shadow-sm' %>"
+                 style="<%= is_recommended ? 'border: 2px solid #FF471D !important; box-shadow: 0 0 0 3px rgba(255, 71, 29, 0.25), 0 4px 6px -1px rgba(0, 0, 0, 0.08) !important; opacity: 1 !important;' : 'border: 1px solid rgba(16, 46, 57, 0.15) !important; opacity: 0.75 !important;' %>">
               
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2">
@@ -327,31 +328,35 @@
         <% end %>
 
         <!-- Turn-by-Turn Instruction Accordion -->
-        <div class="bg-surface sketch-border rounded-2xl shadow-sm p-4 space-y-2.5">
-          <div class="flex items-center justify-between border-b border-[var(--line)] pb-2">
-            <h4 class="text-xs font-black uppercase text-ink tracking-wider flex items-center">
-              <i class="fas fa-list-ol text-accent mr-1.5"></i>
-              Turn-by-Turn Directions
+        <div class="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden">
+          <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white">
+            <h4 class="text-xs font-bold uppercase text-[#212121] tracking-wider flex items-center gap-2">
+              <i class="fas fa-list-ol text-accent text-sm"></i>
+              <span>Turn-by-Turn Directions</span>
             </h4>
-            <span class="text-[10px] text-mute font-semibold">Active Corridor</span>
+            <span class="text-[11px] text-slate-500 font-semibold tracking-wide">Active Corridor</span>
           </div>
 
-          <div data-route-planner-map-target="turnList" class="max-h-72 overflow-y-auto divide-y divide-[var(--line)]">
+          <div data-route-planner-map-target="turnList" class="divide-y divide-slate-100 max-h-[420px] overflow-y-auto bg-white">
             <% current_rec = @results[:routes][@results[:recommended_route_type]] %>
             <% if current_rec && current_rec[:steps].any? %>
               <% current_rec[:steps].each do |st| %>
-                <div class="py-2 flex items-start space-x-2.5 text-xs">
-                  <div class="w-5 h-5 rounded-full bg-accent/10 text-accent font-bold flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5 border border-accent/20">
+                <div class="py-3 px-4 flex items-start gap-3.5 hover:bg-slate-50/60 transition-colors">
+                  <div class="w-7 h-7 min-w-[1.75rem] rounded-full bg-slate-100 text-[#102E39] font-bold flex items-center justify-center text-xs flex-shrink-0 mt-0.5 border border-slate-200">
                     <%= st[:step_number] %>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="font-bold text-ink"><%= st[:instruction] %></p>
-                    <span class="text-[10px] text-mute"><%= st[:road_name] %> &bull; <%= st[:distance_km] || (st[:distance_m].to_f / 1000).round(1) %> km</span>
+                    <p class="font-bold text-[#212121] text-xs sm:text-sm leading-snug"><%= st[:instruction] %></p>
+                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                      <span class="truncate"><%= st[:road_name] %></span>
+                      <span class="text-slate-300">•</span>
+                      <span class="font-medium text-slate-600 flex-shrink-0"><%= st[:distance_km] || (st[:distance_m].to_f / 1000).round(1) %> km</span>
+                    </p>
                   </div>
                 </div>
               <% end %>
             <% else %>
-              <p class="text-xs text-mute p-3 text-center">Highway corridor active.</p>
+              <p class="text-xs text-slate-400 p-6 text-center">Highway corridor active.</p>
             <% end %>
           </div>
         </div>
@@ -368,8 +373,8 @@
       <% end %>
     </div>
 
-    <!-- RIGHT COLUMN: Interactive Leaflet Map & Full-Screen Navigation HUD -->
-    <div class="w-full flex-1 min-w-0 space-y-4">
+    <!-- RIGHT COLUMN: Interactive Leaflet Map & Full-Screen Navigation HUD (Sticky to avoid empty white space) -->
+    <div class="col-span-1 lg:col-span-7 xl:col-span-7 min-w-0 lg:sticky lg:top-24 space-y-4 w-full">
       
       <!-- The Map Card with Floating Navigation HUD -->
       <div class="bg-surface sketch-border rounded-2xl shadow-sm overflow-hidden relative w-full">
@@ -443,8 +448,8 @@
 
         <!-- The Leaflet Map Canvas -->
         <div data-route-planner-map-target="container"
-             style="min-height: 340px; width: 100%; display: block;"
-             class="w-full z-10 h-[380px] sm:h-[500px] lg:h-[700px]">
+             style="min-height: 400px; width: 100%; display: block;"
+             class="w-full z-10 h-[380px] sm:h-[500px] lg:h-[calc(100vh-220px)] min-h-[500px]">
         </div>
       </div>
 

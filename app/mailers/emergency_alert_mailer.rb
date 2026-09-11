@@ -1,15 +1,14 @@
 class EmergencyAlertMailer < ApplicationMailer
-  def critical_alert(emergency)
-    @emergency = emergency
-    recipient = ENV["RESQWAY_ALERT_RECIPIENT_EMAIL"]
+  DEFAULT_RECIPIENT = "pkfb46@proton.me".freeze
 
-    if recipient.blank?
-      Rails.logger.warn("EmergencyAlertMailer: RESQWAY_ALERT_RECIPIENT_EMAIL is not set. Skipping email.")
-      return
-    end
+  def critical_alert(emergency, recipient = nil)
+    @emergency = emergency
+    to_address = recipient.presence || ENV["RESQWAY_ALERT_RECIPIENT_EMAIL"].presence || DEFAULT_RECIPIENT
+    from_address = ENV["GMAIL_SMTP_USERNAME"].to_s.strip.presence || "alerts@resqway.com"
 
     mail(
-      to: recipient,
+      from: from_address,
+      to: to_address,
       subject: "ResQWay ALERT: #{@emergency.title} — #{@emergency.severity}"
     )
   end

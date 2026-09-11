@@ -2,8 +2,8 @@ class PagesController < ApplicationController
   layout "landing", only: [:landing]
 
   def landing
-    # If already logged in, send them straight to the dashboard
-    if authenticated?
+    # If already logged in and hitting root path without preview flag, take them to dashboard
+    if authenticated? && request.path == "/" && params[:preview].blank?
       redirect_to dashboard_path and return
     end
 

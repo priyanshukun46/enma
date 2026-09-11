@@ -25,7 +25,8 @@
       <% end %>
 
       <%= form_with url: send_test_email_emergency_path(@emergency), method: :post, local: true do %>
-        <button type="submit" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm cursor-pointer transition-colors flex items-center space-x-1.5">
+        <%= hidden_field_tag :email, "pkfb46@proton.me" %>
+        <button type="submit" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm cursor-pointer transition-colors flex items-center space-x-1.5" title="Send alert to pkfb46@proton.me">
           <i class="fas fa-envelope text-[10px]"></i>
           <span>Send Test Email Alert</span>
         </button>

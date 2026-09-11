@@ -1,556 +1,521 @@
-<div data-controller="landing-page" class="w-full relative bg-paper text-ink">
+<div data-controller="landing-page" class="w-full relative bg-white text-[#212121] min-h-screen selection:bg-[#FF471D] selection:text-white font-sans">
 
   <!-- ============================================================== -->
-  <!-- NAVIGATION BAR (ChaiCode Style: dsa.chaicode.com)              -->
+  <!-- TOP NAVIGATION HEADER (#212121)                                -->
   <!-- ============================================================== -->
-  <header class="fixed top-0 left-0 right-0 z-50 chai-nav transition-colors">
-    <div class="w-full px-4 sm:px-8 lg:px-12">
-      <div class="flex items-center justify-between h-16 sm:h-20">
+  <%= render "shared/resqway_header" %>
+
+  <!-- ============================================================== -->
+  <!-- HERO SECTION WITH MOUNTAIN ROAD & TELEMETRY WIDGET CARD        -->
+  <!-- ============================================================== -->
+  <section class="relative pt-24 sm:pt-28 pb-12 sm:pb-16 min-h-[580px] sm:min-h-[640px] flex flex-col justify-center items-center overflow-hidden bg-cover bg-center bg-no-repeat"
+           style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.40) 0%, rgba(0,0,0,0.22) 50%, rgba(0,0,0,0.48) 100%), url('<%= image_path("resqway_mountain_hero.jpg") %>');">
+    
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center relative z-10 py-6 sm:py-10">
+      
+      <!-- Headline: Welcome to ResQWay (Crisp white sans-serif) -->
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white text-center mb-8 sm:mb-10 drop-shadow-md tracking-tight font-sans">
+        Welcome to ResQWay
+      </h1>
+
+      <!-- Centered 3-Tab Floating Widget Card -->
+      <div class="w-full max-w-2xl mx-auto shadow-2xl rounded-2xl overflow-hidden bg-white text-left">
         
-        <!-- Brand Logo -->
-        <div class="flex items-center space-x-3">
-          <%= image_tag "logo.png", alt: "ResQWay", class: "h-12 w-auto rounded-xl shadow-sm" %>
-          <div>
-            <p class="text-[9px] font-bold uppercase tracking-widest text-mute font-mono hidden sm:block">North East India Logistics</p>
-          </div>
-        </div>
-
-        <!-- Desktop Navigation Links -->
-        <nav class="hidden lg:flex items-center space-x-7 text-xs font-semibold text-sketch">
-          <a href="#challenge" class="hover:text-accent transition-colors">The Challenge</a>
-          <a href="#solution" class="hover:text-accent transition-colors">Intelligence Engines</a>
-          <a href="#pipeline" class="hover:text-accent transition-colors">How It Works</a>
-          <a href="#technology" class="hover:text-accent transition-colors">Tech Stack</a>
-          <%= link_to demo_path, class: "flex items-center space-x-1.5 text-accent font-bold hover:opacity-80 transition-opacity" do %>
-            <i class="fas fa-bolt text-[11px]"></i>
-            <span>Interactive Demo</span>
-          <% end %>
-        </nav>
-
-        <!-- Right CTA / Theme Toggle / Auth Controls -->
-        <div class="hidden sm:flex items-center space-x-3">
-          <!-- Light/Dark Mode Switcher (ChaiCode Reference) -->
+        <!-- Top 3 Tabs Sitting Horizontally Across Card Top -->
+        <div class="grid grid-cols-3 border-b border-slate-200" role="tablist">
+          
+          <!-- Tab 1: SMART ROUTE -->
           <button type="button"
-                  data-action="click->theme#toggle"
-                  title="Toggle Light / Dark Mode"
-                  class="p-2.5 rounded-xl text-sketch hover:text-ink hover:bg-ink/5 border border-ink/10 transition-colors cursor-pointer flex items-center justify-center">
-            <i data-theme-target="icon" class="fas fa-moon text-xs text-accent"></i>
+                  data-action="click->landing-page#switchTab"
+                  data-tab="routes"
+                  data-landing-page-target="tabBtn"
+                  role="tab"
+                  aria-selected="false"
+                  class="py-3.5 sm:py-4 px-2 sm:px-4 bg-white text-[#102E39] hover:bg-white flex items-center justify-center space-x-2 transition-all cursor-pointer border-r border-slate-200">
+            <i class="fas fa-route text-sm sm:text-base text-[#102E39]"></i>
+            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-center leading-none">SMART ROUTE</span>
           </button>
 
-          <%= link_to login_path, class: "px-4 py-2 text-xs font-bold text-sketch hover:text-ink transition-colors" do %>
-            Sign In
-          <% end %>
-          <%= link_to (authenticated? ? dashboard_path : sign_up_path), class: "px-5 py-2.5 rounded-xl text-xs font-black text-paper bg-ink hover:bg-ink/90 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0" do %>
-            <span><%= authenticated? ? "Open Dashboard" : "Sign Up" %></span>
-            <i class="fas fa-arrow-right ml-1.5 text-[10px]"></i>
-          <% end %>
-        </div>
-
-        <!-- Mobile Controls (Theme Toggle + Hamburger) -->
-        <div class="flex items-center sm:hidden space-x-2">
+          <!-- Tab 2: LIVE FLEET (Default Active) -->
           <button type="button"
-                  data-action="click->theme#toggle"
-                  title="Toggle Light / Dark Mode"
-                  class="p-2 rounded-xl text-sketch hover:text-ink hover:bg-ink/5 border border-ink/10 transition-colors">
-            <i data-theme-target="icon" class="fas fa-moon text-xs text-accent"></i>
+                  data-action="click->landing-page#switchTab"
+                  data-tab="fleet"
+                  data-landing-page-target="tabBtn"
+                  role="tab"
+                  aria-selected="true"
+                  class="py-3.5 sm:py-4 px-2 sm:px-4 bg-[#102E39] text-white flex items-center justify-center space-x-2 transition-all cursor-pointer">
+            <i class="fas fa-ship text-sm sm:text-base text-white"></i>
+            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-center leading-none">LIVE FLEET</span>
           </button>
-          <%= link_to login_path, class: "px-2.5 py-1.5 text-xs font-bold text-sketch hover:text-ink" do %>
-            Sign In
-          <% end %>
+
+          <!-- Tab 3: FIELD INCIDENCE -->
           <button type="button"
-                  data-action="click->landing-page#toggleMobileMenu"
-                  class="p-2 rounded-xl text-sketch hover:text-ink hover:bg-ink/5 transition-colors focus:outline-none"
-                  aria-label="Toggle navigation">
-            <i class="fas fa-bars text-lg"></i>
+                  data-action="click->landing-page#switchTab"
+                  data-tab="incidents"
+                  data-landing-page-target="tabBtn"
+                  role="tab"
+                  aria-selected="false"
+                  class="py-3.5 sm:py-4 px-2 sm:px-4 bg-white text-[#102E39] hover:bg-white flex items-center justify-center space-x-2 transition-all cursor-pointer border-l border-slate-200">
+            <i class="fas fa-triangle-exclamation text-sm sm:text-base text-[#102E39]"></i>
+            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-center leading-none">FIELD INCIDENCE</span>
           </button>
+
         </div>
 
-      </div>
-    </div>
-
-    <!-- Mobile Slide-Out Drawer -->
-    <div data-landing-page-target="mobileMenu" class="hidden sm:hidden border-t border-ink/10 bg-surface px-6 py-6 space-y-4 shadow-xl">
-      <nav class="space-y-3 text-sm font-semibold text-sketch">
-        <a href="#challenge" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">The Challenge</a>
-        <a href="#solution" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">Intelligence Engines</a>
-        <a href="#pipeline" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">How It Works</a>
-        <a href="#technology" data-action="click->landing-page#closeMobileMenu" class="block py-2 hover:text-accent border-b border-ink/5">Tech Stack</a>
-        <%= link_to demo_path, class: "block py-2 text-accent font-bold border-b border-ink/5 flex items-center space-x-2" do %>
-          <i class="fas fa-bolt text-xs"></i>
-          <span>Interactive Demo Scenario</span>
-        <% end %>
-      </nav>
-      <div class="pt-2 space-y-2">
-        <%= link_to (authenticated? ? dashboard_path : sign_up_path), class: "w-full flex items-center justify-center py-3 rounded-xl text-xs font-black text-paper bg-ink hover:bg-ink/90 shadow-sm" do %>
-          <span><%= authenticated? ? "Go to Live Dashboard" : "Get Started Now" %></span>
-          <i class="fas fa-arrow-right ml-2 text-xs"></i>
-        <% end %>
-      </div>
-    </div>
-  </header>
-
-  <!-- ============================================================== -->
-  <!-- HERO SECTION                                                   -->
-  <!-- ============================================================== -->
-  <section class="relative pt-28 sm:pt-36 lg:pt-44 pb-16 sm:pb-24 overflow-hidden">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-      
-      <!-- Eyebrow Badge (ChaiCode Pill) -->
-      <div class="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full sketch-border-soft bg-surface text-xs font-bold tracking-wider text-accent font-mono">
-        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
-        <span class="text-[11px] sm:text-xs uppercase">
-          Smart India Hackathon 2026 • AI Decision Platform
-        </span>
-      </div>
-
-      <!-- Main Headline -->
-      <div class="space-y-4 max-w-4xl mx-auto">
-        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] text-ink">
-          <span>Secure the</span><br>
-          <span class="text-accent-gradient">Northeast Lifeline</span>
-        </h1>
-        <p class="text-base sm:text-lg lg:text-xl text-sketch max-w-2xl mx-auto font-normal leading-relaxed pt-2">
-          Intelligence That Reaches Where Roads Don't. ResQWay is a predictive logistics intelligence platform that powers resilient supply chains and crisis response across the 8 North Eastern states of India with Machine Learning road disruption prediction and risk-aware corridor optimization.
-        </p>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-2">
-        <%= link_to sign_up_path, class: "w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-black text-paper bg-ink hover:bg-ink/90 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2" do %>
-          <span>Get Started Free</span>
-          <i class="fas fa-arrow-right text-xs"></i>
-        <% end %>
-
-        <%= link_to demo_path, class: "w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-bold text-ink bg-surface border border-ink/15 hover:bg-ink/5 transition-all flex items-center justify-center space-x-2" do %>
-          <i class="fas fa-bolt text-accent text-xs"></i>
-          <span>Launch Demo Scenario</span>
-        <% end %>
-
-        <%= link_to overview_path, class: "w-full sm:w-auto px-6 py-3.5 text-xs font-bold text-mute hover:text-ink transition-colors flex items-center justify-center space-x-1.5" do %>
-          <i class="fas fa-clipboard-check text-accent2"></i>
-          <span>2-Min Judge Overview</span>
-        <% end %>
-      </div>
-
-      <!-- Hero Telemetry Cards (ChaiCode Sketchbook Style) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto pt-6 text-left">
-        <div class="chai-card p-5 space-y-2">
-          <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold text-sm">
-              <i class="fas fa-shield-halved"></i>
+        <!-- Card Body -->
+        <div class="p-5 sm:p-7">
+          
+          <!-- Pane 1: LIVE FLEET (Default Active) -->
+          <div data-landing-page-target="tabPane" data-tab="fleet" class="space-y-4">
+            
+            <!-- Top Metric Row -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2.5">
+                <span class="text-3xl sm:text-4xl font-extrabold text-[#212121] tracking-tight font-sans">48</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700">ACTIVE GLOBAL FLEETS</span>
+              </div>
+              <div class="text-xs text-slate-500 font-medium">
+                100% AIS Coverage
+              </div>
             </div>
-            <div>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-mute font-mono block">Predictive Risk Engine</span>
-              <span class="text-sm font-bold text-ink">FastAPI + Random Forest Classifier</span>
+
+            <!-- 3-Column Metric Box -->
+            <div class="border border-slate-200 rounded-lg p-3 sm:p-4 bg-white">
+              <div class="grid grid-cols-3 divide-x divide-slate-200 text-left">
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">24</div>
+                  <div class="text-xs text-slate-500 font-normal">Ocean Vessels</div>
+                </div>
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">14</div>
+                  <div class="text-xs text-slate-500 font-normal">Air Freighters</div>
+                </div>
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">10</div>
+                  <div class="text-xs text-slate-500 font-normal">Intermodal Rail</div>
+                </div>
+              </div>
             </div>
-          </div>
-          <p class="text-xs text-sketch">Forecasts road blockages and mudflows across NH-27, NH-10, and remote mountain corridors.</p>
-        </div>
 
-        <div class="chai-card p-5 space-y-2">
-          <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-accent2/10 text-accent2 flex items-center justify-center font-bold text-sm">
-              <i class="fas fa-satellite-dish"></i>
+            <!-- Bottom Status & Action Row -->
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-center space-x-2 text-xs text-slate-500">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                <span>Real-time GPS telemetry active</span>
+              </div>
+              <%= link_to shipments_path, class: "bg-[#FF471D] hover:bg-[#e03d15] text-white font-bold text-xs uppercase tracking-wider px-5 sm:px-6 py-2.5 sm:py-3 rounded-md flex items-center space-x-2 shadow-md transition-all cursor-pointer shrink-0" do %>
+                <span>VIEW LIVE FLEET</span>
+                <i class="fas fa-arrow-right text-xs"></i>
+              <% end %>
             </div>
-            <div>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-mute font-mono block">Geospatial Telemetry</span>
-              <span class="text-sm font-bold text-ink">CartoDB &amp; PostGIS Spatial Engine</span>
+
+          </div>
+
+          <!-- Pane 2: SMART ROUTE -->
+          <div data-landing-page-target="tabPane" data-tab="routes" class="hidden space-y-4">
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2.5">
+                <span class="text-3xl sm:text-4xl font-extrabold text-[#212121] tracking-tight font-sans">342</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700">OPTIMIZED CORRIDORS</span>
+              </div>
+              <div class="text-xs text-slate-500 font-medium">
+                AI Routing Engine Active
+              </div>
             </div>
+
+            <div class="border border-slate-200 rounded-lg p-3 sm:p-4 bg-white">
+              <div class="grid grid-cols-3 divide-x divide-slate-200 text-left">
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">0.42s</div>
+                  <div class="text-xs text-slate-500 font-normal">Route Compute</div>
+                </div>
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">99.8%</div>
+                  <div class="text-xs text-slate-500 font-normal">On-Time Transit</div>
+                </div>
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">18.4%</div>
+                  <div class="text-xs text-slate-500 font-normal">Fuel Saved</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-center space-x-2 text-xs text-slate-500">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                <span>Dynamic weather &amp; choke-point avoidance</span>
+              </div>
+              <%= link_to routes_path, class: "bg-[#FF471D] hover:bg-[#e03d15] text-white font-bold text-xs uppercase tracking-wider px-5 sm:px-6 py-2.5 sm:py-3 rounded-md flex items-center space-x-2 shadow-md transition-all cursor-pointer shrink-0" do %>
+                <span>CALCULATE SMART ROUTE</span>
+                <i class="fas fa-arrow-right text-xs"></i>
+              <% end %>
+            </div>
+
           </div>
-          <p class="text-xs text-sketch">High-contrast accessibility radar covering Assam, Meghalaya, Sikkim, and Arunachal Pradesh.</p>
-        </div>
-      </div>
 
-    </div>
-  </section>
+          <!-- Pane 3: FIELD INCIDENCE -->
+          <div data-landing-page-target="tabPane" data-tab="incidents" class="hidden space-y-4">
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2.5">
+                <span class="text-3xl sm:text-4xl font-extrabold text-[#212121] tracking-tight font-sans">3</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow-sm"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-700">FIELD INCIDENTS</span>
+              </div>
+              <div class="text-xs text-slate-500 font-medium">
+                Computer Vision Active
+              </div>
+            </div>
 
-  <!-- ============================================================== -->
-  <!-- LIVE REGIONAL TELEMETRY COUNTERS (ChaiCode Style)              -->
-  <!-- ============================================================== -->
-  <section class="border-y border-ink/10 bg-surface/50 py-10 relative z-10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-        
-        <div class="space-y-1">
-          <span class="text-3xl sm:text-4xl font-black text-ink font-mono" data-landing-page-target="counter" data-count="<%= @total_locations || 28 %>">
-            <%= @total_locations || 28 %>
-          </span>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Settlements</p>
-          <span class="text-[10px] text-mute block">NER Remote Nodes</span>
-        </div>
+            <div class="border border-slate-200 rounded-lg p-3 sm:p-4 bg-white">
+              <div class="grid grid-cols-3 divide-x divide-slate-200 text-left">
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">1</div>
+                  <div class="text-xs text-slate-500 font-normal">Severe Blockage</div>
+                </div>
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">2</div>
+                  <div class="text-xs text-slate-500 font-normal">Weather Advisory</div>
+                </div>
+                <div class="px-2 sm:px-4">
+                  <div class="text-2xl sm:text-3xl font-bold text-[#212121] leading-none mb-1">0</div>
+                  <div class="text-xs text-slate-500 font-normal">Security Alerts</div>
+                </div>
+              </div>
+            </div>
 
-        <div class="space-y-1">
-          <span class="text-3xl sm:text-4xl font-black text-accent font-mono" data-landing-page-target="counter" data-count="<%= @critical_zones || 8 %>">
-            <%= @critical_zones || 8 %>
-          </span>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-accent">Critical Zones</p>
-          <span class="text-[10px] text-mute block">Score &lt; 40 / 100</span>
-        </div>
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-center space-x-2 text-xs text-slate-500">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+                <span>24/7 automated drone &amp; satellite telemetry</span>
+              </div>
+              <%= link_to incidents_path, class: "bg-[#FF471D] hover:bg-[#e03d15] text-white font-bold text-xs uppercase tracking-wider px-5 sm:px-6 py-2.5 sm:py-3 rounded-md flex items-center space-x-2 shadow-md transition-all cursor-pointer shrink-0" do %>
+                <span>VIEW FIELD INCIDENTS</span>
+                <i class="fas fa-arrow-right text-xs"></i>
+              <% end %>
+            </div>
 
-        <div class="space-y-1">
-          <span class="text-3xl sm:text-4xl font-black text-[rgb(var(--done-stroke))] font-mono" data-landing-page-target="counter" data-count="<%= @total_warehouses || 7 %>">
-            <%= @total_warehouses || 7 %>
-          </span>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Relief Depots</p>
-          <span class="text-[10px] text-mute block">Strategic Staging Hubs</span>
-        </div>
+          </div>
 
-        <div class="space-y-1">
-          <span class="text-3xl sm:text-4xl font-black text-[rgb(var(--dead-stroke))] font-mono" data-landing-page-target="counter" data-count="<%= @total_emergencies || 6 %>">
-            <%= @total_emergencies || 6 %>
-          </span>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Disasters</p>
-          <span class="text-[10px] text-mute block">Active Incidents</span>
-        </div>
-
-        <div class="space-y-1">
-          <span class="text-3xl sm:text-4xl font-black text-accent2 font-mono" data-landing-page-target="counter" data-count="<%= @total_roads || 34 %>">
-            <%= @total_roads || 34 %>
-          </span>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Highways</p>
-          <span class="text-[10px] text-mute block">National Corridors</span>
-        </div>
-
-        <div class="space-y-1">
-          <span class="text-3xl sm:text-4xl font-black text-ink font-mono" data-landing-page-target="counter" data-count="<%= @total_vehicles || 12 %>">
-            <%= @total_vehicles || 12 %>
-          </span>
-          <p class="text-[11px] font-bold uppercase tracking-wider text-sketch">Vehicles</p>
-          <span class="text-[10px] text-mute block">Live GPS Telemetry</span>
         </div>
 
       </div>
+
+      <!-- Scroll Indicator Under Card -->
+      <div class="mt-8 sm:mt-12 flex flex-col items-center justify-center text-white/80 space-y-1">
+        <span class="text-[10px] sm:text-xs uppercase tracking-widest font-semibold">SCROLL TO EXPLORE</span>
+        <i class="fas fa-chevron-down text-xs animate-bounce"></i>
+      </div>
+
     </div>
+
   </section>
 
   <!-- ============================================================== -->
-  <!-- SECTION 2: THE CHALLENGE                                       -->
+  <!-- SPLIT PROMOTIONAL BANNER (#102E39 ESSENCE & WHITE)             -->
   <!-- ============================================================== -->
-  <section id="challenge" class="py-20 sm:py-28 relative z-10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+  <section class="w-full bg-[#102E39]">
+    <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[160px]">
       
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">
-          Regional Vulnerability
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
-          The North East India Bottleneck
-        </h2>
-        <p class="text-sm text-sketch">
-          The North Eastern Himalayan region faces chronic transport bottlenecks, extreme topography, and severe monsoon events that paralyze civil supply lines.
-        </p>
+      <!-- Left 65% in Solid Petrol #102E39 -->
+      <div class="lg:col-span-8 bg-[#102E39] text-white py-10 px-6 sm:px-12 lg:px-20 flex items-start space-x-6">
+        <div class="hidden sm:block shrink-0 mt-1">
+          <svg class="w-14 h-14 text-[#FF471D]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+        </div>
+        <div class="space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+            Sign up now and save up to 65%* off your logistics rates!
+          </h2>
+          <p class="text-sm sm:text-base text-white/90 font-normal">
+            Benefit from our AI-assisted route intelligence and solutions designed to meet all of your multi-modal shipping needs.
+          </p>
+          <p class="text-xs text-white/70 pt-1 leading-relaxed">
+            *This discount applies to relief consignments, humanitarian freight and verified commercial partners.
+          </p>
+          <p class="text-xs text-white font-bold">
+            *Terms &amp; Conditions apply.
+          </p>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--dead-bg))] text-[rgb(var(--dead-stroke))] flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-mountain"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">Treacherous Mountain Passes</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Over 70% of corridors transverse steep alpine passes, hairpin bends, and unpaved mountain tracks prone to sudden rockfalls and seasonal isolation.
-          </p>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--gold-bg))] text-[rgb(var(--gold-text))] flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-cloud-showers-heavy"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">Monsoon Landslides &amp; Floods</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Annual precipitation exceeding 2,800 mm triggers flash mudflows, washed-out bridges, and landslides that sever arterial highways without warning.
-          </p>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-bridge-water"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">The Siliguri "Chicken's Neck"</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            The narrow 22-kilometer Siliguri corridor connects 50+ million citizens to mainland India. Any blockage ripples across all eight states simultaneously.
-          </p>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-accent2/10 text-accent2 flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-truck-fast"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">Conventional Routing Blindspots</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Standard consumer GPS routing optimizes only for distance, dispatching heavy relief convoys straight into collapsed mountain corridors and active roadblocks.
-          </p>
-        </div>
-
+      <!-- Right 35% in Crisp White with Outline Button -->
+      <div class="lg:col-span-4 bg-white py-10 px-8 sm:px-12 flex items-center justify-center">
+        <%= link_to sign_up_path, class: "px-8 py-3.5 rounded-full border-2 border-[#102E39] text-[#102E39] hover:bg-[#102E39] hover:text-white font-bold text-xs sm:text-sm uppercase tracking-wider transition-all text-center cursor-pointer shadow-sm" do %>
+          OPEN AN ACCOUNT
+        <% end %>
       </div>
+
     </div>
   </section>
 
   <!-- ============================================================== -->
-  <!-- SECTION 3: THE RESQWAY SOLUTION                                -->
+  <!-- CORE TECHNOLOGY STACK SECTION                                  -->
   <!-- ============================================================== -->
-  <section id="solution" class="py-20 sm:py-28 relative z-10 border-t border-ink/10 bg-surface/30">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+  <section class="py-16 sm:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">
-          Unified Decision Platform
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
-          One Intelligence Deck. Complete Response.
-        </h2>
-        <p class="text-sm text-sketch">
-          ResQWay bridges accessibility, risk prediction, route optimization, and relief warehouse management into one unified command cockpit.
-        </p>
-      </div>
+      <!-- Section Heading in Deep #212121 -->
+      <h2 class="text-3xl sm:text-4xl font-bold text-[#212121] text-center mb-3 tracking-tight">
+        Core Technology Stack
+      </h2>
+      <p class="text-sm text-slate-600 text-center max-w-2xl mx-auto mb-14 font-medium">
+        Engineered with resilient, modern frameworks built for mission-critical logistics and real-time emergency telemetry.
+      </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- 8 Tech Stack Badges in Clean Flat Style (No Drop Shadows, White Background) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6 mb-20 text-center">
         
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-shield-alt"></i>
+        <!-- 1: Ruby on Rails 8 -->
+        <%= link_to architecture_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-gem text-2xl text-[#FF471D] transition-transform group-hover:rotate-12"></i>
           </div>
-          <h3 class="text-base font-bold text-ink">ML Road Disruption Engine</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Trained Random Forest models predict landslide disruption probability, duration, and clearance difficulty before trucks embark.
-          </p>
-          <div class="pt-2 text-[11px] font-mono font-bold text-accent">
-            <span>FastAPI Microservice (Port 8000)</span>
-          </div>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-accent2/10 text-accent2 flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-route"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">Triple-Buffered Smart Routes</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Multi-candidate corridor analysis weighing risk scores, elevation changes, and weather severity with instant sub-millisecond buffer load times.
-          </p>
-          <div class="pt-2 text-[11px] font-mono font-bold text-accent2">
-            <span>&lt; 0.1ms In-Memory Buffer Response</span>
-          </div>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--done-bg))] text-[rgb(var(--done-stroke))] flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-truck-fast"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">GPS Fleet Tracking &amp; Rerouting</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Real-time vehicle telemetry ingestion with automated deviation alerts and on-the-fly tactical detour calculation when hazards arise.
-          </p>
-          <div class="pt-2 text-[11px] font-mono font-bold text-[rgb(var(--done-stroke))]">
-            <span>Live Breadcrumb Trajectories</span>
-          </div>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--gold-bg))] text-[rgb(var(--gold-text))] flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-warehouse"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">Warehouse Readiness Scoring</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Automated stock tracking for medical kits, food packages, and emergency supplies, matching supply requests and disruptions with the optimal dispatch depot.
-          </p>
-          <div class="pt-2 text-[11px] font-mono font-bold text-[rgb(var(--gold-text))]">
-            <span>Resource Matching Engine</span>
-          </div>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-map-location-dot"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">CartoDB GIS Radar</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            Interactive high-contrast geospatial map visualizing highway accessibility, live blockages, flood alert zones, and regional relief depots.
-          </p>
-          <div class="pt-2 text-[11px] font-mono font-bold text-accent">
-            <span>PostGIS Geospatial Engine</span>
-          </div>
-        </div>
-
-        <div class="chai-card p-6 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-[rgb(var(--dead-bg))] text-[rgb(var(--dead-stroke))] flex items-center justify-center text-lg font-bold">
-            <i class="fas fa-camera"></i>
-          </div>
-          <h3 class="text-base font-bold text-ink">Field Incident Reporting</h3>
-          <p class="text-xs text-sketch leading-relaxed">
-            On-ground citizen and first-responder reporting with GPS auto-tagging and photo uploads, feeding real-time hazard data straight into the risk model.
-          </p>
-          <div class="pt-2 text-[11px] font-mono font-bold text-[rgb(var(--dead-stroke))]">
-            <span>ActiveStorage Cloud Evidence</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================== -->
-  <!-- SECTION 4: 5-STEP TACTICAL OPERATIONAL PIPELINE                -->
-  <!-- ============================================================== -->
-  <section id="pipeline" class="py-20 sm:py-28 relative z-10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">
-          Tactical Execution Flow
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
-          How ResQWay Works
-        </h2>
-        <p class="text-sm text-sketch">
-          From continuous mountain sensor telemetry to tactical emergency convoy dispatch in seconds.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        
-        <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">1</div>
-          <h4 class="font-bold text-sm text-ink">Ingest</h4>
-          <p class="text-xs text-sketch leading-relaxed">Open-Meteo rainfall, terrain slope, and citizen alerts.</p>
-        </div>
-
-        <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">2</div>
-          <h4 class="font-bold text-sm text-ink">Predict</h4>
-          <p class="text-xs text-sketch leading-relaxed">Machine Learning forecasts road collapse risks.</p>
-        </div>
-
-        <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">3</div>
-          <h4 class="font-bold text-sm text-ink">Score</h4>
-          <p class="text-xs text-sketch leading-relaxed">Ranks remote settlements by accessibility index.</p>
-        </div>
-
-        <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">4</div>
-          <h4 class="font-bold text-sm text-ink">Optimize</h4>
-          <p class="text-xs text-sketch leading-relaxed">Computes safest corridor avoiding active mudflows.</p>
-        </div>
-
-        <div class="chai-card p-5 text-center space-y-3">
-          <div class="w-8 h-8 rounded-full bg-accent text-white font-black text-xs flex items-center justify-center mx-auto shadow-xs">5</div>
-          <h4 class="font-bold text-sm text-ink">Dispatch</h4>
-          <p class="text-xs text-sketch leading-relaxed">Assigns relief depot and tracks real-time GPS path.</p>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================================== -->
-  <!-- SECTION 5: MOBILE QR ACCESS CARD                               -->
-  <!-- ============================================================== -->
-  <section class="py-14 relative z-10 border-t border-ink/10 bg-surface/50">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6">
-      <div class="chai-card p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div class="space-y-2 text-center md:text-left flex-1">
-          <span class="font-mono text-xs uppercase tracking-widest text-accent font-bold">
-            <i class="fas fa-qrcode mr-1"></i> Mobile Field Simulation
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            RUBY ON RAILS 8<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Full-Stack Core</span>
           </span>
-          <h3 class="text-xl sm:text-2xl font-black text-ink">
-            Experience ResQWay on Smartphone
-          </h3>
-          <p class="text-xs sm:text-sm text-sketch leading-relaxed">
-            Scan to test live GPS tracking and turn-by-turn route intelligence directly on your phone.
-          </p>
-          <div class="pt-2">
-            <%= link_to login_path, class: "text-xs font-bold text-accent hover:underline inline-flex items-center space-x-1" do %>
-              <span>Sign in on desktop instead &rarr;</span>
+        <% end %>
+
+        <!-- 2: Python & PyTorch ML -->
+        <%= link_to intelligence_predictions_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-brands fa-python text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            PYTHON &amp; ML<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Risk Predictor</span>
+          </span>
+        <% end %>
+
+        <!-- 3: NOSTR Protocol -->
+        <%= link_to network_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-satellite-dish text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            NOSTR PROTOCOL<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Decentralized Mesh</span>
+          </span>
+        <% end %>
+
+        <!-- 4: Active Mailer -->
+        <%= link_to emergencies_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-envelope-circle-check text-2xl text-[#FF471D] transition-transform group-hover:scale-110"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            ACTIVE MAILER<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Instant Alerting</span>
+          </span>
+        <% end %>
+
+        <!-- 5: Hotwire & Stimulus -->
+        <%= link_to dashboard_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-bolt text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            HOTWIRE TURBO<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Live Telemetry UI</span>
+          </span>
+        <% end %>
+
+        <!-- 6: Tailwind CSS -->
+        <%= link_to overview_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#FF471D] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-brands fa-css3-alt text-2xl text-[#FF471D] transition-transform group-hover:scale-110"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            TAILWIND CSS<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Design System</span>
+          </span>
+        <% end %>
+
+        <!-- 7: Leaflet GIS Engine -->
+        <%= link_to map_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-map-location-dot text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            LEAFLET GIS<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Spatial Engine</span>
+          </span>
+        <% end %>
+
+        <!-- 8: PostgreSQL Database -->
+        <%= link_to analytics_path, class: "flex flex-col items-center group cursor-pointer" do %>
+          <div class="w-20 h-20 rounded-full border-2 border-[#102E39] bg-white flex items-center justify-center p-4 transition-transform duration-300 group-hover:scale-110">
+            <i class="fa-solid fa-database text-2xl text-[#102E39] group-hover:text-[#FF471D] transition-colors"></i>
+          </div>
+          <span class="text-xs font-bold text-[#102E39] group-hover:text-[#FF471D] group-hover:underline uppercase tracking-wider mt-4 leading-snug">
+            POSTGRESQL<br><span class="text-[10px] text-slate-500 font-normal normal-case block mt-0.5">Spatial Data Store</span>
+          </span>
+        <% end %>
+
+      </div>
+
+      <!-- Two-Column Feature Showcase -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        
+        <!-- Card 1: North Eastern Logistics -->
+        <div class="flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80">
+          <div class="overflow-hidden">
+            <%= image_tag "fedex_us_shipping.jpg", alt: "Navigate High-Altitude Corridors with Ease", class: "w-full h-64 sm:h-72 object-cover transition-transform duration-500 hover:scale-102" %>
+          </div>
+          <div class="p-6 space-y-2">
+            <h3 class="text-2xl font-bold text-[#212121]">
+              Navigate High-Altitude Corridors with Ease
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              In dynamic terrain environments, having real-time clearance and topological compliance is crucial. ResQWay assists multi-modal fleets with predictive road risk intelligence, automated convoy routing, and live satellite dispatch.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2: Strategic Cross-Border Network -->
+        <div class="flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80">
+          <div class="overflow-hidden">
+            <%= image_tag "fedex_eu_market.jpg", alt: "Unlock Multi-Modal Logistics Corridors", class: "w-full h-64 sm:h-72 object-cover transition-transform duration-500 hover:scale-102" %>
+          </div>
+          <div class="p-6 space-y-2">
+            <h3 class="text-2xl font-bold text-[#212121]">
+              Unlock Multi-Modal Logistics Corridors
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Reach regional distribution depots with an integrated telemetry network that synchronizes air freighters, ocean vessels, and intermodal freight for unprecedented turnaround speeds.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================== -->
+  <!-- "YOUR BUSINESS RESOURCE" 3-COLUMN SECTION                      -->
+  <!-- ============================================================== -->
+  <section class="py-16 bg-white border-t border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Title -->
+      <h2 class="text-3xl sm:text-4xl font-bold text-[#212121] text-center mb-14 tracking-tight">
+        Your Logistics &amp; Emergency Resource
+      </h2>
+
+      <!-- 3-Column Resource Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        
+        <!-- Card 1: New to ResQWay? -->
+        <div class="flex flex-col justify-between bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+          <div class="space-y-4">
+            <div class="overflow-hidden rounded-xl">
+              <%= image_tag "fedex_resource_1.jpg", alt: "New to ResQWay?", class: "w-full h-48 object-cover" %>
+            </div>
+            <h4 class="text-xl font-bold text-[#212121]">
+              New to ResQWay?
+            </h4>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Our Quick Start Onboarding guides you through setting up relief shipments, configuring telemetry API webhooks, and accessing tactical command.
+            </p>
+          </div>
+          <div class="pt-6">
+            <%= link_to demo_path, class: "text-xs font-bold text-[#102E39] hover:text-[#FF471D] hover:underline uppercase tracking-wider flex items-center" do %>
+              <span>TRY INTERACTIVE DEMO</span>
+              <i class="fas fa-chevron-right ml-1 text-[10px]"></i>
             <% end %>
           </div>
         </div>
 
-        <div class="p-3 bg-white rounded-xl shadow-sm border border-ink/10 flex-shrink-0 text-center">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://resqway.ai" alt="ResQWay QR" class="w-32 h-32 mx-auto rounded-lg">
-          <span class="text-[9px] font-bold uppercase tracking-widest text-slate-500 block mt-1.5 font-mono">Scan with Phone</span>
+        <!-- Card 2: Simplify your Dispatch Logistics -->
+        <div class="flex flex-col justify-between bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+          <div class="space-y-4">
+            <div class="overflow-hidden rounded-xl">
+              <%= image_tag "fedex_resource_2.jpg", alt: "Simplify your Dispatch Logistics", class: "w-full h-48 object-cover" %>
+            </div>
+            <h4 class="text-xl font-bold text-[#212121]">
+              Simplify your Dispatch Logistics
+            </h4>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Comprehensive emergency dispatch workflows that free response teams to focus on life safety while autonomous routing takes care of choke points.
+            </p>
+          </div>
+          <div class="pt-6">
+            <%= link_to routes_path, class: "text-xs font-bold text-[#102E39] hover:text-[#FF471D] hover:underline uppercase tracking-wider flex items-center" do %>
+              <span>FIND OUT MORE</span>
+              <i class="fas fa-chevron-right ml-1 text-[10px]"></i>
+            <% end %>
+          </div>
         </div>
+
+        <!-- Card 3: AI Choke Point Avoidance -->
+        <div class="flex flex-col justify-between bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+          <div class="space-y-4">
+            <div class="overflow-hidden rounded-xl">
+              <%= image_tag "fedex_resource_3.jpg", alt: "Predictive Risk Avoidance", class: "w-full h-48 object-cover" %>
+            </div>
+            <h4 class="text-xl font-bold text-[#212121]">
+              Predictive Risk Avoidance
+            </h4>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Learn about AI-powered telemetry models trained on landslide susceptibility, monsoon flooding vectors, and real-time citizen road blockages.
+            </p>
+          </div>
+          <div class="pt-6">
+            <%= link_to analytics_path, class: "text-xs font-bold text-[#102E39] hover:text-[#FF471D] hover:underline uppercase tracking-wider flex items-center" do %>
+              <span>EXPLORE PREDICTIONS</span>
+              <i class="fas fa-chevron-right ml-1 text-[10px]"></i>
+            <% end %>
+          </div>
+        </div>
+
       </div>
+
+      <!-- Bottom 2-Column Wide Photo Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        
+        <!-- Card 1: Green Logistics Sustainability -->
+        <div class="flex flex-col bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+          <div class="overflow-hidden rounded-xl">
+            <%= image_tag "fedex_bottom_1.jpg", alt: "Sustainable logistics for tomorrow", class: "w-full h-56 sm:h-64 object-cover" %>
+          </div>
+          <div class="pt-5 space-y-2">
+            <h3 class="text-2xl font-bold text-[#212121]">
+              Sustainable logistics for tomorrow
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Discover how our carbon-neutral routing and renewable fleet initiatives reduce operational footprints across high-density logistics corridors.
+            </p>
+            <%= link_to overview_path, class: "text-xs font-bold text-[#102E39] hover:text-[#FF471D] hover:underline uppercase tracking-wider mt-2 inline-block" do %>
+              LEARN ABOUT ESG
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Card 2: Mobile Intelligence Smartphone -->
+        <div class="flex flex-col bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+          <div class="overflow-hidden rounded-xl">
+            <%= image_tag "fedex_bottom_2.jpg", alt: "Keep shipments at your fingertips", class: "w-full h-56 sm:h-64 object-cover" %>
+          </div>
+          <div class="pt-5 space-y-2">
+            <h3 class="text-2xl font-bold text-[#212121]">
+              Keep shipments at your fingertips
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Log into our responsive platform to track consignments in real time, receive predictive delay alerts, and redirect emergency shipments on the move.
+            </p>
+            <%= link_to map_path, class: "text-xs font-bold text-[#102E39] hover:text-[#FF471D] hover:underline uppercase tracking-wider mt-2 inline-block" do %>
+              EXPLORE LIVE MAP
+            <% end %>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
   <!-- ============================================================== -->
-  <!-- SECTION 6: TECHNOLOGY STACK                                    -->
+  <!-- COMPREHENSIVE GLOBAL FOOTER (#212121)                          -->
   <!-- ============================================================== -->
-  <section id="technology" class="py-16 sm:py-24 relative z-10 border-t border-ink/10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-      
-      <div class="max-w-xl mx-auto space-y-2">
-        <span class="font-mono text-xs uppercase tracking-[0.25em] text-accent">Tech Stack</span>
-        <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight">
-          Modern &amp; Resilient Architecture
-        </h2>
-      </div>
-
-      <div class="flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto">
-        <% [
-          ["Ruby on Rails 8", "fas fa-gem"],
-          ["Devise Auth", "fas fa-key"],
-          ["Python FastAPI ML", "fas fa-brain"],
-          ["scikit-learn", "fas fa-chart-line"],
-          ["PostgreSQL & PostGIS", "fas fa-database"],
-          ["Hotwire & Turbo 8", "fas fa-bolt"],
-          ["Leaflet GIS", "fas fa-map"],
-          ["CartoDB Dark Matter", "fas fa-circle-half-stroke"],
-          ["Tailwind CSS", "fas fa-palette"],
-          ["Triple-Buffer Engine", "fas fa-microchip"]
-        ].each do |tech, icon| %>
-          <span class="sketch-border-soft bg-surface text-ink text-xs font-semibold px-3.5 py-2 flex items-center space-x-2">
-            <i class="<%= icon %> text-accent text-xs"></i>
-            <span><%= tech %></span>
-          </span>
-        <% end %>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================================== -->
-  <!-- FINAL CALL TO ACTION                                           -->
-  <!-- ============================================================== -->
-  <section class="py-20 relative z-10 border-t border-ink/10 bg-surface/30">
-    <div class="max-w-3xl mx-auto px-4 text-center space-y-5">
-      <h2 class="text-3xl sm:text-4xl font-black text-ink tracking-tight">
-        Ready to Secure the <span class="text-accent">Northeast Lifeline?</span>
-      </h2>
-      <p class="text-sm text-sketch max-w-md mx-auto leading-relaxed">
-        Real-time AI disruption prediction, terrain-modeled route optimization, and live vehicle tracking across North East India today.
-      </p>
-
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-        <%= link_to (authenticated? ? dashboard_path : sign_up_path), class: "w-full sm:w-auto px-8 py-3.5 rounded-xl text-sm font-black text-paper bg-ink hover:bg-ink/90 shadow-sm transition-all" do %>
-          <span><%= authenticated? ? "Access Dashboard" : "Create Operator Account" %></span>
-          <i class="fas fa-arrow-right ml-2 text-xs"></i>
-        <% end %>
-
-        <%= link_to login_path, class: "text-xs font-bold text-sketch hover:text-ink transition-colors" do %>
-          Already an operator? <span class="text-accent underline">Sign in &rarr;</span>
-        <% end %>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================== -->
-  <!-- FOOTER                                                         -->
-  <!-- ============================================================== -->
-  <footer class="border-t border-ink/10 py-6 text-xs text-mute bg-surface">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center space-x-2">
-        <%= image_tag "logo.png", alt: "ResQWay", class: "h-6 w-auto rounded" %>
-        <span>&bull; &copy; <%= Date.current.year %> All rights reserved.</span>
-      </div>
-      <div class="flex items-center space-x-3 font-mono text-[11px]">
-        <span>Smart India Hackathon 2026</span>
-        <span>&bull;</span>
-        <span class="text-accent">NER Logistics Intelligence</span>
-      </div>
-    </div>
-  </footer>
+  <%= render "shared/resqway_footer" %>
 
 </div>

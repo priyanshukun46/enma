@@ -107,11 +107,11 @@
   </div>
   <% end %>
 
-  <!-- Main Grid: Predictive Risk Heatmap + Operational Status -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+  <!-- Main Layout: Predictive Risk Heatmap + Operational Status -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
     
-    <!-- Left Column (8 cols): Predictive Risk Heatmap -->
-    <div class="lg:col-span-8 bg-surface sketch-border rounded-2xl shadow-sm overflow-hidden"
+    <!-- Left Column: Predictive Risk Heatmap (Expands to fill available width) -->
+    <div class="col-span-1 lg:col-span-7 xl:col-span-8 min-w-0 bg-surface sketch-border rounded-2xl shadow-sm overflow-hidden w-full"
          data-controller="map"
          data-map-locations-value="<%= @map_locations.to_json %>"
          data-map-warehouses-value="<%= @map_warehouses.to_json %>"
@@ -132,13 +132,13 @@
 
       <!-- Leaflet Map Container -->
       <div data-map-target="container"
-           style="min-height: 300px; width: 100%; display: block;"
-           class="w-full z-10 h-[340px] sm:h-[400px] lg:h-[480px]">
+           style="min-height: 380px; width: 100%; display: block;"
+           class="w-full z-10 h-[380px] sm:h-[420px] lg:h-[480px]">
       </div>
     </div>
 
-    <!-- Right Column (4 cols): Operational Status Accordion -->
-    <div class="lg:col-span-4 bg-surface sketch-border rounded-2xl shadow-sm p-5 space-y-4">
+    <!-- Right Column: Operational Status Accordion (Dedicated Sidebar) -->
+    <div class="col-span-1 lg:col-span-5 xl:col-span-4 bg-surface sketch-border rounded-2xl shadow-sm p-5 space-y-4 w-full">
       <div class="flex items-center space-x-2 border-b border-[var(--line)] pb-3">
         <i class="fas fa-cog text-accent text-sm"></i>
         <h3 class="text-xs font-black uppercase text-ink tracking-wider">System Diagnostic Engine</h3>

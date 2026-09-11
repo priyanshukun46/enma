@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full scroll-smooth">
   <head>
-    <title>ResQWay — AI Logistics &amp; Accessibility Intelligence for North East India</title>
+    <title>ResQWay - Logistics, Real-Time Tracking &amp; Risk Management</title>
     <%= tag.link rel: "icon", href: image_path("logo.png"), type: "image/png" %>
     <%= tag.link rel: "apple-touch-icon", href: image_path("logo.png") %>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
@@ -10,83 +10,122 @@
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nobile:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Playwrite+GB+J:ital,wght@0,100..400;1,100..400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Instant Theme Bootstrap (ChaiCode reference: dsa.chaicode.com) -->
-    <script nonce="<%= request.content_security_policy_nonce %>">
-      try {
-        var t = localStorage.getItem('theme');
-        var isLight = (t === 'light');
-        document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
-        if (isLight) {
-          document.documentElement.classList.remove('dark');
-        } else {
-          document.documentElement.classList.add('dark');
-        }
-      } catch(e) {
-        document.documentElement.dataset.theme = 'dark';
-        document.documentElement.classList.add('dark');
-      }
-    </script>
-
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
     <script nonce="<%= request.content_security_policy_nonce %>">
       tailwind.config = {
-        darkMode: ['class', '[data-theme="dark"]'],
+        darkMode: 'class',
         theme: {
           extend: {
             colors: {
-              paper: 'rgb(var(--paper) / <alpha-value>)',
-              surface: 'rgb(var(--surface) / <alpha-value>)',
-              ink: 'rgb(var(--ink) / <alpha-value>)',
-              sketch: 'rgb(var(--sketch) / <alpha-value>)',
-              mute: 'rgb(var(--mute) / <alpha-value>)',
-              accent: 'rgb(var(--accent) / <alpha-value>)',
-              accent2: 'rgb(var(--accent2) / <alpha-value>)',
+              accent: '#FF471D',
+              accent2: '#102E39',
+              slate: {
+                50: '#F8FAFB',
+                100: '#EAEEF0',
+                200: '#D9E0E3',
+                300: '#B8C4C9',
+                400: '#8A9BA2',
+                500: '#5F737B',
+                600: '#43545B',
+                700: '#2F3C42',
+                800: '#1F292E',
+                900: '#102E39',
+                950: '#212121',
+              }
             },
             fontFamily: {
-              sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+              sans: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
+              montserrat: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
+              nobile: ['"Nobile"', 'system-ui', '-apple-system', 'sans-serif'],
+              fraunces: ['"Fraunces"', 'serif'],
+              playwrite: ['"Playwrite GB J"', 'cursive'],
               mono: ['"JetBrains Mono"', 'monospace'],
             }
           }
         }
       }
     </script>
-    <%= stylesheet_link_tag "chaicode", "data-turbo-track": "reload" %>
+    <style>
+      :root {
+        --paper: 255 255 255;
+        --surface: 255 255 255;
+        --ink: 33 33 33;
+        --accent: 255 71 29;
+        --accent2: 16 46 57;
+      }
+      body {
+        background-color: #FFFFFF !important;
+        color: #212121 !important;
+        font-family: 'Montserrat', system-ui, -apple-system, sans-serif !important;
+        letter-spacing: -0.011em;
+        line-height: 1.5;
+      }
+      .dark {
+        color-scheme: light !important;
+      }
+      .dark body {
+        background-color: #FFFFFF !important;
+        color: #212121 !important;
+      }
+      .dark [class*="dark:text-white"],
+      .dark [class*="dark:text-slate-100"],
+      .dark [class*="dark:text-slate-200"],
+      .dark [class*="dark:text-slate-300"] {
+        color: #212121 !important;
+      }
+      .dark [class*="dark:bg-slate-900"],
+      .dark [class*="dark:bg-slate-800"],
+      .dark [class*="dark:bg-slate-950"] {
+        background-color: #FFFFFF !important;
+      }
+      .reveal-on-scroll {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+      .reveal-on-scroll.revealed {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
   </head>
 
-  <body class="min-h-screen antialiased selection:bg-accent selection:text-white flex flex-col justify-between"
-        data-controller="theme">
+  <body class="min-h-screen antialiased selection:bg-[#FF6200] selection:text-white flex flex-col justify-between bg-white text-[#212121]"
+        style="background-color: #FFFFFF !important; color: #212121 !important;"
+        data-controller="search-modal">
     
     <% if flash[:notice].present? || flash[:alert].present? %>
       <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4 pointer-events-none space-y-2">
         <% if flash[:notice] %>
           <div data-controller="flash"
-               data-flash-timeout-value="2000"
+               data-flash-timeout-value="2500"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
-               class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all"
-               style="background-color: var(--done-bg); color: var(--done-text); border-color: var(--done-stroke);">
+               class="pointer-events-auto px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all rounded-xl border border-emerald-300 bg-emerald-50 text-emerald-900">
             <div class="flex items-center space-x-2.5">
-              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-check-circle text-emerald-600"></i>
               <span><%= flash[:notice] %></span>
             </div>
-            <button type="button" data-action="click->flash#dismiss" class="ml-2 text-current opacity-70 hover:opacity-100 cursor-pointer p-0.5">
+            <button type="button" data-action="click->flash#dismiss" class="ml-2 text-emerald-700 hover:text-emerald-900 cursor-pointer p-0.5">
               <i class="fas fa-times text-xs"></i>
             </button>
           </div>
         <% end %>
         <% if flash[:alert] %>
           <div data-controller="flash"
-               data-flash-timeout-value="2000"
+               data-flash-timeout-value="2500"
                data-action="mouseenter->flash#pause mouseleave->flash#resume"
-               class="pointer-events-auto sketch-border px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all"
-               style="background-color: var(--dead-bg); color: var(--dead-text); border-color: var(--dead-stroke);">
+               class="pointer-events-auto px-4 py-3 text-xs font-bold shadow-xl backdrop-blur-md flex items-center justify-between transition-all rounded-xl border border-rose-300 bg-rose-50 text-rose-900">
             <div class="flex items-center space-x-2.5">
-              <i class="fas fa-exclamation-circle"></i>
+              <i class="fas fa-exclamation-circle text-rose-600"></i>
               <span><%= flash[:alert] %></span>
             </div>
-            <button type="button" data-action="click->flash#dismiss" class="ml-2 text-current opacity-70 hover:opacity-100 cursor-pointer p-0.5">
+            <button type="button" data-action="click->flash#dismiss" class="ml-2 text-rose-700 hover:text-rose-900 cursor-pointer p-0.5">
               <i class="fas fa-times text-xs"></i>
             </button>
           </div>
@@ -95,5 +134,58 @@
     <% end %>
 
     <%= yield %>
+
+    <!-- Global Search Command Palette Modal (⌘K Spotlight) -->
+    <div data-search-modal-target="backdrop"
+         data-action="click->search-modal#close"
+         class="fixed inset-0 bg-black/75 z-50 hidden transition-opacity backdrop-blur-xs"></div>
+
+    <div data-search-modal-target="modal"
+         class="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 hidden pointer-events-none">
+      <div class="pointer-events-auto max-w-xl w-full bg-white border border-slate-300 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-[#212121]">
+        
+        <!-- Modal Search Header Input -->
+        <div class="p-3.5 border-b border-slate-200 flex items-center gap-3 bg-slate-50">
+          <i class="fas fa-search text-[#FF471D] text-sm ml-1"></i>
+          <input type="text"
+                 data-search-modal-target="input"
+                 data-action="input->search-modal#onInput keydown->search-modal#onKeydown"
+                 placeholder="Search vessels, routes, relief depots, emergencies..."
+                 autocomplete="off"
+                 class="w-full bg-transparent text-[#212121] placeholder:text-slate-400 text-sm font-medium focus:outline-none">
+          <button type="button"
+                  data-action="click->search-modal#close"
+                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-200 border border-slate-300 text-slate-600 hover:text-[#212121] cursor-pointer">
+            ESC
+          </button>
+        </div>
+
+        <!-- Quick Filter Tags -->
+        <div class="px-4 py-2 border-b border-slate-200 bg-[#EAEEF0] flex items-center gap-1.5 overflow-x-auto text-[11px]">
+          <span class="text-[10px] font-bold text-slate-500 uppercase mr-1 flex-shrink-0">Quick:</span>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚢 Fleet</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">📍 Tawang</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="NH-27" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🛣️ NH-27</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Depot" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🏢 Warehouses</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Landslide" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚨 Incidents</button>
+        </div>
+
+        <!-- Suggestions List -->
+        <ul data-search-modal-target="resultsList" class="p-2 space-y-0.5 max-h-[360px] overflow-y-auto bg-white">
+          <!-- Populated dynamically via search_modal_controller -->
+        </ul>
+
+        <!-- Modal Footer -->
+        <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+          <div class="flex items-center space-x-3">
+            <span><kbd class="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 font-mono">↑↓</kbd> navigate</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 font-mono">↵</kbd> open</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 font-mono">esc</kbd> close</span>
+          </div>
+          <span class="text-[10px] text-[#FF471D] font-semibold">ResQWay Operational Index</span>
+        </div>
+
+      </div>
+    </div>
   </body>
 </html>

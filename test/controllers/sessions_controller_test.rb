@@ -28,7 +28,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @user.id, session[:user_id]
     follow_redirect!
     assert_response :success
-    assert_select "button", text: /Logout/
+    assert_select "button", text: /Logout|Sign Out/
   end
 
   test "should login with valid username credentials and redirect" do
@@ -40,7 +40,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @user.id, session[:user_id]
     follow_redirect!
     assert_response :success
-    assert_select "button", text: /Logout/
+    assert_select "button", text: /Logout|Sign Out/
   end
 
   test "should reject invalid credentials" do

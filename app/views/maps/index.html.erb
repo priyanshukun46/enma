@@ -102,11 +102,11 @@
   <!-- Main GIS Split Layout -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
     
-    <!-- LEFT / MAIN AREA: Interactive Leaflet Map & Filter Pills (lg:col-span-8) -->
-    <div class="lg:col-span-8 space-y-3 w-full">
+    <!-- LEFT / MAIN AREA: Interactive Leaflet Map & Filter Pills -->
+    <div class="col-span-1 lg:col-span-7 xl:col-span-8 min-w-0 space-y-3 w-full">
       
       <!-- Quick Status Filter Bar (Google Stitch Style) -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-2.5 flex flex-wrap items-center justify-between gap-2 overflow-hidden">
         <div class="flex flex-wrap items-center gap-1.5">
           <button type="button"
                   data-action="click->map#filterByStatus"
@@ -195,8 +195,8 @@
       </div>
     </div>
 
-    <!-- RIGHT SIDE INTELLIGENCE PANEL (lg:col-span-4) -->
-    <div class="lg:col-span-4 space-y-4 w-full">
+    <!-- RIGHT SIDE INTELLIGENCE PANEL -->
+    <div class="col-span-1 lg:col-span-5 xl:col-span-4 space-y-4 w-full">
       
       <!-- 1. Search Location or Road Card with Autocomplete -->
       <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-4 space-y-3">

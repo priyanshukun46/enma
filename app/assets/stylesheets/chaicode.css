@@ -1,19 +1,19 @@
 /* ChaiCode (dsa.chaicode.com) Design System Tokens */
-:root, [data-theme=light] {
+:root, [data-theme=light], [data-theme=dark], .dark {
   color-scheme: light;
-  --paper: 250 246 238;          /* #FAF6EE warm parchment */
-  --surface: 255 252 247;        /* #FFFCF7 warm surface */
-  --ink: 24 18 14;               /* #18120E high-contrast espresso ink */
-  --sketch: 76 62 50;            /* #4C3E32 warm charcoal text */
-  --mute: 118 104 90;            /* #76685A deep legible taupe (>4.5:1 ratio) */
-  --accent: 226 84 56;           /* #E25438 rich warm reddish terracotta */
-  --accent2: 200 60 45;          /* #C83C2D deep rust red */
-  --border: 31 31 31;
-  --shadow: 31 31 31;
-  --card: rgba(31, 24, 18, 0.035);
-  --card-hi: rgba(31, 24, 18, 0.07);
-  --line: rgba(38, 30, 24, 0.15);
-  --line-hi: rgba(38, 30, 24, 0.30);
+  --paper: 255 255 255;          /* Pure White */
+  --surface: 255 255 255;        /* Pure White */
+  --ink: 33 33 33;               /* #212121 black typography */
+  --sketch: 55 65 81;
+  --mute: 100 116 139;
+  --accent: 255 71 29;           /* #FF471D buttons & accent */
+  --accent2: 16 46 57;           /* #102E39 essence */
+  --border: 226 232 240;
+  --shadow: 0 1px 3px rgba(0,0,0,0.05);
+  --card: #FFFFFF;
+  --card-hi: #FFFFFF;
+  --line: rgba(16, 46, 57, 0.12);
+  --line-hi: rgba(16, 46, 57, 0.25);
   --done-bg: #DFF0E2;
   --done-text: #2F7D4A;
   --done-stroke: #3A9D5D;
@@ -23,43 +23,29 @@
   --gold-bg: #FFF4D6;
   --gold-text: #917400;
   --gold-stroke: #CAA400;
-  --compare-bg: #F5EBE6;
-  --radius-card: 16px;
-}
-
-[data-theme=dark], .dark {
-  color-scheme: dark;
-  --paper: 20 16 12;             /* #14100C dark espresso */
-  --surface: 27 22 17;           /* #1B1611 dark roasted surface */
-  --ink: 236 229 214;            /* #ECE5D6 warm cream ivory */
-  --sketch: 184 176 160;         /* #B8B0A0 warm parchment */
-  --mute: 146 138 123;           /* #928A7B muted cocoa */
-  --accent: 236 94 66;           /* #EC5E42 warm glowing reddish coral */
-  --accent2: 216 74 46;          /* #D84A2E rich terracotta red */
-  --border: 90 82 68;
-  --shadow: 0 0 0;
-  --card: rgba(255, 255, 255, 0.035);
-  --card-hi: rgba(255, 255, 255, 0.065);
-  --line: rgba(236, 229, 214, 0.12);
-  --line-hi: rgba(236, 229, 214, 0.22);
-  --done-bg: #17301F;
-  --done-text: #6FC28D;
-  --done-stroke: #4FB374;
-  --dead-bg: #351A1A;
-  --dead-text: #E88A8A;
-  --dead-stroke: #E06B6B;
-  --gold-bg: #332A12;
-  --gold-text: #D8B638;
-  --gold-stroke: #D8B638;
-  --compare-bg: #2C1E1A;
+  --compare-bg: #FFFFFF;
   --radius-card: 16px;
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background-color: rgb(var(--paper)) !important;
-  color: rgb(var(--ink)) !important;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif !important;
+  background-color: #FFFFFF !important;
+  color: #212121 !important;
   transition: background-color 0.25s ease, color 0.25s ease;
+  letter-spacing: -0.011em;
+  line-height: 1.5;
+}
+
+.dark [class*="dark:text-white"],
+.dark [class*="dark:text-slate-100"],
+.dark [class*="dark:text-slate-200"],
+.dark [class*="dark:text-slate-300"] {
+  color: #212121 !important;
+}
+.dark [class*="dark:bg-slate-900"],
+.dark [class*="dark:bg-slate-800"],
+.dark [class*="dark:bg-slate-950"] {
+  background-color: #FFFFFF !important;
 }
 
 .landing-gradient-bg, html, body {
@@ -73,9 +59,9 @@ aside {
   color: rgb(var(--ink)) !important;
 }
 
-header, .nav-blur {
-  background: rgb(var(--surface)) !important;
-  border-bottom: 1px solid var(--line) !important;
+header:not(.resqway-dark-header), .nav-blur {
+  background: rgb(var(--surface));
+  border-bottom: 1px solid var(--line);
 }
 
 main {
@@ -87,7 +73,6 @@ main {
 .sketch-card,
 .bg-surface,
 .sketch-border,
-.bg-white,
 .bg-slate-900,
 .dark\:bg-slate-900 {
   background: rgb(var(--surface)) !important;
@@ -106,8 +91,6 @@ main {
 [data-theme=dark] .bg-surface,
 .dark .sketch-border,
 [data-theme=dark] .sketch-border,
-.dark .bg-white,
-[data-theme=dark] .bg-white,
 .dark .bg-slate-900,
 [data-theme=dark] .bg-slate-900,
 .dark .dark\:bg-slate-900,
@@ -120,39 +103,21 @@ main {
   color: rgb(var(--ink)) !important;
 }
 
-/* Hover effect on interactive cards: Lift up, highlight border, reveal hard offset shadow (Pic 1) */
+/* Hover effect on interactive cards: Lift up, highlight border, reveal hard offset shadow */
 .chai-card:hover,
-.sketch-card:hover,
-a.bg-surface:hover,
-button.bg-surface:hover,
-.bg-surface[class*="hover:"]:hover,
-.sketch-border[class*="hover:"]:hover,
-.bg-white[class*="hover:"]:hover,
-.dark\:bg-slate-900[class*="hover:"]:hover {
-  transform: translate(-3px, -3px) !important;
+.sketch-card:hover {
+  transform: translate(-2px, -2px) !important;
   border-color: rgb(var(--accent)) !important;
-  box-shadow: 5px 5px 0px 0px rgb(var(--ink) / 0.9) !important;
+  box-shadow: 4px 4px 0px 0px rgb(var(--ink) / 0.8) !important;
 }
 
 .dark .chai-card:hover,
 .dark .sketch-card:hover,
-.dark a.bg-surface:hover,
-.dark button.bg-surface:hover,
 [data-theme=dark] .chai-card:hover,
-[data-theme=dark] .sketch-card:hover,
-[data-theme=dark] a.bg-surface:hover,
-[data-theme=dark] button.bg-surface:hover,
-.dark .bg-surface[class*="hover:"]:hover,
-[data-theme=dark] .bg-surface[class*="hover:"]:hover,
-.dark .sketch-border[class*="hover:"]:hover,
-[data-theme=dark] .sketch-border[class*="hover:"]:hover,
-.dark .bg-white[class*="hover:"]:hover,
-[data-theme=dark] .bg-white[class*="hover:"]:hover,
-.dark .dark\:bg-slate-900[class*="hover:"]:hover,
-[data-theme=dark] .dark\:bg-slate-900[class*="hover:"]:hover {
-  transform: translate(-3px, -3px) !important;
+[data-theme=dark] .sketch-card:hover {
+  transform: translate(-2px, -2px) !important;
   border-color: rgb(var(--accent)) !important;
-  box-shadow: 5px 5px 0px 0px #000000 !important;
+  box-shadow: 4px 4px 0px 0px #000000 !important;
 }
 
 /* Universal Color Uniformity across all views */
@@ -372,4 +337,112 @@ table tbody tr td {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ---------------------------------------------------------
+   Robust Layout & Responsive Grid Fallbacks
+   Ensures col-spans and grid tracks work deterministically
+   across all viewports and through Turbo navigations
+   --------------------------------------------------------- */
+.col-span-1 { grid-column: span 1 / span 1 !important; }
+.col-span-2 { grid-column: span 2 / span 2 !important; }
+.col-span-3 { grid-column: span 3 / span 3 !important; }
+.col-span-4 { grid-column: span 4 / span 4 !important; }
+.col-span-5 { grid-column: span 5 / span 5 !important; }
+.col-span-6 { grid-column: span 6 / span 6 !important; }
+.col-span-7 { grid-column: span 7 / span 7 !important; }
+.col-span-8 { grid-column: span 8 / span 8 !important; }
+.col-span-9 { grid-column: span 9 / span 9 !important; }
+.col-span-10 { grid-column: span 10 / span 10 !important; }
+.col-span-11 { grid-column: span 11 / span 11 !important; }
+.col-span-12 { grid-column: span 12 / span 12 !important; }
+.col-span-full { grid-column: 1 / -1 !important; }
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .sm\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .sm\:col-span-1 { grid-column: span 1 / span 1 !important; }
+  .sm\:col-span-2 { grid-column: span 2 / span 2 !important; }
+  .sm\:col-span-3 { grid-column: span 3 / span 3 !important; }
+  .sm\:col-span-4 { grid-column: span 4 / span 4 !important; }
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .md\:col-span-1 { grid-column: span 1 / span 1 !important; }
+  .md\:col-span-2 { grid-column: span 2 / span 2 !important; }
+  .md\:col-span-3 { grid-column: span 3 / span 3 !important; }
+  .md\:col-span-4 { grid-column: span 4 / span 4 !important; }
+  .md\:col-span-6 { grid-column: span 6 / span 6 !important; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+  .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+  .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+
+  .lg\:col-span-1 { grid-column: span 1 / span 1 !important; }
+  .lg\:col-span-2 { grid-column: span 2 / span 2 !important; }
+  .lg\:col-span-3 { grid-column: span 3 / span 3 !important; }
+  .lg\:col-span-4 { grid-column: span 4 / span 4 !important; }
+  .lg\:col-span-5 { grid-column: span 5 / span 5 !important; }
+  .lg\:col-span-6 { grid-column: span 6 / span 6 !important; }
+  .lg\:col-span-7 { grid-column: span 7 / span 7 !important; }
+  .lg\:col-span-8 { grid-column: span 8 / span 8 !important; }
+  .lg\:col-span-9 { grid-column: span 9 / span 9 !important; }
+  .lg\:col-span-10 { grid-column: span 10 / span 10 !important; }
+  .lg\:col-span-11 { grid-column: span 11 / span 11 !important; }
+  .lg\:col-span-12 { grid-column: span 12 / span 12 !important; }
+}
+
+@media (min-width: 1280px) {
+  .xl\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .xl\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .xl\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+  .xl\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+  .xl\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+  .xl\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)) !important; }
+
+  .xl\:col-span-1 { grid-column: span 1 / span 1 !important; }
+  .xl\:col-span-2 { grid-column: span 2 / span 2 !important; }
+  .xl\:col-span-3 { grid-column: span 3 / span 3 !important; }
+  .xl\:col-span-4 { grid-column: span 4 / span 4 !important; }
+  .xl\:col-span-5 { grid-column: span 5 / span 5 !important; }
+  .xl\:col-span-6 { grid-column: span 6 / span 6 !important; }
+  .xl\:col-span-7 { grid-column: span 7 / span 7 !important; }
+  .xl\:col-span-8 { grid-column: span 8 / span 8 !important; }
+  .xl\:col-span-9 { grid-column: span 9 / span 9 !important; }
+  .xl\:col-span-10 { grid-column: span 10 / span 10 !important; }
+  .xl\:col-span-11 { grid-column: span 11 / span 11 !important; }
+  .xl\:col-span-12 { grid-column: span 12 / span 12 !important; }
+}
+
+/* Fallback classes for sidebar widths and flexbox behavior across breakpoints */
+@media (min-width: 1024px) {
+  .lg\:w-80 { width: 20rem !important; }
+  .lg\:w-96 { width: 24rem !important; }
+  .lg\:w-\[360px\] { width: 360px !important; }
+  .lg\:w-\[380px\] { width: 380px !important; }
+  .lg\:w-\[400px\] { width: 400px !important; }
+  .lg\:w-\[420px\] { width: 420px !important; }
+  .lg\:w-\[440px\] { width: 440px !important; }
+}
+
 
