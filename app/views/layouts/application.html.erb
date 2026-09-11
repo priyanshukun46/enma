@@ -11,12 +11,11 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
     <script nonce="<%= request.content_security_policy_nonce %>">
       tailwind.config = {
-        darkMode: ['class', '[data-theme="dark"]'],
         theme: {
           extend: {
             colors: {
@@ -25,547 +24,167 @@
               ink: 'rgb(var(--ink) / <alpha-value>)',
               sketch: 'rgb(var(--sketch) / <alpha-value>)',
               mute: 'rgb(var(--mute) / <alpha-value>)',
-              accent: 'rgb(var(--accent) / <alpha-value>)',
-              accent2: 'rgb(var(--accent2) / <alpha-value>)',
+              accent: '#FF471D',
+              accent2: '#102E39',
               slate: {
-                50: 'rgb(var(--paper) / <alpha-value>)',
-                100: 'rgb(var(--paper) / <alpha-value>)',
-                200: 'var(--line)',
-                300: 'var(--line-hi)',
-                400: 'rgb(var(--mute) / <alpha-value>)',
-                500: 'rgb(var(--mute) / <alpha-value>)',
-                600: 'rgb(var(--sketch) / <alpha-value>)',
-                700: 'rgb(var(--sketch) / <alpha-value>)',
-                800: 'var(--card-hi)',
-                900: 'rgb(var(--surface) / <alpha-value>)',
-                950: 'rgb(var(--paper) / <alpha-value>)',
+                50: '#F8FAFB',
+                100: '#EAEEF0',
+                200: '#D9E0E3',
+                300: '#B8C4C9',
+                400: '#8A9BA2',
+                500: '#5F737B',
+                600: '#43545B',
+                700: '#2F3C42',
+                800: '#1F292E',
+                900: '#102E39',
+                950: '#212121',
               },
             },
             fontFamily: {
-              sans: ['"Nunito"', '"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
-              hand: ['"Nunito"', 'system-ui', '-apple-system', 'sans-serif'],
-              sketch: ['"Nunito"', 'system-ui', '-apple-system', 'sans-serif'],
+              sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
               mono: ['"JetBrains Mono"', '"SF Mono"', 'monospace'],
             }
           }
         }
       }
     </script>
-    <script nonce="<%= request.content_security_policy_nonce %>">
-      // ChaiCode Dynamic Theme Bootstrap (dsa.chaicode.com)
-      try {
-        var t = localStorage.getItem('theme');
-        var isLight = (t === 'light');
-        document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
-        if (isLight) {
-          document.documentElement.classList.remove('dark');
-        } else {
-          document.documentElement.classList.add('dark');
-        }
-      } catch(e) {
-        document.documentElement.dataset.theme = 'dark';
-        document.documentElement.classList.add('dark');
+    <style>
+      :root {
+        --paper: 234 238 240;      /* #EAEEF0 Main background */
+        --surface: 255 255 255;    /* #FFFFFF Crisp cards */
+        --ink: 33 33 33;           /* #212121 Headers, Footers & Text */
+        --sketch: 55 65 81;
+        --mute: 100 116 139;
+        --accent: 255 71 29;       /* #FF471D Buttons & essence */
+        --accent2: 16 46 57;       /* #102E39 Essence & small designs */
+        --line: rgba(16, 46, 57, 0.12);
+        --line-hi: rgba(16, 46, 57, 0.25);
+        --card: rgba(255, 255, 255, 0.95);
+        --card-hi: #FFFFFF;
       }
-    </script>
-    <%= stylesheet_link_tag "chaicode", "data-turbo-track": "reload" %>
+      body {
+        background-color: #EAEEF0 !important;
+        color: #212121 !important;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+    </style>
   </head>
 
-  <body class="flex h-screen bg-paper text-ink antialiased overflow-hidden"
-        data-controller="sidebar theme qr-modal search-modal connectivity">
+  <body class="min-h-screen flex flex-col bg-[#EAEEF0] text-[#212121] antialiased selection:bg-[#FF471D] selection:text-white font-sans"
+        style="background-color: #EAEEF0 !important; color: #212121 !important;"
+        data-controller="landing-page search-modal qr-modal connectivity">
 
     <!-- Offline Indicator Banner -->
-    <div data-connectivity-target="banner" class="hidden fixed top-0 inset-x-0 z-[100] bg-ink text-paper text-center py-2 px-4 shadow-md text-xs font-bold font-sketch flex justify-center items-center">
-      <i class="fas fa-wifi-slash mr-2"></i>
+    <div data-connectivity-target="banner" class="hidden fixed top-0 inset-x-0 z-[100] bg-[#212121] text-white text-center py-2 px-4 shadow-md text-xs font-bold flex justify-center items-center">
+      <i class="fas fa-wifi-slash mr-2 text-[#FF471D]"></i>
       You're offline — showing last synced data
     </div>
 
-    <!-- DEMO PRESENTATION AID: Remove or hide this button before real production use -->
-    <button type="button" 
-            data-connectivity-target="demoButton"
-            data-action="click->connectivity#toggleSimulatedOffline"
-            class="fixed bottom-4 right-4 z-[90] px-3 py-1.5 rounded-full border border-[var(--line)] bg-paper text-mute text-[10px] font-bold font-sketch shadow-sm hover:opacity-80 transition-all flex items-center shadow-lg">
-      <i class="fas fa-flask mr-1"></i> Simulate Offline
-    </button>
+    <!-- Universal ResQWay Header (#212121) -->
+    <%= render "shared/resqway_header" %>
 
-    <!-- Mobile Drawer Backdrop Overlay -->
-    <div data-sidebar-target="backdrop"
-         data-action="click->sidebar#close"
-         class="fixed inset-0 bg-ink/30 z-40 hidden md:hidden transition-opacity"></div>
-
-    <!-- Left Sidebar Navigation (Chai Visual Reference: dsa.chaicode.com) -->
-    <aside data-sidebar-target="sidebar"
-           class="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] h-dvh overflow-y-auto border-r-2 border-ink/20 bg-paper px-4 py-6 flex flex-col flex-shrink-0 shadow-xl transform -translate-x-full md:translate-x-0 md:static transition-transform duration-200 ease-in-out">
+    <!-- Header Spacer & Subpage Banner Container -->
+    <div class="pt-16 sm:pt-20 flex-1 flex flex-col">
       
-      <!-- Top Track Navigation & Close -->
-      <div class="flex items-center justify-between mb-2">
-        <%= link_to root_path, class: "font-sketch text-xs text-mute hover:text-ink transition-colors inline-flex items-center gap-1.5" do %>
-          <span>← all tracks</span>
-        <% end %>
+      <!-- Contextual Subpage Hero Banner with Breadcrumbs & Mockup (Attached Image 1) -->
+      <%= render "shared/subpage_hero_banner" %>
 
-        <button type="button"
-                data-action="click->sidebar#close"
-                class="md:hidden p-1.5 text-mute hover:text-ink transition-colors"
-                aria-label="Close navigation">
-          <i class="fas fa-times text-sm"></i>
-        </button>
-      </div>
-
-      <!-- Brand Logo -->
-      <%= link_to dashboard_path, class: "flex items-center gap-2 group" do %>
-        <%= image_tag "logo.png", alt: "ResQWay", class: "h-9 w-auto object-contain" %>
-      <% end %>
-      <p class="font-sketch text-xs text-mute mt-1">logistics &amp; accessibility intelligence</p>
-
-      <!-- Search in Sidebar (Opens Command Palette Modal directly, no page reload) -->
-      <button type="button"
-              data-action="click->search-modal#open"
-              class="mt-3 sketch-border-soft bg-surface/60 px-3 py-1.5 flex items-center gap-2 font-sketch text-sm text-mute hover:bg-surface hover:text-ink transition-colors w-full cursor-pointer text-left"
-              title="Search command palette (⌘K)">
-        <i class="fas fa-search text-xs shrink-0"></i>
-        <span class="flex-1 text-left text-xs font-sketch">Search…</span>
-        <kbd class="font-mono text-[10px] border border-ink/25 rounded px-1 py-0.5 hidden lg:inline">⌘K</kbd>
-      </button>
-
-      <!-- Live Telemetry Status Pill (ChaiCode Streak Style) -->
-      <div class="mt-3 relative flex items-center justify-between sketch-border-soft bg-surface/60 px-3 py-1.5 font-sketch text-xs">
-        <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-[rgb(var(--done-stroke))] animate-pulse"></span>
-          <span class="text-ink font-semibold">Live Telemetry</span>
-        </div>
-        <span class="font-mono text-[10px] text-mute">&lt; 2ms latency</span>
-      </div>
-
-      <!-- Navigation Tree (ChaiCode Pattern & Problem List Style) -->
-      <nav class="mt-6 space-y-5 flex-1 overflow-y-auto pr-1">
-        
-        <!-- Category 1: Operational Engines -->
-        <details data-category-key="operational_engines" class="group/cat space-y-1" open>
-          <summary data-action="click->sidebar#toggleCategory"
-                   class="flex items-center justify-between gap-1.5 text-left font-hand text-lg text-ink/80 px-1 py-1 rounded-lg hover:bg-ink/5 hover:text-ink transition-colors cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="text-ink/60 text-[10px] leading-none shrink-0 transition-transform duration-200 group-open/cat:rotate-90">▶</span>
-              <span class="font-bold truncate text-base sm:text-lg">Operational Engines</span>
-            </div>
-            <span class="text-[10px] text-mute font-mono px-1.5 py-0.5 rounded bg-ink/5 group-hover/cat:text-ink">9</span>
-          </summary>
-
-          <ul class="space-y-1 pl-3.5 mt-1">
-            <% is_dash = request.path == '/dashboard' %>
-            <li>
-              <%= link_to dashboard_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_dash ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_dash %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Dashboard
-                    <span class="block text-xs text-mute <%= is_dash ? 'text-paper/70' : '' %>">Intelligence Overview</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_map = current_page?(map_path) %>
-            <li>
-              <%= link_to map_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_map ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_map %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Intelligence Map
-                    <span class="block text-xs text-mute <%= is_map ? 'text-paper/70' : '' %>">CartoDB GIS Radar</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_access = request.path.start_with?('/accessibility') %>
-            <li>
-              <%= link_to accessibility_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_access ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_access %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Predictive Risk
-                    <span class="block text-xs text-mute <%= is_access ? 'text-paper/70' : '' %>">Accessibility Analysis</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_net = request.path.start_with?('/network') %>
-            <li>
-              <%= link_to network_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_net ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_net %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Network Graph
-                    <span class="block text-xs text-mute <%= is_net ? 'text-paper/70' : '' %>">Connectivity &amp; Isolation</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_pred = request.path.start_with?('/intelligence/predictions') %>
-            <li>
-              <%= link_to intelligence_predictions_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_pred ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_pred %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Cascade Predictions
-                    <span class="block text-xs text-mute <%= is_pred ? 'text-paper/70' : '' %>">Predictive Cascading Engine</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_resp = request.path.start_with?('/intelligence/response') %>
-            <li>
-              <%= link_to intelligence_response_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_resp ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_resp %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Autonomous Response
-                    <span class="block text-xs text-mute <%= is_resp ? 'text-paper/70' : '' %>">Optimization &amp; Staging</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_cmd = request.path.start_with?('/intelligence/command') %>
-            <li>
-              <%= link_to intelligence_command_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_cmd ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_cmd %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Unified Command
-                    <span class="block text-xs text-mute <%= is_cmd ? 'text-paper/70' : '' %>">Closed-Loop Decision Center</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_routes = request.path.start_with?('/routes') %>
-            <li>
-              <%= link_to routes_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_routes ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_routes %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Smart Routes
-                    <span class="block text-xs text-mute <%= is_routes ? 'text-paper/70' : '' %>">Triple-Buffered Optimizer</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_fleet = request.path.start_with?('/shipments') || request.path.start_with?('/vehicles') %>
-            <li>
-              <%= link_to shipments_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_fleet ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_fleet %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Live Fleet
-                    <span class="block text-xs text-mute <%= is_fleet ? 'text-paper/70' : '' %>">GPS Rerouting</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-          </ul>
-        </details>
-
-        <!-- Category 2: Incident Response -->
-        <details data-category-key="tactical_response" class="group/cat space-y-1" open>
-          <summary data-action="click->sidebar#toggleCategory"
-                   class="flex items-center justify-between gap-1.5 text-left font-hand text-lg text-ink/80 px-1 py-1 rounded-lg hover:bg-ink/5 hover:text-ink transition-colors cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="text-ink/60 text-[10px] leading-none shrink-0 transition-transform duration-200 group-open/cat:rotate-90">▶</span>
-              <span class="font-bold truncate text-base sm:text-lg">Tactical Response</span>
-            </div>
-            <span class="text-[10px] text-mute font-mono px-1.5 py-0.5 rounded bg-ink/5 group-hover/cat:text-ink">3</span>
-          </summary>
-
-          <ul class="space-y-1 pl-3.5 mt-1">
-            <% is_em = request.path.start_with?('/emergencies') %>
-            <li>
-              <%= link_to emergencies_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_em ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_em %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Emergency Center
-                    <span class="block text-xs text-mute <%= is_em ? 'text-paper/70' : '' %>">Active Incidents</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_inc = request.path.start_with?('/incidents') %>
-            <li>
-              <%= link_to incidents_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_inc ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_inc %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Field Incidents
-                    <span class="block text-xs text-mute <%= is_inc ? 'text-paper/70' : '' %>">Citizen Reports &amp; Photos</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_wh = request.path.start_with?('/warehouses') %>
-            <li>
-              <%= link_to warehouses_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_wh ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_wh %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Relief Depots
-                    <span class="block text-xs text-mute <%= is_wh ? 'text-paper/70' : '' %>">Warehouse Readiness</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-          </ul>
-        </details>
-
-        <!-- Category 3: Insights & Tools -->
-        <details data-category-key="insights_simulation" class="group/cat space-y-1" open>
-          <summary data-action="click->sidebar#toggleCategory"
-                   class="flex items-center justify-between gap-1.5 text-left font-hand text-lg text-ink/80 px-1 py-1 rounded-lg hover:bg-ink/5 hover:text-ink transition-colors cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden">
-            <div class="flex items-center gap-2 min-w-0">
-              <span class="text-ink/60 text-[10px] leading-none shrink-0 transition-transform duration-200 group-open/cat:rotate-90">▶</span>
-              <span class="font-bold truncate text-base sm:text-lg">Insights &amp; Simulation</span>
-            </div>
-            <span class="text-[10px] text-mute font-mono px-1.5 py-0.5 rounded bg-ink/5 group-hover/cat:text-ink"><%= authenticated? && current_user.admin? ? '3' : '2' %></span>
-          </summary>
-
-          <ul class="space-y-1 pl-3.5 mt-1">
-            <% is_ana = request.path.start_with?('/analytics') %>
-            <li>
-              <%= link_to analytics_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_ana ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_ana %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Analytics
-                    <span class="block text-xs text-mute <%= is_ana ? 'text-paper/70' : '' %>">Historical Performance</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% is_demo = current_page?(demo_path) %>
-            <li>
-              <%= link_to demo_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_demo ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                <span class="flex items-start gap-1.5">
-                  <% if is_demo %>
-                    <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                  <% end %>
-                  <span class="min-w-0 flex-1">
-                    Demo Scenario
-                    <span class="block text-xs text-mute <%= is_demo ? 'text-paper/70' : '' %>">SIH Interactive Simulator</span>
-                  </span>
-                </span>
-              <% end %>
-            </li>
-
-            <% if authenticated? && current_user.admin? %>
-              <% is_adm = request.path.start_with?('/admin') %>
-              <li>
-                <%= link_to admin_users_path, class: "block flex-1 min-w-0 font-sketch text-[14px] leading-snug px-2.5 py-1.5 rounded-lg transition #{is_adm ? 'bg-ink text-paper font-semibold shadow-sm' : 'text-sketch hover:bg-ink/5 hover:text-ink'}" do %>
-                  <span class="flex items-start gap-1.5">
-                    <% if is_adm %>
-                      <span class="shrink-0 mt-[3px] text-paper/80"><i class="fas fa-check text-[10px]"></i></span>
-                    <% end %>
-                    <span class="min-w-0 flex-1">
-                      User Administration
-                      <span class="block text-xs text-mute <%= is_adm ? 'text-paper/70' : '' %>">Access Controls</span>
-                    </span>
-                  </span>
-                <% end %>
-              </li>
-            <% end %>
-          </ul>
-        </details>
-
-      </nav>
-
-      <!-- Bottom User Card & Theme Toggle in Sidebar (ChaiCode Style) -->
-      <div class="pt-3 mt-auto border-t border-ink/15 space-y-2">
-        <button type="button"
-                data-action="click->theme#toggle"
-                class="w-full sketch-border-soft bg-surface/60 px-3 py-2 flex items-center justify-between font-sketch text-xs text-sketch hover:bg-surface hover:text-ink transition-colors cursor-pointer">
-          <div class="flex items-center gap-2">
-            <i data-theme-target="icon" class="fas fa-moon text-xs text-accent"></i>
-            <span data-theme-target="text">Dark Theme</span>
-          </div>
-          <span class="font-mono text-[10px] text-mute uppercase">Toggle</span>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-paper relative">
-      <!-- Top Navigation Bar -->
-      <header class="w-full flex justify-between items-center px-4 sm:px-8 lg:px-10 py-2.5 bg-surface border-b border-[var(--line)] shadow-sm z-20">
-        
-        <!-- Left: Brand + Hamburger (Mobile) + Search Pill Input -->
-        <div class="flex items-center space-x-2 sm:space-x-4 max-w-xl flex-1 min-w-0">
-          <!-- Mobile Hamburger Toggle -->
-          <button type="button"
-                  data-action="click->sidebar#toggle"
-                  aria-label="Toggle Navigation Sidebar"
-                  class="md:hidden p-2 rounded-xl text-sketch hover:bg-ink/5 transition-colors focus:outline-none flex-shrink-0 cursor-pointer">
-            <i class="fas fa-bars text-base"></i>
-          </button>
-
-          <!-- Search Pill Form with Live Suggestions -->
-          <div data-controller="search-autocomplete"
-               data-action="click@window->search-autocomplete#onClickOutside"
-               class="relative flex-1 max-w-[170px] sm:max-w-xs md:max-w-md min-w-0">
-            <%= form_with url: search_path, method: :get, local: true, class: "relative w-full" do |f| %>
-              <i class="fas fa-search absolute left-3.5 top-2.5 text-mute text-xs pointer-events-none"></i>
-              <%= f.text_field :q,
-                               placeholder: "Search nodes, corridors...",
-                               autocomplete: "off",
-                               data: {
-                                 "search-autocomplete-target": "input",
-                                 action: "focus->search-autocomplete#onFocus input->search-autocomplete#onInput keydown->search-autocomplete#onKeydown"
-                               },
-                               class: "w-full pl-8 sm:pl-9 pr-3 sm:pr-4 py-1.5 text-xs bg-paper text-ink border border-[var(--line)] rounded-full focus:ring-2 focus:ring-accent focus:outline-none transition-all placeholder:text-mute truncate" %>
-            <% end %>
-
-            <!-- Live Suggestions Floating Dropdown -->
-            <div data-search-autocomplete-target="dropdown"
-                 class="hidden absolute left-0 right-0 sm:right-auto sm:w-[380px] top-full mt-2 bg-surface sketch-border rounded-2xl shadow-2xl z-50 overflow-hidden">
-              <div class="p-2">
-                <div class="px-3 py-1.5 text-[10px] font-black uppercase text-mute tracking-wider flex items-center justify-between border-b border-[var(--line)]/50 pb-1.5 mb-1">
-                  <span class="flex items-center gap-1.5">
-                    <i class="fas fa-bolt text-accent text-[10px]"></i>
-                    <span>Live Suggestions</span>
-                  </span>
-                  <span class="text-[9px] font-mono text-mute">interactive</span>
-                </div>
-                <ul data-search-autocomplete-target="resultsList" class="space-y-0.5 max-h-[360px] overflow-y-auto">
-                  <!-- Rendered via Stimulus -->
-                </ul>
+      <!-- Flash Notification Messages -->
+      <% if flash[:notice].present? || flash[:alert].present? %>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 w-full">
+          <% if flash[:notice] %>
+            <div data-controller="flash"
+                 data-flash-timeout-value="3000"
+                 data-action="mouseenter->flash#pause mouseleave->flash#resume"
+                 class="bg-emerald-50 border border-emerald-300 text-emerald-900 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm transition-all">
+              <div class="flex items-center space-x-2.5">
+                <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
+                <span class="text-xs font-bold"><%= flash[:notice] %></span>
               </div>
+              <button type="button" data-action="click->flash#dismiss" class="text-emerald-700 hover:text-emerald-900 cursor-pointer p-0.5">
+                <i class="fas fa-times text-xs"></i>
+              </button>
             </div>
-          </div>
-        </div>
-
-        <!-- Right Side: Global View, Logs, Alerts, Dark Mode, Notification & User -->
-        <div class="flex items-center space-x-2 sm:space-x-3.5 pl-2 flex-shrink-0">
-          <%= link_to "Global View", map_path, class: "hidden lg:inline-block text-xs font-bold text-sketch hover:text-accent transition-colors" %>
-          <%= link_to "Logs", analytics_path, class: "hidden lg:inline-block text-xs font-bold text-sketch hover:text-accent transition-colors" %>
-          <%= link_to "Help", overview_path, class: "hidden sm:inline-block text-xs font-bold text-sketch hover:text-accent transition-colors" %>
-
-          <!-- Desktop QR Code Modal Trigger -->
-          <button type="button"
-                  data-action="click->qr-modal#open"
-                  title="Scan QR Code on Mobile"
-                  aria-label="Scan QR Code on Mobile"
-                  class="hidden sm:inline-flex items-center p-2 rounded-full text-sketch hover:text-accent hover:bg-ink/5 transition-colors cursor-pointer">
-            <i class="fas fa-qrcode text-sm"></i>
-          </button>
-
-          <!-- Dark/Light Mode Icon Toggle -->
-          <button type="button"
-                  data-action="click->theme#toggle"
-                  title="Toggle Light / Dark Mode"
-                  aria-label="Toggle Light / Dark Mode"
-                  class="p-2 rounded-full text-accent hover:opacity-80 hover:bg-ink/5 transition-colors cursor-pointer">
-            <i data-theme-target="icon" class="fas fa-moon text-sm"></i>
-          </button>
-
-          <!-- Notification Bell with Active Indicator -->
-          <%= link_to emergencies_path, title: "Emergency Notifications", aria: { label: "Emergency Notifications" }, class: "relative p-2 text-sketch hover:text-ink transition-colors" do %>
-            <i class="fas fa-bell text-sm"></i>
-            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-surface"></span>
           <% end %>
 
-          <!-- User Profile & Auth Controls -->
-          <% if authenticated? %>
-            <div class="flex items-center space-x-1.5 sm:space-x-2">
-              <%= link_to profile_path, class: "w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-accent text-white font-bold flex items-center justify-center text-xs shadow-sm overflow-hidden ring-2 ring-ink/10 hover:ring-accent transition-all flex-shrink-0" do %>
-                <% if current_user.avatar_url.present? %>
-                  <img src="<%= current_user.avatar_url %>" alt="" class="w-full h-full object-cover">
-                <% else %>
-                  <span><%= current_user.initials %></span>
-                <% end %>
-              <% end %>
-
-              <!-- Logout Button -->
-              <%= button_to logout_path, method: :delete, title: "Sign Out", class: "inline-flex items-center p-1.5 sm:px-2.5 sm:py-1 text-xs font-bold rounded-lg text-sketch hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer" do %>
-                <i class="fas fa-sign-out-alt text-xs sm:mr-1"></i>
-                <span class="hidden sm:inline">Logout</span>
-              <% end %>
+          <% if flash[:alert] %>
+            <div data-controller="flash"
+                 data-flash-timeout-value="3000"
+                 data-action="mouseenter->flash#pause mouseleave->flash#resume"
+                 class="bg-rose-50 border border-rose-300 text-rose-900 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm transition-all mt-2">
+              <div class="flex items-center space-x-2.5">
+                <i class="fas fa-exclamation-circle text-rose-600 text-sm"></i>
+                <span class="text-xs font-bold"><%= flash[:alert] %></span>
+              </div>
+              <button type="button" data-action="click->flash#dismiss" class="text-rose-700 hover:text-rose-900 cursor-pointer p-0.5">
+                <i class="fas fa-times text-xs"></i>
+              </button>
             </div>
-          <% else %>
-            <%= link_to "Sign In", login_path, class: "px-3 sm:px-3.5 py-1.5 bg-ink hover:bg-ink/90 text-paper font-black text-xs rounded-xl shadow-sm transition-colors" %>
           <% end %>
         </div>
-      </header>
+      <% end %>
 
-      <!-- Page Content Area -->
-      <main class="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-6 lg:p-8 bg-transparent relative z-10">
-        <% if flash[:notice] %>
-          <div data-controller="flash"
-               data-flash-timeout-value="2000"
-               data-action="mouseenter->flash#pause mouseleave->flash#resume"
-               class="mb-6 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 px-4 py-3 rounded-2xl flex items-center justify-between shadow-sm transition-all">
-            <div class="flex items-center space-x-3">
-              <i class="fas fa-check-circle text-emerald-600 dark:text-emerald-400 text-base flex-shrink-0"></i>
-              <span class="text-xs font-bold"><%= flash[:notice] %></span>
-            </div>
-            <button type="button"
-                    data-action="click->flash#dismiss"
-                    title="Dismiss"
-                    class="ml-3 text-emerald-700/60 dark:text-emerald-300/60 hover:text-emerald-900 dark:hover:text-white transition-colors cursor-pointer p-1">
-              <i class="fas fa-times text-xs"></i>
-            </button>
-          </div>
-        <% end %>
-
-        <% if flash[:alert] %>
-          <div data-controller="flash"
-               data-flash-timeout-value="2000"
-               data-action="mouseenter->flash#pause mouseleave->flash#resume"
-               class="mb-6 bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-red-900 dark:text-red-200 px-4 py-3 rounded-2xl flex items-center justify-between shadow-sm transition-all">
-            <div class="flex items-center space-x-3">
-              <i class="fas fa-exclamation-circle text-red-600 dark:text-red-400 text-base flex-shrink-0"></i>
-              <span class="text-xs font-bold"><%= flash[:alert] %></span>
-            </div>
-            <button type="button"
-                    data-action="click->flash#dismiss"
-                    title="Dismiss"
-                    class="ml-3 text-red-700/60 dark:text-red-300/60 hover:text-red-900 dark:hover:text-white transition-colors cursor-pointer p-1">
-              <i class="fas fa-times text-xs"></i>
-            </button>
-          </div>
-        <% end %>
-
+      <!-- Main Content Area on #EAEEF0 -->
+      <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <%= yield %>
       </main>
+
+    </div>
+
+    <!-- Universal ResQWay Footer (#212121) -->
+    <%= render "shared/resqway_footer" %>
+
+    <!-- Global Search Command Palette Modal (⌘K Spotlight) in #212121 / #102E39 / #FF471D -->
+    <div data-search-modal-target="backdrop"
+         data-action="click->search-modal#close"
+         class="fixed inset-0 bg-black/75 z-50 hidden transition-opacity backdrop-blur-xs"></div>
+
+    <div data-search-modal-target="modal"
+         class="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 hidden pointer-events-none">
+      <div class="pointer-events-auto max-w-xl w-full bg-white border border-slate-300 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-[#212121]">
+        
+        <!-- Modal Search Header Input -->
+        <div class="p-3.5 border-b border-slate-200 flex items-center gap-3 bg-slate-50">
+          <i class="fas fa-search text-[#FF471D] text-sm ml-1"></i>
+          <input type="text"
+                 data-search-modal-target="input"
+                 data-action="input->search-modal#onInput keydown->search-modal#onKeydown"
+                 placeholder="Search vessels, routes, relief depots, emergencies..."
+                 autocomplete="off"
+                 class="w-full bg-transparent text-[#212121] placeholder:text-slate-400 text-sm font-medium focus:outline-none">
+          <button type="button"
+                  data-action="click->search-modal#close"
+                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-200 border border-slate-300 text-slate-600 hover:text-[#212121] cursor-pointer">
+            ESC
+          </button>
+        </div>
+
+        <!-- Quick Filter Tags -->
+        <div class="px-4 py-2 border-b border-slate-200 bg-[#EAEEF0] flex items-center gap-1.5 overflow-x-auto text-[11px]">
+          <span class="text-[10px] font-bold text-slate-500 uppercase mr-1 flex-shrink-0">Quick:</span>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚢 Fleet</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">📍 Tawang</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="NH-27" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🛣️ NH-27</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Depot" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🏢 Warehouses</button>
+          <button type="button" data-action="click->search-modal#setQuery" data-query="Landslide" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚨 Incidents</button>
+        </div>
+
+        <!-- Suggestions List -->
+        <ul data-search-modal-target="resultsList" class="p-2 space-y-0.5 max-h-[360px] overflow-y-auto bg-white">
+          <!-- Populated dynamically via search_modal_controller -->
+        </ul>
+
+        <!-- Modal Footer with Keyboard Shortcuts -->
+        <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500 font-mono">
+          <div class="flex items-center space-x-3">
+            <span><kbd class="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 font-mono">↑↓</kbd> navigate</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 font-mono">↵</kbd> open</span>
+            <span><kbd class="px-1.5 py-0.5 rounded bg-white border border-slate-300 text-slate-600 font-mono">esc</kbd> close</span>
+          </div>
+          <span class="text-[10px] text-[#FF471D] font-semibold">ResQWay Operational Index</span>
+        </div>
+
+      </div>
     </div>
 
     <!-- Desktop QR Code Modal Overlay -->
@@ -575,68 +194,16 @@
 
     <div data-qr-modal-target="modal"
          class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden pointer-events-none">
-      <div class="pointer-events-auto max-w-2xl w-full relative">
+      <div class="pointer-events-auto max-w-2xl w-full relative bg-white rounded-2xl shadow-2xl overflow-hidden">
         <button type="button"
                 data-action="click->qr-modal#close"
                 title="Close Modal"
-                class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-surface sketch-border-soft text-mute hover:text-ink hover:border-accent flex items-center justify-center text-sm shadow-sm transition-all cursor-pointer">
+                class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-[#212121] flex items-center justify-center text-sm shadow-sm transition-all cursor-pointer">
           <i class="fas fa-times"></i>
         </button>
         <%= render "shared/qr_code_card", title: "Scan to Open ResQWay", subtitle: "Open this live operational command platform on your smartphone or tablet." %>
       </div>
     </div>
 
-    <!-- Global Search Command Palette Modal (⌘K Spotlight) -->
-    <div data-search-modal-target="backdrop"
-         data-action="click->search-modal#close"
-         class="fixed inset-0 bg-black/75 z-50 hidden transition-opacity"></div>
-
-    <div data-search-modal-target="modal"
-         class="fixed inset-0 z-50 flex items-start justify-center pt-14 sm:pt-20 p-4 hidden pointer-events-none">
-      <div class="pointer-events-auto max-w-xl w-full bg-surface sketch-border rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 flex flex-col">
-        
-        <!-- Modal Search Header Input -->
-        <div class="p-3.5 border-b border-[var(--line)] flex items-center gap-3 bg-surface">
-          <i class="fas fa-search text-accent text-sm ml-1"></i>
-          <input type="text"
-                 data-search-modal-target="input"
-                 data-action="input->search-modal#onInput keydown->search-modal#onKeydown"
-                 placeholder="Search nodes, corridors, relief depots, emergencies..."
-                 autocomplete="off"
-                 class="w-full bg-transparent text-ink placeholder:text-mute text-sm font-medium focus:outline-none">
-          <button type="button"
-                  data-action="click->search-modal#close"
-                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-ink/5 border border-ink/15 text-mute hover:text-ink cursor-pointer">
-            ESC
-          </button>
-        </div>
-
-        <!-- Quick Filter Tags -->
-        <div class="px-4 py-2 border-b border-[var(--line)]/50 bg-paper/50 flex items-center gap-1.5 overflow-x-auto text-[11px]">
-          <span class="text-[10px] font-bold text-mute uppercase mr-1 flex-shrink-0">Quick:</span>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full sketch-border-soft bg-surface hover:border-accent text-ink text-[11px] cursor-pointer flex-shrink-0">📍 Tawang</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="NH-13" class="px-2.5 py-0.5 rounded-full sketch-border-soft bg-surface hover:border-accent text-ink text-[11px] cursor-pointer flex-shrink-0">🛣️ NH-13</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Depot" class="px-2.5 py-0.5 rounded-full sketch-border-soft bg-surface hover:border-accent text-ink text-[11px] cursor-pointer flex-shrink-0">🏢 Warehouses</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Landslide" class="px-2.5 py-0.5 rounded-full sketch-border-soft bg-surface hover:border-accent text-ink text-[11px] cursor-pointer flex-shrink-0">🚨 Landslides</button>
-          <button type="button" data-action="click->search-modal#setQuery" data-query="Guwahati" class="px-2.5 py-0.5 rounded-full sketch-border-soft bg-surface hover:border-accent text-ink text-[11px] cursor-pointer flex-shrink-0">📍 Guwahati</button>
-        </div>
-
-        <!-- Suggestions List -->
-        <ul data-search-modal-target="resultsList" class="p-2 space-y-0.5 max-h-[360px] overflow-y-auto">
-          <!-- Populated dynamically via search_modal_controller -->
-        </ul>
-
-        <!-- Modal Footer with Keyboard Shortcuts -->
-        <div class="px-4 py-2.5 bg-paper/60 border-t border-[var(--line)] flex items-center justify-between text-[11px] text-mute font-mono">
-          <div class="flex items-center space-x-3">
-            <span><kbd class="px-1.5 py-0.5 rounded bg-ink/5 border border-ink/15 font-mono">↑↓</kbd> navigate</span>
-            <span><kbd class="px-1.5 py-0.5 rounded bg-ink/5 border border-ink/15 font-mono">↵</kbd> open</span>
-            <span><kbd class="px-1.5 py-0.5 rounded bg-ink/5 border border-ink/15 font-mono">esc</kbd> close</span>
-          </div>
-          <span class="text-[10px] text-accent font-semibold">ResQWay Global Index</span>
-        </div>
-
-      </div>
-    </div>
   </body>
 </html>

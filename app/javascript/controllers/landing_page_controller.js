@@ -25,11 +25,11 @@ export default class extends Controller {
     if (!this.hasNavbarTarget) return
     const scrolled = window.scrollY > 20
     if (scrolled) {
-      this.navbarTarget.classList.add("bg-[#0c1713]/95", "backdrop-blur-md", "shadow-xl", "border-[#1b3328]")
-      this.navbarTarget.classList.remove("bg-[#0c1713]/75")
+      this.navbarTarget.classList.add("bg-[#212121]/95", "backdrop-blur-md", "shadow-xl", "border-white/10")
+      this.navbarTarget.classList.remove("bg-[#212121]")
     } else {
-      this.navbarTarget.classList.add("bg-[#0c1713]/75")
-      this.navbarTarget.classList.remove("bg-[#0c1713]/95", "shadow-xl")
+      this.navbarTarget.classList.add("bg-[#212121]")
+      this.navbarTarget.classList.remove("bg-[#212121]/95", "shadow-xl")
     }
   }
 
@@ -63,10 +63,10 @@ export default class extends Controller {
     this.tabBtnTargets.forEach(btn => {
       const isSelected = btn.dataset.tab === targetTab
       if (isSelected) {
-        btn.classList.add("bg-[#0f261d]", "text-white")
+        btn.classList.add("bg-[#102E39]", "text-white")
         btn.classList.remove("bg-white", "text-slate-700", "hover:bg-slate-50")
       } else {
-        btn.classList.remove("bg-[#0f261d]", "text-white")
+        btn.classList.remove("bg-[#102E39]", "text-white")
         btn.classList.add("bg-white", "text-slate-700", "hover:bg-slate-50")
       }
       btn.setAttribute("aria-selected", isSelected ? "true" : "false")

@@ -1,0 +1,233 @@
+<div class="fixed top-0 left-0 right-0 z-50">
+  <!-- Thin 3px orange accent line -->
+  <div class="h-[3px] w-full bg-[#FF471D]"></div>
+
+  <header data-landing-page-target="navbar" class="w-full bg-[#212121] border-b border-white/10 shadow-md transition-all duration-300" style="background-color: #212121 !important;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        
+        <!-- Brand Logo (Horizontal Lockup matching reference design) -->
+        <div class="flex items-center space-x-3 flex-shrink-0">
+          <%= link_to root_path, class: "flex items-center space-x-2.5 group focus:outline-none" do %>
+            <%= image_tag "logo_icon.png", alt: "ResQWay", class: "h-7 sm:h-8 w-auto object-contain transition-transform group-hover:scale-105" %>
+            <span class="text-xl sm:text-2xl font-black tracking-tight text-white font-sans">ResQ<span class="text-[#FF471D]">Way</span></span>
+          <% end %>
+        </div>
+
+        <!-- Desktop Navigation Menus (Operational Engine, Tactical Response, Insights and Simulations) -->
+        <nav class="hidden lg:flex items-center space-x-1 sm:space-x-2 text-sm font-medium text-slate-200">
+          
+          <!-- Menu 1: Operational Engine -->
+          <% is_oe = request.path.start_with?('/dashboard', '/map', '/accessibility', '/network', '/intelligence', '/routes', '/shipments', '/vehicles', '/locations') %>
+          <div class="relative" data-landing-page-target="dropdown">
+            <button type="button"
+                    data-action="click->landing-page#toggleDropdown"
+                    class="px-3.5 py-2 rounded-lg hover:bg-white/10 hover:text-white flex items-center space-x-1.5 transition-all focus:outline-none cursor-pointer <%= is_oe ? 'text-white border-b-2 border-[#102E39] bg-white/5' : 'text-slate-300' %>">
+              <span>Operational Engine</span>
+              <i data-dropdown-arrow class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+            </button>
+
+            <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-white text-[#212121] rounded-xl shadow-2xl border border-slate-200 py-2 z-50">
+              <%= link_to dashboard_path, class: "block px-4 py-2.5 text-xs font-semibold text-[#212121] hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Dashboard
+              <% end %>
+              <%= link_to map_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Intelligence Map
+              <% end %>
+              <%= link_to accessibility_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Predictive Risks
+              <% end %>
+              <%= link_to network_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Network Graph
+              <% end %>
+              <%= link_to intelligence_predictions_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Cascade Predictions
+              <% end %>
+              <%= link_to intelligence_response_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Autonomous Response
+              <% end %>
+              <%= link_to intelligence_command_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Unified Command
+              <% end %>
+              <%= link_to routes_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Smart Routes
+              <% end %>
+              <%= link_to shipments_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Live Fleet Telemetry
+              <% end %>
+              <div class="border-t border-slate-100 my-1"></div>
+              <%= link_to dashboard_path, class: "block px-4 py-2 text-xs font-black text-[#FF471D] uppercase tracking-wider hover:bg-orange-50 transition-colors" do %>
+                ALL OPERATIONAL TOOLS &rarr;
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Menu 2: Tactical Response -->
+          <% is_tr = request.path.start_with?('/emergencies', '/incidents', '/warehouses', '/logistics_alerts') %>
+          <div class="relative" data-landing-page-target="dropdown">
+            <button type="button"
+                    data-action="click->landing-page#toggleDropdown"
+                    class="px-3.5 py-2 rounded-lg hover:bg-white/10 hover:text-white flex items-center space-x-1.5 transition-all focus:outline-none cursor-pointer <%= is_tr ? 'text-white border-b-2 border-[#102E39] bg-white/5' : 'text-slate-300' %>">
+              <span>Tactical Response</span>
+              <i data-dropdown-arrow class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+            </button>
+
+            <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-white text-[#212121] rounded-xl shadow-2xl border border-slate-200 py-2 z-50">
+              <%= link_to emergencies_path, class: "block px-4 py-2.5 text-xs font-semibold text-[#212121] hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Emergency Center
+              <% end %>
+              <%= link_to incidents_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Field Incidents (Photo Dispatch)
+              <% end %>
+              <%= link_to warehouses_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Relief Depots &amp; Stock
+              <% end %>
+              <%= link_to logistics_alerts_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Corridor Disruption Alerts
+              <% end %>
+              <div class="border-t border-slate-100 my-1"></div>
+              <%= link_to intelligence_command_path, class: "block px-4 py-2 text-xs font-black text-[#FF471D] uppercase tracking-wider hover:bg-orange-50 transition-colors" do %>
+                LIVE CONVOY DISPATCH &rarr;
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Menu 3: Insights and Simulations -->
+          <% is_is = request.path.start_with?('/analytics', '/demo', '/architecture', '/overview', '/about', '/admin') %>
+          <div class="relative" data-landing-page-target="dropdown">
+            <button type="button"
+                    data-action="click->landing-page#toggleDropdown"
+                    class="px-3.5 py-2 rounded-lg hover:bg-white/10 hover:text-white flex items-center space-x-1.5 transition-all focus:outline-none cursor-pointer <%= is_is ? 'text-white border-b-2 border-[#102E39] bg-white/5' : 'text-slate-300' %>">
+              <span>Insights and Simulations</span>
+              <i data-dropdown-arrow class="fas fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+            </button>
+
+            <div data-dropdown-menu class="hidden absolute top-full left-0 mt-1.5 w-64 bg-white text-[#212121] rounded-xl shadow-2xl border border-slate-200 py-2 z-50">
+              <%= link_to analytics_path, class: "block px-4 py-2.5 text-xs font-semibold text-[#212121] hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Historical Performance Analytics
+              <% end %>
+              <%= link_to demo_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Interactive Demo Scenario
+              <% end %>
+              <%= link_to architecture_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                System Architecture
+              <% end %>
+              <%= link_to overview_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                Smart India Hackathon Overview
+              <% end %>
+              <% if authenticated? && current_user.admin? %>
+                <div class="border-t border-slate-100 my-1"></div>
+                <%= link_to admin_users_path, class: "block px-4 py-2 text-xs font-bold text-[#FF471D] hover:bg-orange-50 transition-colors" do %>
+                  User Administration
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+
+        </nav>
+
+        <!-- Right Nav Controls: Sign In / Account + Search Trigger -->
+        <div class="hidden sm:flex items-center space-x-3">
+          
+          <!-- Sign Up / Log In Dropdown -->
+          <div class="relative" data-landing-page-target="dropdown">
+            <button type="button"
+                    data-action="click->landing-page#toggleDropdown"
+                    class="px-3 py-1.5 rounded-lg hover:bg-white/10 text-slate-200 hover:text-white flex items-center space-x-2 text-sm font-medium transition-all focus:outline-none cursor-pointer">
+              <span><%= authenticated? ? (current_user.name&.split&.first || current_user.username || "Account") : "Sign Up/Log In" %></span>
+              <div class="w-7 h-7 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-slate-300">
+                <i class="far fa-user text-xs"></i>
+              </div>
+              <i data-dropdown-arrow class="fas fa-chevron-down text-[9px] text-slate-400 transition-transform duration-200"></i>
+            </button>
+
+            <div data-dropdown-menu class="hidden absolute top-full right-0 mt-1.5 w-56 bg-white text-[#212121] rounded-xl shadow-2xl border border-slate-200 py-2 z-50">
+              <% if authenticated? %>
+                <div class="px-4 py-2 border-b border-slate-100">
+                  <p class="text-[11px] text-slate-400 uppercase font-mono tracking-wider">Signed in as</p>
+                  <p class="text-xs font-bold text-[#212121] truncate"><%= current_user.email %></p>
+                </div>
+                <%= link_to dashboard_path, class: "block px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                  <i class="fas fa-chart-line mr-2 text-[#FF471D]"></i> Live Dashboard
+                <% end %>
+                <%= link_to profile_path, class: "block px-4 py-2 text-xs font-medium text-slate-700 hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                  <i class="fas fa-user-gear mr-2 text-slate-400"></i> Profile Settings
+                <% end %>
+                <div class="border-t border-slate-100 my-1"></div>
+                <%= button_to logout_path, method: :delete, class: "w-full text-left px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer" do %>
+                  <i class="fas fa-sign-out-alt mr-2 text-rose-500"></i> Sign Out
+                <% end %>
+              <% else %>
+                <%= link_to login_path, class: "block px-4 py-2 text-xs font-semibold text-[#212121] hover:bg-[#EAEEF0] hover:text-[#FF471D] transition-colors" do %>
+                  Sign In
+                <% end %>
+                <%= link_to sign_up_path, class: "block px-4 py-2 text-xs font-semibold text-[#FF471D] hover:bg-orange-50 transition-colors" do %>
+                  Create Account
+                <% end %>
+                <div class="border-t border-slate-100 my-1"></div>
+                <%= button_to demo_sso_login_path, method: :post, class: "w-full text-left px-4 py-2 text-xs font-medium text-slate-600 hover:bg-[#EAEEF0] hover:text-[#212121] transition-colors cursor-pointer" do %>
+                  <i class="fas fa-bolt text-amber-500 mr-1.5"></i> 1-Click Demo SSO
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Search Command Trigger (⌘K) -->
+          <button type="button"
+                  data-action="click->search-modal#open"
+                  title="Search Corridors, Vessels & Emergencies (⌘K)"
+                  class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-all focus:outline-none cursor-pointer">
+            <i class="fas fa-search text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Menu & Search Button -->
+        <div class="flex items-center lg:hidden space-x-2">
+          <button type="button"
+                  data-action="click->search-modal#open"
+                  title="Search (⌘K)"
+                  class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors">
+            <i class="fas fa-search text-sm"></i>
+          </button>
+          <button type="button"
+                  data-action="click->landing-page#toggleMobileMenu"
+                  class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+                  aria-label="Toggle navigation">
+            <i class="fas fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Slide-Out -->
+    <div data-landing-page-target="mobileMenu" class="hidden lg:hidden border-t border-white/10 bg-[#212121] px-6 py-5 space-y-4 shadow-2xl">
+      <div class="space-y-2">
+        <p class="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">Navigation</p>
+        <div class="space-y-1 text-sm font-medium">
+          <%= link_to "Dashboard", dashboard_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Intelligence Map", map_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Predictive Risks", accessibility_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Network Graph", network_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Smart Routes", routes_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Live Fleet Telemetry", shipments_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Emergency Response Center", emergencies_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Field Incidents", incidents_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Relief Depots", warehouses_path, class: "block py-2 text-slate-200 hover:text-[#FF471D]" %>
+          <%= link_to "Demo Scenario", demo_path, class: "block py-2 text-[#FF471D] font-bold" %>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-white/10 space-y-2">
+        <% if authenticated? %>
+          <%= link_to "Open Live Dashboard", dashboard_path, class: "w-full flex items-center justify-center py-3 rounded-xl text-xs font-bold text-white bg-[#FF471D] hover:bg-[#e03e18] shadow-md transition-all" %>
+        <% else %>
+          <div class="grid grid-cols-2 gap-2">
+            <%= link_to "Sign In", login_path, class: "flex items-center justify-center py-2.5 rounded-xl text-xs font-bold text-slate-200 bg-white/10 hover:bg-white/20 transition-colors" %>
+            <%= link_to "Open Account", sign_up_path, class: "flex items-center justify-center py-2.5 rounded-xl text-xs font-bold text-white bg-[#FF471D] hover:bg-[#e03e18] shadow transition-colors" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </header>
+</div>
