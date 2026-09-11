@@ -60,12 +60,21 @@ export default class extends Controller {
     // Update tab button styles
     this.tabBtnTargets.forEach(btn => {
       const isSelected = btn.dataset.tab === targetTab
+      const icon = btn.querySelector("i")
       if (isSelected) {
         btn.classList.add("bg-[#102E39]", "text-white")
-        btn.classList.remove("bg-white", "text-slate-700", "hover:bg-slate-50")
+        btn.classList.remove("bg-white", "text-[#102E39]", "text-slate-700", "hover:bg-slate-50")
+        if (icon) {
+          icon.classList.remove("text-[#102E39]", "text-slate-700")
+          icon.classList.add("text-white")
+        }
       } else {
         btn.classList.remove("bg-[#102E39]", "text-white")
-        btn.classList.add("bg-white", "text-slate-700", "hover:bg-slate-50")
+        btn.classList.add("bg-white", "text-[#102E39]", "hover:bg-slate-50")
+        if (icon) {
+          icon.classList.remove("text-white")
+          icon.classList.add("text-[#102E39]")
+        }
       }
       btn.setAttribute("aria-selected", isSelected ? "true" : "false")
     })
