@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "counter", "mobileMenu", "progressBar", "tabBtn", "tabPane", "dropdown", "navbar" ]
+  static targets = [ "counter", "mobileMenu", "progressBar", "tabBtn", "tabPane", "dropdown", "navbar", "fedexTabBtn", "fedexPane" ]
 
   connect() {
     this.animateCounters()
@@ -25,11 +25,9 @@ export default class extends Controller {
     if (!this.hasNavbarTarget) return
     const scrolled = window.scrollY > 20
     if (scrolled) {
-      this.navbarTarget.classList.add("bg-[#212121]/95", "backdrop-blur-md", "shadow-xl", "border-white/10")
-      this.navbarTarget.classList.remove("bg-[#212121]")
+      this.navbarTarget.classList.add("shadow-xl", "backdrop-blur-md")
     } else {
-      this.navbarTarget.classList.add("bg-[#212121]")
-      this.navbarTarget.classList.remove("bg-[#212121]/95", "shadow-xl")
+      this.navbarTarget.classList.remove("shadow-xl", "backdrop-blur-md")
     }
   }
 
@@ -80,6 +78,44 @@ export default class extends Controller {
         pane.classList.add("hidden")
       }
     })
+  }
+
+  // --- FedEx 3-Tab Widget Switching (RATE & TRANSIT TIMES, TRACK, SHIP) ---
+  switchFedexTab(event) {
+    event.preventDefault()
+    const targetTab = event.currentTarget.dataset.fedexTab
+
+    if (this.hasFedexTabBtnTarget) {
+      this.fedexTabBtnTargets.forEach(btn => {
+        const isSelected = btn.dataset.fedexTab === targetTab
+        const icon = btn.querySelector("i")
+        if (isSelected) {
+          btn.classList.add("bg-[#4D148C]", "text-white")
+          btn.classList.remove("bg-white", "text-[#212121]", "hover:bg-slate-50")
+          if (icon) {
+            icon.classList.remove("text-slate-700")
+            icon.classList.add("text-white")
+          }
+        } else {
+          btn.classList.remove("bg-[#4D148C]", "text-white")
+          btn.classList.add("bg-white", "text-[#212121]", "hover:bg-slate-50")
+          if (icon) {
+            icon.classList.remove("text-white")
+            icon.classList.add("text-slate-700")
+          }
+        }
+      })
+    }
+
+    if (this.hasFedexPaneTarget) {
+      this.fedexPaneTargets.forEach(pane => {
+        if (pane.dataset.fedexPane === targetTab) {
+          pane.classList.remove("hidden")
+        } else {
+          pane.classList.add("hidden")
+        }
+      })
+    }
   }
 
   // --- Navbar Dropdowns ---

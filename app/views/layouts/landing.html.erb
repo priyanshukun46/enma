@@ -19,8 +19,11 @@
         theme: {
           extend: {
             colors: {
-              accent: '#FF471D',
-              accent2: '#102E39',
+              accent: '#FF6200',
+              accent2: '#4D148C',
+              'fedex-purple': '#4D148C',
+              'fedex-orange': '#FF6200',
+              'fedex-blue': '#007AB7',
               slate: {
                 50: '#F8FAFB',
                 100: '#EAEEF0',
@@ -45,14 +48,14 @@
     </script>
     <style>
       :root {
-        --paper: 234 238 240;
+        --paper: 255 255 255;
         --surface: 255 255 255;
         --ink: 33 33 33;
-        --accent: 255 71 29;
-        --accent2: 16 46 57;
+        --accent: 255 98 0;
+        --accent2: 77 20 140;
       }
       body {
-        background-color: #EAEEF0 !important;
+        background-color: #FFFFFF !important;
         color: #212121 !important;
       }
       .reveal-on-scroll {
@@ -68,8 +71,8 @@
     </style>
   </head>
 
-  <body class="min-h-screen antialiased selection:bg-[#FF471D] selection:text-white flex flex-col justify-between bg-[#EAEEF0] text-[#212121]"
-        style="background-color: #EAEEF0 !important; color: #212121 !important;"
+  <body class="min-h-screen antialiased selection:bg-[#FF6200] selection:text-white flex flex-col justify-between bg-white text-[#212121]"
+        style="background-color: #FFFFFF !important; color: #212121 !important;"
         data-controller="search-modal">
     
     <% if flash[:notice].present? || flash[:alert].present? %>
