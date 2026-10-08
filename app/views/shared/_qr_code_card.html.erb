@@ -12,11 +12,11 @@
 <% card_subtitle = local_assigns[:subtitle].presence || "Open this live operational command platform on your smartphone or tablet." %>
 <% size = local_assigns[:module_size] || 4 %>
 
-<div class="bg-surface sketch-border rounded-3xl p-5 sm:p-7 shadow-2xl text-ink space-y-4 overflow-hidden w-full">
+<div class="bg-white rounded-none p-5 sm:p-7 shadow-none border-none text-ink space-y-4 overflow-hidden w-full">
   
   <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
     <!-- QR Code SVG Box (Compact, razor sharp contrast on white base) -->
-    <div class="p-2.5 bg-white rounded-2xl shadow-sm border-2 border-stone-200 flex items-center justify-center flex-shrink-0">
+    <div class="p-2.5 bg-white rounded-none shadow-none border border-slate-200 flex items-center justify-center flex-shrink-0">
       <div class="w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center">
         <%= render_qr_svg(target_url, module_size: size, color: "18120e", fill: "ffffff") %>
       </div>

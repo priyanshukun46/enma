@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nobile:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Playwrite+GB+J:ital,wght@0,100..400;1,100..400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
     <script nonce="<%= request.content_security_policy_nonce %>">
@@ -44,11 +44,8 @@
               },
             },
             fontFamily: {
-              sans: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
-              montserrat: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
-              nobile: ['"Nobile"', 'system-ui', '-apple-system', 'sans-serif'],
-              fraunces: ['"Fraunces"', 'serif'],
-              playwrite: ['"Playwrite GB J"', 'cursive'],
+              sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+              montserrat: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
               mono: ['"JetBrains Mono"', '"SF Mono"', 'monospace'],
             }
           }
@@ -72,7 +69,7 @@
       body {
         background-color: #FFFFFF !important;
         color: #212121 !important;
-        font-family: 'Montserrat', system-ui, -apple-system, sans-serif !important;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
         letter-spacing: -0.011em;
         line-height: 1.5;
       }
@@ -95,6 +92,78 @@
       .dark [class*="dark:bg-slate-950"] {
         background-color: #FFFFFF !important;
       }
+
+      /* ================================================================= */
+      /* ResQWay Flat Modern Design System (Home Page Matched Design)      */
+      /* - Square Boxes across all pages (border-radius: 0px)              */
+      /* - Zero Drop Shadows on boxes & cards                              */
+      /* - Zero Strokes / Borders on cards & containers                   */
+      /* - Flat, crisp surfaces                                            */
+      /* ================================================================= */
+
+      /* 1. Square boxes on all cards, panels, widgets, sections */
+      main div[class*="rounded-"],
+      main section[class*="rounded-"],
+      main article[class*="rounded-"],
+      .bg-surface,
+      .chai-card,
+      .sketch-card,
+      .sketch-border,
+      .sketch-border-soft {
+        border-radius: 0px !important;
+      }
+
+      /* Preserve small round dots/status indicators */
+      span.rounded-full[class*="w-2"],
+      span.rounded-full[class*="w-2.5"],
+      span.rounded-full[class*="w-1.5"],
+      span.rounded-full[class*="w-3"],
+      span.rounded-full[class*="h-2"],
+      span.rounded-full[class*="h-2.5"] {
+        border-radius: 9999px !important;
+      }
+
+      /* 2. Remove all drop shadows from cards, boxes, and widgets (preserve floating modals) */
+      main div[class*="shadow-"]:not([data-search-modal-target]):not([data-qr-modal-target]):not([data-dropdown-menu]):not([data-route-planner-map-target="navHud"]),
+      main section[class*="shadow-"],
+      main article[class*="shadow-"],
+      .bg-surface,
+      .sketch-card,
+      .chai-card,
+      .sketch-border,
+      .sketch-border-soft {
+        box-shadow: none !important;
+      }
+
+      /* 3. Remove strokes (borders) from cards, boxes, and metric containers */
+      .sketch-border:not([class*="border-l-4"]):not([class*="border-l-2"]),
+      .sketch-border-soft:not([class*="border-l-4"]):not([class*="border-l-2"]),
+      .bg-surface:not([class*="border-l-4"]):not([class*="border-l-2"]),
+      .chai-card:not([class*="border-l-4"]):not([class*="border-l-2"]),
+      .sketch-card:not([class*="border-l-4"]):not([class*="border-l-2"]),
+      main div[class*="rounded-"]:not([class*="border-l-4"]):not([class*="border-l-2"]):not([data-search-modal-target]):not([data-qr-modal-target]):not([data-dropdown-menu]):not([data-route-planner-map-target="navHud"]),
+      main section[class*="rounded-"],
+      main article[class*="rounded-"] {
+        border-top-color: transparent !important;
+        border-right-color: transparent !important;
+        border-bottom-color: transparent !important;
+        border-left-color: transparent !important;
+        border-color: transparent !important;
+      }
+
+      /* Ensure card surfaces are crisp pure white */
+      .bg-surface,
+      .chai-card,
+      .sketch-card {
+        background-color: #FFFFFF !important;
+      }
+
+      /* Interactive card hover: clean flat elevation without hard drop shadow */
+      .chai-card:hover,
+      .sketch-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: none !important;
+      }
     </style>
   </head>
 
@@ -112,7 +181,7 @@
     <%= render "shared/resqway_header" %>
 
     <!-- Header Spacer & Subpage Banner Container -->
-    <div class="pt-16 sm:pt-20 flex-1 flex flex-col">
+    <div class="pt-16 sm:pt-20 flex-1 flex flex-col bg-white">
       
       <!-- Contextual Subpage Hero Banner with Breadcrumbs & Mockup (Attached Image 1) -->
       <%= render "shared/subpage_hero_banner" %>
@@ -124,7 +193,7 @@
             <div data-controller="flash"
                  data-flash-timeout-value="3000"
                  data-action="mouseenter->flash#pause mouseleave->flash#resume"
-                 class="bg-emerald-50 border border-emerald-300 text-emerald-900 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm transition-all">
+                 class="bg-emerald-50 border border-emerald-300 text-emerald-900 px-4 py-3 rounded-none flex items-center justify-between shadow-none transition-all">
               <div class="flex items-center space-x-2.5">
                 <i class="fas fa-check-circle text-emerald-600 text-sm"></i>
                 <span class="text-xs font-bold"><%= flash[:notice] %></span>
@@ -139,7 +208,7 @@
             <div data-controller="flash"
                  data-flash-timeout-value="3000"
                  data-action="mouseenter->flash#pause mouseleave->flash#resume"
-                 class="bg-rose-50 border border-rose-300 text-rose-900 px-4 py-3 rounded-xl flex items-center justify-between shadow-sm transition-all mt-2">
+                 class="bg-rose-50 border border-rose-300 text-rose-900 px-4 py-3 rounded-none flex items-center justify-between shadow-none transition-all mt-2">
               <div class="flex items-center space-x-2.5">
                 <i class="fas fa-exclamation-circle text-rose-600 text-sm"></i>
                 <span class="text-xs font-bold"><%= flash[:alert] %></span>
@@ -152,8 +221,8 @@
         </div>
       <% end %>
 
-      <!-- Main Content Area on #EAEEF0 -->
-      <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Main Content Area on White Canvas -->
+      <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white">
         <%= yield %>
       </main>
 
@@ -169,7 +238,7 @@
 
     <div data-search-modal-target="modal"
          class="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 hidden pointer-events-none">
-      <div class="pointer-events-auto max-w-xl w-full bg-white border border-slate-300 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-[#212121]">
+      <div class="pointer-events-auto max-w-xl w-full bg-white border border-slate-300 rounded-none shadow-2xl overflow-hidden flex flex-col text-[#212121]">
         
         <!-- Modal Search Header Input -->
         <div class="p-3.5 border-b border-slate-200 flex items-center gap-3 bg-slate-50">
@@ -182,13 +251,13 @@
                  class="w-full bg-transparent text-[#212121] placeholder:text-slate-400 text-sm font-medium focus:outline-none">
           <button type="button"
                   data-action="click->search-modal#close"
-                  class="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-slate-200 border border-slate-300 text-slate-600 hover:text-[#212121] cursor-pointer">
+                  class="px-2 py-0.5 rounded-none text-[10px] font-mono uppercase bg-slate-200 border border-slate-300 text-slate-600 hover:text-[#212121] cursor-pointer">
             ESC
           </button>
         </div>
 
         <!-- Quick Filter Tags -->
-        <div class="px-4 py-2 border-b border-slate-200 bg-[#EAEEF0] flex items-center gap-1.5 overflow-x-auto text-[11px]">
+        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50 flex items-center gap-1.5 overflow-x-auto text-[11px]">
           <span class="text-[10px] font-bold text-slate-500 uppercase mr-1 flex-shrink-0">Quick:</span>
           <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚢 Fleet</button>
           <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">📍 Tawang</button>

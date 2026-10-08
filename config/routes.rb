@@ -32,8 +32,7 @@ Rails.application.routes.draw do
              path_names: { sign_in: "login", sign_out: "logout", sign_up: "sign_up" },
              controllers: {
                sessions: "users/sessions",
-               registrations: "users/registrations",
-               omniauth_callbacks: "users/omniauth_callbacks"
+               registrations: "users/registrations"
              }
 
   devise_scope :user do
@@ -44,15 +43,12 @@ Rails.application.routes.draw do
     post "sign_up", to: "users/registrations#create"
     get "signup", to: "users/registrations#new"
     post "signup", to: "users/registrations#create"
-    post "demo_sso_login", to: "users/sessions#demo_sso_login", as: :demo_sso_login
   end
 
   # User Profile & Settings
   resource :profile, only: [:show, :update]
   resource :settings, only: [:show] do
     patch :update_password
-    post :connect_sso
-    delete :disconnect_sso
   end
 
   # Password Reset Routes

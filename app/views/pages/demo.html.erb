@@ -27,7 +27,7 @@
   </div>
 
   <!-- Step Progress Indicator (7 Steps) -->
-  <div class="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm space-y-3">
+  <div class="bg-white rounded-2xl p-5 space-y-3">
     <div class="flex items-center justify-between text-xs font-bold">
       <span class="text-accent uppercase tracking-wider">Step <%= @step %> of 7</span>
       <span class="text-gray-500"><%= ((@step / 7.0) * 100).round %>% Completed</span>
@@ -57,7 +57,7 @@
   </div>
 
   <!-- Active Scenario Card -->
-  <div class="bg-white rounded-3xl p-8 md:p-10 border border-gray-200 shadow-xl space-y-6">
+  <div class="bg-white rounded-3xl p-8 md:p-10 space-y-6">
     <% case @step %>
     <% when 1 %>
       <!-- STEP 1: Environmental Risk Detected -->

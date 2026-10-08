@@ -78,7 +78,7 @@
     </div>
 
     <% if @total_results == 0 %>
-      <div class="p-12 text-center bg-surface sketch-border rounded-2xl space-y-3">
+      <div class="p-12 text-center bg-surface rounded-2xl space-y-3">
         <div class="w-12 h-12 rounded-full bg-paper sketch-border-soft text-mute flex items-center justify-center text-xl mx-auto">
           <i class="fas fa-search"></i>
         </div>
@@ -89,7 +89,7 @@
 
       <!-- 1. Location Matches -->
       <% if @locations.any? %>
-        <div class="bg-surface sketch-border rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="bg-surface rounded-2xl p-5 sm:p-6 space-y-4">
           <h3 class="text-xs font-black text-ink uppercase tracking-wider flex items-center">
             <i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>
             Settlements &amp; Communities (<%= @locations.size %>)
@@ -116,7 +116,7 @@
 
       <!-- 2. Road Corridors Matches -->
       <% if @roads&.any? %>
-        <div class="bg-surface sketch-border rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="bg-surface rounded-2xl p-5 sm:p-6 space-y-4">
           <h3 class="text-xs font-black text-ink uppercase tracking-wider flex items-center">
             <i class="fas fa-road text-accent mr-2"></i>
             Highway Corridors &amp; Passes (<%= @roads.size %>)
@@ -143,7 +143,7 @@
 
       <!-- 3. Warehouse Matches -->
       <% if @warehouses.any? %>
-        <div class="bg-surface sketch-border rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="bg-surface rounded-2xl p-5 sm:p-6 space-y-4">
           <h3 class="text-xs font-black text-ink uppercase tracking-wider flex items-center">
             <i class="fas fa-warehouse text-emerald-600 mr-2"></i>
             Relief Warehouses &amp; Staging Hubs (<%= @warehouses.size %>)
@@ -170,7 +170,7 @@
 
       <!-- 4. Emergency Matches -->
       <% if @emergencies.any? %>
-        <div class="bg-surface sketch-border rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="bg-surface rounded-2xl p-5 sm:p-6 space-y-4">
           <h3 class="text-xs font-black text-ink uppercase tracking-wider flex items-center">
             <i class="fas fa-radiation text-red-600 mr-2"></i>
             Emergency &amp; Disaster Incidents (<%= @emergencies.size %>)

@@ -70,72 +70,39 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_select "div", text: /Successfully logged out/
   end
 
-  test "should authenticate with Google SSO" do
-    post demo_sso_login_url, params: { provider: "google" }
+  test "login page should render Quick Demo Access buttons" do
+    get login_url
+    assert_response :success
+    assert_select "button", text: /Admin Access/
+    assert_select "button", text: /Operator Access/
+  end
+
+  test "should login via Quick Demo Access as Admin" do
+    post login_url, params: {
+      login: "admin",
+      password: "password123"
+    }
     assert_redirected_to dashboard_url
     assert_not_nil session[:user_id]
-    user = User.find(session[:user_id])
-    assert_equal "google_oauth2", user.provider
+    admin = User.find(session[:user_id])
+    assert_equal "admin", admin.username
+    assert admin.admin?
     follow_redirect!
     assert_response :success
-    assert_select "div", text: /Signed in successfully with Google SSO/
   end
 
-  test "should authenticate with GitHub SSO" do
-    post demo_sso_login_url, params: { provider: "github" }
+  test "should login via Quick Demo Access as Operator" do
+    post login_url, params: {
+      login: "operator",
+      password: "password123"
+    }
     assert_redirected_to dashboard_url
     assert_not_nil session[:user_id]
-    user = User.find(session[:user_id])
-    assert_equal "github", user.provider
+    op = User.find(session[:user_id])
+    assert_equal "operator", op.username
+    assert op.operator?
     follow_redirect!
     assert_response :success
-    assert_select "div", text: /Signed in successfully with GitHub SSO/
-  end
-
-  test "should authenticate via real OmniAuth Google callback" do
-    OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new({
-      provider: "google_oauth2",
-      uid: "google_uid_9988",
-      info: {
-        name: "Google Officer Roy",
-        email: "roy.google@resqway.ai",
-        image: "https://lh3.googleusercontent.com/avatar.png"
-      }
-    })
-
-    Rails.application.env_config["devise.mapping"] = Devise.mappings[:user]
-    Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:google_oauth2]
-
-    get user_google_oauth2_omniauth_callback_url
-    assert_redirected_to dashboard_url
-    assert_not_nil session[:user_id]
-    user = User.find(session[:user_id])
-    assert_equal "roy.google@resqway.ai", user.email
-    assert_equal "google_oauth2", user.provider
-  end
-
-  test "should authenticate via real OmniAuth GitHub callback" do
-    OmniAuth.config.test_mode = true
-    OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({
-      provider: "github",
-      uid: "github_uid_4455",
-      info: {
-        name: "GitHub Developer Singh",
-        email: "singh.github@resqway.ai",
-        image: "https://avatars.githubusercontent.com/u/123?v=4"
-      }
-    })
-
-    Rails.application.env_config["devise.mapping"] = Devise.mappings[:user]
-    Rails.application.env_config["omniauth.auth"] = OmniAuth.config.mock_auth[:github]
-
-    get user_github_omniauth_callback_url
-    assert_redirected_to dashboard_url
-    assert_not_nil session[:user_id]
-    user = User.find(session[:user_id])
-    assert_equal "singh.github@resqway.ai", user.email
-    assert_equal "github", user.provider
   end
 
   test "login page should not have application sidebar" do

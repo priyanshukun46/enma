@@ -3,101 +3,108 @@
   <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between pb-3 border-b border-slate-200 dark:border-slate-800 gap-3">
     <div>
       <div class="flex items-center space-x-2.5">
-        <h2 class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">Intelligence Analytics</h2>
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-accent/15 dark:bg-accent/10 text-accent dark:text-accent border border-accent/20 dark:border-accent/20 uppercase tracking-wider">
-          <span class="w-1.5 h-1.5 rounded-full bg-accent dark:bg-accent animate-ping mr-1.5"></span>
-          LIVE INTELLIGENCE
-        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#212121] tracking-tight font-sans">Intelligence Analytics</h2>
+        <span class="text-xs text-slate-500 font-mono hidden sm:inline">&bull; Live Regional Telemetry</span>
       </div>
-      <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Regional insights, risk patterns and logistics readiness across North East India.</p>
+      <p class="text-xs text-slate-500 mt-1">Regional insights, risk patterns and logistics readiness across North East India.</p>
     </div>
 
     <!-- Controls: Time Range Filter & Export Report -->
     <div class="flex flex-wrap items-center gap-2.5">
       <!-- Date Range Filter Tabs -->
-      <div class="flex items-center space-x-1 bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
-        <%= link_to "Last 7 Days", analytics_path(time_range: "7d"), class: "px-3 py-1.5 rounded-lg transition-colors #{@time_range == '7d' ? 'bg-white dark:bg-slate-900 text-accent dark:text-accent shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}" %>
-        <%= link_to "Last 30 Days", analytics_path(time_range: "30d"), class: "px-3 py-1.5 rounded-lg transition-colors #{@time_range == '30d' ? 'bg-white dark:bg-slate-900 text-accent dark:text-accent shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}" %>
-        <%= link_to "All Time", analytics_path(time_range: "all"), class: "px-3 py-1.5 rounded-lg transition-colors #{@time_range == 'all' ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}" %>
+      <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-none text-xs font-bold">
+        <%= link_to "Last 7 Days", analytics_path(time_range: "7d"), class: "px-3 py-1.5 rounded-none transition-colors #{@time_range == '7d' ? 'bg-white text-[#102E39] shadow-none' : 'text-slate-600 hover:text-slate-900'}" %>
+        <%= link_to "Last 30 Days", analytics_path(time_range: "30d"), class: "px-3 py-1.5 rounded-none transition-colors #{@time_range == '30d' ? 'bg-white text-[#102E39] shadow-none' : 'text-slate-600 hover:text-slate-900'}" %>
+        <%= link_to "All Time", analytics_path(time_range: "all"), class: "px-3 py-1.5 rounded-none transition-colors #{@time_range == 'all' ? 'bg-white text-[#102E39] shadow-none' : 'text-slate-600 hover:text-slate-900'}" %>
       </div>
 
       <!-- Export Report Button -->
-      <%= link_to analytics_report_path(time_range: @time_range), target: "_blank", class: "inline-flex items-center px-4 py-2 bg-accent hover:opacity-90 text-white font-black text-xs rounded-xl shadow-sm transition-all" do %>
+      <%= link_to analytics_report_path(time_range: @time_range), target: "_blank", class: "inline-flex items-center px-4 py-2 bg-[#FF471D] hover:bg-[#e03d15] text-white font-bold text-xs uppercase tracking-wider rounded-none shadow-none transition-all cursor-pointer" do %>
         <i class="fas fa-file-download mr-1.5 text-xs"></i>
         <span>Generate Intelligence Report</span>
       <% end %>
     </div>
   </div>
 
-  <!-- SECTION 1: Executive Summary Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <!-- SECTION 1: Executive Summary Cards (Clean Minimal Style Matching Homepage) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
     <!-- Card 1: Regional Readiness -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-l-4 border-accent border-t border-r border-b border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-slate-50 rounded-none shadow-none border-none p-5 flex flex-col justify-between space-y-3">
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-bold text-accent dark:text-accent uppercase tracking-wider">Regional Readiness</p>
-          <div class="flex items-baseline space-x-2 mt-1">
-            <span class="text-3xl font-black text-slate-900 dark:text-white"><%= @readiness_score %></span>
-            <span class="text-xs font-bold text-slate-400">/ 100</span>
-          </div>
-          <div class="mt-1">
-            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-black uppercase <%= @readiness_score >= 80 ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' : (@readiness_score >= 60 ? 'bg-accent/10 dark:bg-accent/10 text-accent dark:text-accent' : 'bg-yellow-100 dark:bg-yellow-950 text-yellow-800 dark:text-yellow-300') %>">
-              <%= @readiness_category %>
-            </span>
-          </div>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">Overall logistics and emergency preparedness.</p>
-        </div>
-        <div class="w-11 h-11 rounded-xl bg-accent/10 dark:bg-accent/10 flex items-center justify-center text-accent dark:text-accent text-lg shadow-inner flex-shrink-0">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Regional Readiness</span>
+        <div class="w-8 h-8 rounded-none bg-[#102E39]/5 text-[#102E39] flex items-center justify-center text-sm">
           <i class="fas fa-shield-alt"></i>
         </div>
+      </div>
+      <div>
+        <div class="text-3xl font-extrabold text-[#212121] tracking-tight font-sans">
+          <%= @readiness_score %><span class="text-base font-normal text-slate-400">/100</span>
+        </div>
+        <p class="text-[11px] font-medium text-slate-500 mt-1">
+          <%= @readiness_category %> &bull; Preparedness baseline
+        </p>
       </div>
     </div>
 
     <!-- Card 2: High Risk Zones -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-l-4 border-orange-500 border-t border-r border-b border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-slate-50 rounded-none shadow-none border-none p-5 flex flex-col justify-between space-y-3">
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">High Risk Zones</p>
-          <p class="text-3xl font-black text-slate-900 dark:text-white mt-1"><%= @high_risk_zones_count %></p>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Locations requiring increased monitoring.</p>
-        </div>
-        <div class="w-11 h-11 rounded-xl bg-orange-50 dark:bg-orange-950/70 flex items-center justify-center text-orange-600 dark:text-orange-400 text-lg shadow-inner flex-shrink-0">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">High Risk Zones</span>
+        <div class="w-8 h-8 rounded-none bg-[#102E39]/5 text-[#102E39] flex items-center justify-center text-sm">
           <i class="fas fa-exclamation-triangle"></i>
         </div>
+      </div>
+      <div>
+        <div class="text-3xl font-extrabold text-[#212121] tracking-tight font-sans">
+          <%= @high_risk_zones_count %>
+        </div>
+        <p class="text-[11px] font-medium text-slate-500 mt-1">
+          Locations requiring active monitoring
+        </p>
       </div>
     </div>
 
     <!-- Card 3: Active Emergencies -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-l-4 border-red-600 border-t border-r border-b border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-slate-50 rounded-none shadow-none border-none p-5 flex flex-col justify-between space-y-3">
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">Active Emergencies</p>
-          <p class="text-3xl font-black text-slate-900 dark:text-white mt-1"><%= @active_emergencies_count %></p>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Ongoing disaster response operations.</p>
-        </div>
-        <div class="w-11 h-11 rounded-xl bg-red-50 dark:bg-red-950/70 flex items-center justify-center text-red-600 dark:text-red-400 text-lg shadow-inner flex-shrink-0">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Emergencies</span>
+        <div class="w-8 h-8 rounded-none bg-[#102E39]/5 text-[#102E39] flex items-center justify-center text-sm">
           <i class="fas fa-radiation"></i>
+        </div>
+      </div>
+      <div>
+        <div class="text-3xl font-extrabold text-[#212121] tracking-tight font-sans">
+          <%= @active_emergencies_count %>
+        </div>
+        <div class="mt-1">
+          <span class="inline-block text-[11px] font-bold <%= (@active_emergencies_count > 0) ? 'text-[#FF471D]' : 'text-slate-500' %>">
+            Ongoing response operations
+          </span>
         </div>
       </div>
     </div>
 
     <!-- Card 4: Communities Monitored -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border-l-4 border-emerald-500 border-t border-r border-b border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-slate-50 rounded-none shadow-none border-none p-5 flex flex-col justify-between space-y-3">
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Communities Monitored</p>
-          <p class="text-3xl font-black text-slate-900 dark:text-white mt-1"><%= @total_communities_count %></p>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Across North East India.</p>
-        </div>
-        <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-lg shadow-inner flex-shrink-0">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Communities Monitored</span>
+        <div class="w-8 h-8 rounded-none bg-[#102E39]/5 text-[#102E39] flex items-center justify-center text-sm">
           <i class="fas fa-map-marked-alt"></i>
         </div>
+      </div>
+      <div>
+        <div class="text-3xl font-extrabold text-[#212121] tracking-tight font-sans">
+          <%= @total_communities_count %>
+        </div>
+        <p class="text-[11px] font-medium text-slate-500 mt-1">
+          Across North East India
+        </p>
       </div>
     </div>
   </div>
 
   <!-- SECTION 10: ResQWay Dynamic Key Insights -->
-  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 space-y-4">
     <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
       <div class="flex items-center space-x-2">
         <span class="text-lg">⚡</span>
@@ -130,7 +137,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
     
     <!-- SECTION 2: Regional Risk Distribution -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 flex flex-col justify-between space-y-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4">
       <div>
         <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
           <div>
@@ -231,7 +238,7 @@
     </div>
 
     <!-- SECTION 3: Accessibility Intelligence -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 flex flex-col justify-between space-y-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 flex flex-col justify-between space-y-4">
       <div>
         <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
           <div>
@@ -314,7 +321,7 @@
   </div>
 
   <!-- SECTION 7 & 8: Regional Logistics Readiness Engine -->
-  <div id="logistics-readiness" class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
+  <div id="logistics-readiness" class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 space-y-5">
     <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       <div>
         <div class="flex items-center space-x-2">
@@ -393,7 +400,7 @@
   </div>
 
   <!-- SECTION 4: Disaster Intelligence & Emergency Analytics -->
-  <div id="disaster-intelligence" class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-5">
+  <div id="disaster-intelligence" class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 space-y-5">
     <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       <div>
         <h3 class="text-sm font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
@@ -458,7 +465,7 @@
   </div>
 
   <!-- SECTION 5: Critical Intelligence Watchlist -->
-  <div id="critical-watchlist" class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div id="critical-watchlist" class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       <div>
         <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
@@ -524,7 +531,7 @@
   </div>
 
   <!-- SECTION 6: Regional State Comparison -->
-  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 space-y-4">
     <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
       <div>
         <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
@@ -575,7 +582,7 @@
   </div>
 
   <!-- SECTION 9: Regional Intelligence Trends -->
-  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-4">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 space-y-4">
     <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
       <div>
         <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
@@ -619,7 +626,7 @@
   </div>
 
   <!-- SECTION 11: Regional Intelligence Map -->
-  <div id="regional-map" class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden"
+  <div id="regional-map" class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden"
        data-controller="analytics-map"
        data-analytics-map-locations-value="<%= @map_locations.to_json %>"
        data-analytics-map-warehouses-value="<%= @map_warehouses.to_json %>"

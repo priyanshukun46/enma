@@ -1,8 +1,7 @@
 class User < ApplicationRecord
   # Devise Modules
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: [:google_oauth2, :github]
+         :recoverable, :rememberable, :validatable
 
   attr_accessor :login
 
@@ -84,48 +83,27 @@ class User < ApplicationRecord
     end
   end
 
-  # OAuth find or create logic
-  def self.from_omniauth(auth)
-    return nil if auth.blank?
+  # Ensure default demo accounts exist on demand
+  def self.seed_demo_account(role_name)
+    role_sym = role_name.to_s.strip.downcase == "admin" ? :admin : :operator
+    uname = role_sym.to_s
+    email = "#{uname}@resqway.ai"
 
-    provider = auth.provider.to_s
-    uid = auth.uid.to_s
-    info = auth.info || {}
-    email = info.email.presence || "#{provider}_#{uid}@oauth.resqway.ai"
-    nickname = info.nickname.presence
-    name = info.name.presence || nickname || "ResQWay Intelligence Officer"
-    avatar = info.image.presence
-
-    # First attempt: find by existing provider + UID
-    user = find_by(provider: provider, uid: uid)
+    user = find_by(username: uname) || find_by(email: email) || find_by(email_address: email)
     return user if user
 
-    # Second attempt: find by email to link existing account safely
-    user = find_by(email: email.downcase) || find_by(email_address: email.downcase)
-    if user
-      user.update(
-        provider: provider,
-        uid: uid,
-        avatar_url: user.avatar_url.presence || avatar,
-        username: user.username.presence || nickname
-      )
-      return user
-    end
-
-    # Third attempt: create new user defaulting to operator
-    random_password = Devise.friendly_token[0, 20]
     create!(
-      name: name,
-      username: nickname,
-      email: email.downcase,
-      email_address: email.downcase,
-      password: random_password,
-      password_confirmation: random_password,
-      provider: provider,
-      uid: uid,
-      avatar_url: avatar,
-      role: :operator
+      name: (role_sym == :admin ? "Priyanshu Kumar (Administrator)" : "Field Logistics Officer"),
+      username: uname,
+      email: email,
+      email_address: email,
+      password: "password123",
+      password_confirmation: "password123",
+      role: role_sym
     )
+  rescue StandardError => e
+    Rails.logger.error("Auto-provision demo account #{role_name} failed: #{e.message}")
+    nil
   end
 
   def role_badge_class
@@ -137,19 +115,11 @@ class User < ApplicationRecord
   end
 
   def provider_label
-    case provider.to_s.downcase
-    when "google_oauth2", "google" then "Google"
-    when "github" then "GitHub"
-    else "Username / Password"
-    end
+    "Username / Password"
   end
 
   def provider_icon
-    case provider.to_s.downcase
-    when "google_oauth2", "google" then "fab fa-google text-red-500"
-    when "github" then "fab fa-github text-gray-900"
-    else "fas fa-key text-indigo-600"
-    end
+    "fas fa-key text-indigo-600"
   end
 
   def initials

@@ -9,13 +9,13 @@
 
   <!-- Top Metrics -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Warehouses</p>
       <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= @total_warehouses %></span></div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Strategic relief staging bases.</p>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Operational</p>
       <div class="mt-2 flex items-baseline justify-between">
         <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400"><%= @operational_count %></span>
@@ -24,19 +24,19 @@
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Fully deployable.</p>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Capacity</p>
       <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= number_with_delimiter(@total_capacity) %></span></div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Combined stockpile units.</p>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Available Resources</p>
       <div class="mt-2"><span class="text-3xl font-black text-slate-900 dark:text-white"><%= number_with_delimiter(@total_available_resources) %></span></div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Total relief units in stock.</p>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Avg Readiness</p>
       <div class="mt-2 flex items-baseline justify-between">
         <span class="text-3xl font-black text-slate-900 dark:text-white"><%= @average_readiness %></span>
@@ -47,7 +47,7 @@
   </div>
 
   <!-- Warehouse Table -->
-  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
       <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
         <i class="fas fa-warehouse text-accent mr-2"></i>

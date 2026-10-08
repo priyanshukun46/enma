@@ -19,19 +19,19 @@
 
   <!-- Alert Severity Metrics -->
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Critical Alerts</p>
       <div class="mt-2"><span class="text-3xl font-black text-rose-600 dark:text-rose-400"><%= @critical_count %></span></div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Severe roadblocks &amp; critical hazards.</p>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">High Alerts</p>
       <div class="mt-2"><span class="text-3xl font-black text-amber-600 dark:text-amber-400"><%= @high_count %></span></div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">High-risk corridor entries.</p>
     </div>
 
-    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-5">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl p-5">
       <p class="text-xs font-bold text-accent dark:text-accent uppercase tracking-wider">Warnings &amp; Deviations</p>
       <div class="mt-2"><span class="text-3xl font-black text-accent dark:text-accent"><%= @warning_count %></span></div>
       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Minor off-route tracking events.</p>
@@ -39,7 +39,7 @@
   </div>
 
   <!-- Alerts Feed -->
-  <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden">
     <div class="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
       <h3 class="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider flex items-center">
         <i class="fas fa-shield-halved text-accent mr-2"></i>

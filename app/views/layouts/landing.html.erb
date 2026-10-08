@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nobile:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Playwrite+GB+J:ital,wght@0,100..400;1,100..400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     
     <%= javascript_importmap_tags %>
     <script src="https://cdn.tailwindcss.com" nonce="<%= request.content_security_policy_nonce %>"></script>
@@ -39,11 +39,8 @@
               }
             },
             fontFamily: {
-              sans: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
-              montserrat: ['"Montserrat"', 'system-ui', '-apple-system', 'sans-serif'],
-              nobile: ['"Nobile"', 'system-ui', '-apple-system', 'sans-serif'],
-              fraunces: ['"Fraunces"', 'serif'],
-              playwrite: ['"Playwrite GB J"', 'cursive'],
+              sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+              montserrat: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'monospace'],
             }
           }
@@ -61,7 +58,7 @@
       body {
         background-color: #FFFFFF !important;
         color: #212121 !important;
-        font-family: 'Montserrat', system-ui, -apple-system, sans-serif !important;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
         letter-spacing: -0.011em;
         line-height: 1.5;
       }
@@ -92,6 +89,38 @@
       .reveal-on-scroll.revealed {
         opacity: 1;
         transform: translateY(0);
+      }
+
+      /* ResQWay Flat Modern Design System: Square Boxes, Zero Drop Shadows, Zero Strokes */
+      main div[class*="rounded-"]:not([class*="rounded-full"]),
+      main section[class*="rounded-"],
+      main article[class*="rounded-"],
+      .bg-surface,
+      .chai-card,
+      .sketch-card,
+      .sketch-border,
+      .sketch-border-soft {
+        border-radius: 0px !important;
+      }
+
+      main div[class*="shadow-"]:not([data-search-modal-target]):not([data-qr-modal-target]):not([data-dropdown-menu]),
+      main section[class*="shadow-"],
+      main article[class*="shadow-"],
+      .bg-surface,
+      .sketch-card,
+      .chai-card,
+      .sketch-border,
+      .sketch-border-soft {
+        box-shadow: none !important;
+      }
+
+      .sketch-border,
+      .sketch-border-soft,
+      .bg-surface,
+      .chai-card,
+      .sketch-card {
+        border: none !important;
+        border-color: transparent !important;
       }
     </style>
   </head>
@@ -161,7 +190,7 @@
         </div>
 
         <!-- Quick Filter Tags -->
-        <div class="px-4 py-2 border-b border-slate-200 bg-[#EAEEF0] flex items-center gap-1.5 overflow-x-auto text-[11px]">
+        <div class="px-4 py-2 border-b border-slate-200 bg-slate-50 flex items-center gap-1.5 overflow-x-auto text-[11px]">
           <span class="text-[10px] font-bold text-slate-500 uppercase mr-1 flex-shrink-0">Quick:</span>
           <button type="button" data-action="click->search-modal#setQuery" data-query="Fleet" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">🚢 Fleet</button>
           <button type="button" data-action="click->search-modal#setQuery" data-query="Tawang" class="px-2.5 py-0.5 rounded-full border border-slate-300 bg-white hover:border-[#FF471D] hover:text-[#FF471D] text-slate-700 text-[11px] cursor-pointer flex-shrink-0 transition-colors">📍 Tawang</button>

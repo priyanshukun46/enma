@@ -9,20 +9,13 @@
      <% end %>>
 
   <!-- Page Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-3 border-b border-[var(--line)] gap-3">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-200 gap-4">
     <div>
-      <div class="flex flex-wrap items-center gap-2.5">
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-accent/10 text-accent border border-accent/20 shadow-sm shadow-accent/5">
-          <span class="w-2 h-2 rounded-full bg-accent mr-2 animate-pulse"></span>
-          ResQWay DECISION ENGINE
-        </span>
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-          <i class="fas fa-layer-group mr-1.5 text-[9px]"></i>
-          TRIPLE-BUFFER ACTIVE
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-black text-ink tracking-tight">Multi-Route Navigation &amp; Risk Optimization</h2>
+      <div class="flex items-center space-x-2.5">
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#212121] tracking-tight font-sans">Multi-Route Navigation &amp; Risk Optimization</h2>
+        <span class="text-xs text-slate-500 font-mono hidden sm:inline">&bull; Decision Engine</span>
       </div>
-      <p class="text-xs text-mute mt-1">Multi-criteria logistics routing: Real-Time Road Status • Hybrid Risk • ML Disruption Probability • Active Weather Corridor.</p>
+      <p class="text-xs text-slate-500 mt-1">Multi-criteria logistics routing: Real-Time Road Status • Hybrid Risk • ML Disruption Probability • Active Weather Corridor.</p>
     </div>
   </div>
 
@@ -33,7 +26,7 @@
     <div class="col-span-1 lg:col-span-5 xl:col-span-5 space-y-4 w-full">
       
       <!-- Directions Input Card (ChaiCode Surface Card) -->
-      <div class="bg-surface sketch-border rounded-2xl shadow-sm p-5 space-y-4">
+      <div class="bg-surface rounded-2xl p-5 space-y-4">
         
         <!-- Transportation Mode Tabs -->
         <div>
@@ -303,7 +296,7 @@
         <!-- Explainable AI Recommendation Card -->
         <% rec = @results[:recommendation] %>
         <% if rec.present? %>
-          <div class="p-4 rounded-2xl bg-surface sketch-border border-accent/40 shadow-sm space-y-3">
+          <div class="p-4 rounded-2xl bg-surface border-l-4 border-accent space-y-3">
             <div class="flex items-center justify-between border-b border-[var(--line)] pb-2">
               <h3 class="text-xs font-black uppercase text-accent flex items-center">
                 <i class="fas fa-brain mr-1.5 text-accent"></i>
@@ -328,7 +321,7 @@
         <% end %>
 
         <!-- Turn-by-Turn Instruction Accordion -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden">
+        <div class="bg-white rounded-2xl overflow-hidden">
           <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white">
             <h4 class="text-xs font-bold uppercase text-[#212121] tracking-wider flex items-center gap-2">
               <i class="fas fa-list-ol text-accent text-sm"></i>
@@ -361,7 +354,7 @@
           </div>
         </div>
       <% else %>
-        <div class="p-6 rounded-2xl bg-surface sketch-border text-center space-y-3">
+        <div class="p-6 rounded-2xl bg-surface text-center space-y-3">
           <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center mx-auto text-lg">
             <i class="fas fa-route"></i>
           </div>
@@ -377,7 +370,7 @@
     <div class="col-span-1 lg:col-span-7 xl:col-span-7 min-w-0 lg:sticky lg:top-24 space-y-4 w-full">
       
       <!-- The Map Card with Floating Navigation HUD -->
-      <div class="bg-surface sketch-border rounded-2xl shadow-sm overflow-hidden relative w-full">
+      <div class="bg-surface rounded-2xl overflow-hidden relative w-full">
         
         <!-- Map Top Bar Controls -->
         <div class="p-3.5 border-b border-[var(--line)] bg-surface/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -455,7 +448,7 @@
 
       <!-- Recent Routes Bar -->
       <% if @recent_routes.any? %>
-        <div class="bg-surface sketch-border rounded-2xl shadow-sm p-4">
+        <div class="bg-surface rounded-2xl p-4">
           <div class="flex items-center justify-between mb-3 border-b border-[var(--line)] pb-2">
             <span class="text-xs font-black uppercase text-ink tracking-wider flex items-center">
               <i class="fas fa-history text-accent mr-1.5"></i> Recent Dispatches

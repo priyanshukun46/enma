@@ -12,10 +12,10 @@
 
     <%= yield :head %>
 
-    <!-- Fonts: Fraunces, Montserrat, Nobile, Playwrite GB J, JetBrains Mono -->
+    <!-- Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nobile:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Playwrite+GB+J:ital,wght@0,100..400;1,100..400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -37,12 +37,8 @@
               accent2: 'rgb(var(--accent2) / <alpha-value>)',
             },
             fontFamily: {
-              sans: ['"Montserrat"', 'system-ui', 'sans-serif'],
-              montserrat: ['"Montserrat"', 'system-ui', 'sans-serif'],
-              nobile: ['"Nobile"', 'system-ui', 'sans-serif'],
-              fraunces: ['"Fraunces"', 'serif'],
-              hand: ['"Playwrite GB J"', 'cursive'],
-              playwrite: ['"Playwrite GB J"', 'cursive'],
+              sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              montserrat: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'monospace'],
             }
           }
@@ -65,51 +61,62 @@
     </script>
 
     <style>
-      /* ChaiCode (dsa.chaicode.com) Design System Tokens */
+      /* ResQWay Design System Tokens */
       :root, [data-theme=light] {
         color-scheme: light;
-        --paper: 250 246 238;          /* #FAF6EE warm parchment */
-        --surface: 255 252 247;        /* #FFFCF7 warm surface */
-        --ink: 24 18 14;               /* #18120E high-contrast espresso ink */
-        --sketch: 76 62 50;            /* #4C3E32 warm charcoal text */
-        --mute: 118 104 90;            /* #76685A deep legible taupe (>4.5:1 ratio) */
-        --accent: 226 84 56;           /* #E25438 rich warm reddish terracotta */
-        --accent2: 200 60 45;          /* #C83C2D deep rust red */
-        --line: rgba(38, 30, 24, 0.15);
-        --line-hi: rgba(38, 30, 24, 0.30);
+        --paper: 255 255 255;          /* Pure white */
+        --surface: 255 255 255;        /* Pure white */
+        --ink: 33 33 33;               /* #212121 Typography */
+        --sketch: 55 65 81;
+        --mute: 100 116 139;
+        --accent: 255 71 29;           /* #FF471D Accent */
+        --accent2: 16 46 57;           /* #102E39 Dark */
+        --line: rgba(16, 46, 57, 0.12);
+        --line-hi: rgba(16, 46, 57, 0.25);
       }
 
       [data-theme=dark], .dark {
-        color-scheme: dark;
-        --paper: 20 16 12;             /* #14100C dark espresso */
-        --surface: 27 22 17;           /* #1B1611 dark roasted surface */
-        --ink: 236 229 214;            /* #ECE5D6 warm cream ivory */
-        --sketch: 184 176 160;         /* #B8B0A0 warm parchment */
-        --mute: 146 138 123;           /* #928A7B muted cocoa */
-        --accent: 236 94 66;           /* #EC5E42 warm glowing reddish coral */
-        --accent2: 216 74 46;          /* #D84A2E rich terracotta red */
-        --line: rgba(236, 229, 214, 0.12);
-        --line-hi: rgba(236, 229, 214, 0.22);
+        color-scheme: light;
+        --paper: 255 255 255;
+        --surface: 255 255 255;
+        --ink: 33 33 33;
+        --sketch: 55 65 81;
+        --mute: 100 116 139;
+        --accent: 255 71 29;
+        --accent2: 16 46 57;
+        --line: rgba(16, 46, 57, 0.12);
+        --line-hi: rgba(16, 46, 57, 0.25);
       }
 
       body {
-        font-family: 'Inter', system-ui, sans-serif;
-        background-color: rgb(var(--paper));
-        color: rgb(var(--ink));
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        background-color: #FFFFFF !important;
+        color: #212121 !important;
         min-height: 100vh;
       }
 
+      /* ResQWay Square Boxes, Zero Drop Shadows, Zero Strokes */
+      main div[class*="rounded-"],
+      main button[class*="rounded-"],
+      main a[class*="rounded-"],
+      main input[class*="rounded-"],
+      .sketch-border,
+      .sketch-border-soft,
+      .bg-surface {
+        border-radius: 0px !important;
+        box-shadow: none !important;
+      }
+
       .sketch-border {
-        border: 1px solid var(--line);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: none !important;
       }
 
       .sketch-border-soft {
-        border: 1px solid var(--line);
+        border: none !important;
       }
     </style>
 
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" if defined?(stylesheet_link_tag) %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 

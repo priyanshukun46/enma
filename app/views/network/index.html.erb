@@ -30,7 +30,7 @@
   <!-- KPI Cards Grid -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Health Score -->
-    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+    <div class="bg-surface rounded-2xl p-4 flex flex-col justify-between">
       <div class="flex items-center justify-between text-xs text-mute font-bold">
         <span>Network Health</span>
         <div class="flex items-center gap-1.5">
@@ -55,7 +55,7 @@
     </div>
 
     <!-- Connected Settlements -->
-    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+    <div class="bg-surface rounded-2xl p-4 flex flex-col justify-between">
       <div class="flex items-center justify-between text-xs text-mute font-bold">
         <span>Connected Settlements</span>
         <i class="fas fa-circle-check text-emerald-500"></i>
@@ -74,7 +74,7 @@
     </div>
 
     <!-- Isolated Settlements -->
-    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+    <div class="bg-surface rounded-2xl p-4 flex flex-col justify-between">
       <div class="flex items-center justify-between text-xs text-mute font-bold">
         <span>Isolated Settlements</span>
         <i class="fas fa-triangle-exclamation <%= @network_data[:isolated_settlements_count].positive? ? 'text-red-500' : 'text-mute' %>"></i>
@@ -93,7 +93,7 @@
     </div>
 
     <!-- Critical Corridors at Risk -->
-    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex flex-col justify-between">
+    <div class="bg-surface rounded-2xl p-4 flex flex-col justify-between">
       <div class="flex items-center justify-between text-xs text-mute font-bold">
         <span>Critical Corridors at Risk</span>
         <i class="fas fa-bridge-water text-orange-500"></i>
@@ -114,7 +114,7 @@
 
   <!-- Regional Network Health Diagnostic Explanation Banner -->
   <% if @network_data[:explanation].present? %>
-    <div class="bg-surface rounded-2xl p-4 border border-[var(--line)] shadow-sm flex items-start gap-3 text-xs">
+    <div class="bg-surface rounded-2xl p-4 flex items-start gap-3 text-xs">
       <div class="w-8 h-8 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 mt-0.5 text-accent">
         <i class="fas fa-circle-info text-sm"></i>
       </div>
@@ -129,7 +129,7 @@
   <% end %>
 
   <!-- Interactive Road Closure Simulation Sandbox -->
-  <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+  <div class="bg-surface rounded-2xl p-5 space-y-4">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[var(--line)] pb-3">
       <div>
         <h3 class="text-base font-black text-ink flex items-center gap-2">
@@ -225,7 +225,7 @@
   </div>
 
   <!-- Interactive Network Map Canvas -->
-  <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4"
+  <div class="bg-surface rounded-2xl p-5 space-y-4"
        data-controller="network-map"
        data-network-map-graph-value="<%= @graph_json.to_json %>">
     
@@ -307,7 +307,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
     
     <!-- Critical Corridors Table -->
-    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+    <div class="bg-surface rounded-2xl p-5 space-y-4">
       <div class="flex items-center justify-between">
         <div>
           <h3 class="text-sm font-black text-ink tracking-wide uppercase">Critical Corridors (Single Points of Failure)</h3>
@@ -366,7 +366,7 @@
     </div>
 
     <!-- Isolated Settlements Table -->
-    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-4">
+    <div class="bg-surface rounded-2xl p-5 space-y-4">
       <div class="flex items-center justify-between">
         <div>
           <h3 class="text-sm font-black text-ink tracking-wide uppercase">Settlement Isolation Triage</h3>
@@ -425,7 +425,7 @@
 
   <!-- Active Connectivity Alerts Section -->
   <% if @connectivity_alerts.any? %>
-    <div class="bg-surface rounded-2xl p-5 border border-[var(--line)] shadow-sm space-y-3">
+    <div class="bg-surface rounded-2xl p-5 space-y-3">
       <div class="flex items-center justify-between">
         <h3 class="text-xs font-black text-ink uppercase tracking-wider flex items-center gap-2">
           <i class="fas fa-bell text-accent"></i>

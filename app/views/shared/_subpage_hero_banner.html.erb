@@ -170,7 +170,7 @@
 <!-- ====================================================================== -->
 <!-- 1. SUB-HEADER BREADCRUMB BAR                                           -->
 <!-- ====================================================================== -->
-<div class="bg-white border-b border-slate-200 shadow-xs">
+<div class="bg-white border-b border-slate-200">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-11 text-xs font-semibold text-slate-600">
       
@@ -185,7 +185,7 @@
       </div>
 
       <!-- Return Button -->
-      <%= link_to root_path, class: "inline-flex items-center space-x-1.5 px-3 py-1 rounded-md text-[11px] font-bold text-slate-700 bg-slate-100 hover:bg-[#EAEEF0] hover:text-[#212121] border border-slate-200 transition-colors" do %>
+      <%= link_to root_path, class: "inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-none text-[11px] font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 hover:text-[#212121] shadow-none transition-colors" do %>
         <i class="fas fa-arrow-left text-[10px] text-slate-500"></i>
         <span>Return to ResQWay Home</span>
       <% end %>
@@ -205,18 +205,11 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
       
-      <!-- Left Column: Contextual Badge, Headline, Subtext -->
+      <!-- Left Column: Headline, Subtext -->
       <div class="lg:col-span-7 space-y-4 text-left">
-        
-        <!-- Live Badge Pill -->
-        <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-black/40 border border-white/10 backdrop-blur-sm text-[11px] font-mono font-bold tracking-wider text-white">
-          <span class="w-2 h-2 rounded-full bg-[#FF471D] animate-pulse"></span>
-          <i class="<%= badge_icon %> text-xs text-[#FF471D]"></i>
-          <span class="uppercase"><%= badge_text %></span>
-        </div>
 
         <!-- Main Title -->
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
           <%= headline %>
         </h1>
 
@@ -231,8 +224,8 @@
       <div class="lg:col-span-5 flex items-center justify-center lg:justify-end relative">
         <div class="relative w-full max-w-[420px]">
           
-          <!-- Tablet Telematics Console Frame -->
-          <div class="bg-[#151c24] rounded-2xl p-4 shadow-2xl border border-slate-700/80 relative z-10">
+          <!-- Tablet Telematics Console Frame (First box non-rounded, no drop shadows, no strokes) -->
+          <div class="bg-[#151c24] rounded-none p-4 relative z-10">
             
             <!-- Browser/OS Header Bar -->
             <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
@@ -249,7 +242,7 @@
             <div class="grid grid-cols-3 gap-2 text-center font-mono my-3">
               
               <!-- Card 1: Status -->
-              <div class="bg-[#1b2633] p-2.5 rounded-xl border border-slate-700/60">
+              <div class="bg-[#1b2633] p-2.5 rounded-none">
                 <span class="text-[9px] text-slate-400 block uppercase tracking-wider mb-1">Status</span>
                 <span class="text-xs font-black text-emerald-400 flex items-center justify-center space-x-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
@@ -258,13 +251,13 @@
               </div>
 
               <!-- Card 2: AIS Fleets -->
-              <div class="bg-[#1b2633] p-2.5 rounded-xl border border-slate-700/60">
+              <div class="bg-[#1b2633] p-2.5 rounded-none">
                 <span class="text-[9px] text-slate-400 block uppercase tracking-wider mb-1">AIS Fleets</span>
                 <span class="text-xs font-black text-white">48 Active</span>
               </div>
 
               <!-- Card 3: ETA Accuracy -->
-              <div class="bg-[#1b2633] p-2.5 rounded-xl border border-slate-700/60">
+              <div class="bg-[#1b2633] p-2.5 rounded-none">
                 <span class="text-[9px] text-slate-400 block uppercase tracking-wider mb-1">ETA Accuracy</span>
                 <span class="text-xs font-black text-[#FF471D]">99.8%</span>
               </div>
@@ -279,9 +272,9 @@
 
           </div>
 
-          <!-- Smartphone Companion Preview (Overlapping as shown in Attached Image 1) -->
-          <div class="absolute -bottom-5 -right-3 sm:-right-6 w-32 sm:w-36 bg-[#0f141a] rounded-2xl p-2 border-2 border-slate-700 shadow-2xl z-20 hidden xs:block">
-            <div class="w-full bg-gradient-to-b from-[#2a3b4c] via-[#FF471D]/40 to-[#FF471D] rounded-xl p-2 text-center text-white space-y-1">
+          <!-- Smartphone Companion Preview (Overlapping, non-rounded, no stroke, no shadow) -->
+          <div class="absolute -bottom-5 -right-3 sm:-right-6 w-32 sm:w-36 bg-[#0f141a] rounded-none p-2 z-20 hidden xs:block">
+            <div class="w-full bg-gradient-to-b from-[#2a3b4c] via-[#FF471D]/40 to-[#FF471D] rounded-none p-2 text-center text-white space-y-1">
               <span class="text-[9px] font-black uppercase tracking-wider block">ResQWay Track</span>
               <div class="h-10 flex items-center justify-center">
                 <i class="fas fa-location-crosshairs text-lg animate-pulse text-white"></i>
@@ -299,11 +292,11 @@
 </section>
 
 <!-- ====================================================================== -->
-<!-- 3. SECTION INTRODUCTION HEADING (ON #EAEEF0 CANVAS)                    -->
+<!-- 3. SECTION INTRODUCTION HEADING (ON WHITE CANVAS)                     -->
 <!-- ====================================================================== -->
-<div class="bg-[#EAEEF0] pt-10 pb-4 text-center">
+<div class="bg-white pt-10 pb-4 text-center">
   <div class="max-w-4xl mx-auto px-4 sm:px-6">
-    <h2 class="text-2xl sm:text-3xl font-black text-[#212121] tracking-tight">
+    <h2 class="text-2xl sm:text-3xl font-extrabold text-[#212121] tracking-tight">
       <%= section_title %>
     </h2>
     <p class="text-xs sm:text-sm text-slate-600 font-medium mt-1.5 max-w-2xl mx-auto">

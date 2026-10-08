@@ -23,6 +23,11 @@ class Users::SessionsController < Devise::SessionsController
 
     user = User.find_by_login(login_param)
 
+    # Auto-provision default demo accounts on demand if not yet in database
+    if user.nil? && %w[admin operator].include?(login_param.to_s.strip.downcase) && pass == "password123"
+      user = User.seed_demo_account(login_param.to_s.strip.downcase)
+    end
+
     if user && user.valid_password?(pass)
       sign_in(:user, user)
       session[:user_id] = user.id
@@ -34,36 +39,6 @@ class Users::SessionsController < Devise::SessionsController
       clean_up_passwords(resource)
       render :new, status: :unprocessable_entity
     end
-  end
-
-  # Fast SSO for Operators / Judges / Development
-  def demo_sso_login
-    provider = params[:provider].to_s.downcase
-    clean_provider = provider.start_with?("google") ? "google_oauth2" : "github"
-    provider_name = clean_provider == "github" ? "GitHub" : "Google"
-
-    email = params[:email].presence || (clean_provider == "github" ? "priyanshukun46@github.com" : "pkfb46@gmail.com")
-    name = params[:name].presence || "Priyanshu Kumar"
-    username = params[:username].presence || (clean_provider == "github" ? "priyanshukun46" : "pkfb46")
-    avatar = clean_provider == "github" ? "https://avatars.githubusercontent.com/u/9919?v=4" : "https://lh3.googleusercontent.com/a/ACg8ocI"
-
-    user = User.find_by(email: email) || User.find_by(email_address: email) || User.create!(
-      name: name,
-      username: username,
-      email: email,
-      email_address: email,
-      password: "password123",
-      password_confirmation: "password123",
-      provider: clean_provider,
-      uid: "#{clean_provider}_#{SecureRandom.hex(4)}",
-      avatar_url: avatar,
-      role: :operator
-    )
-
-    sign_in(:user, user)
-    session[:user_id] = user.id
-    flash[:notice] = "Signed in successfully with #{provider_name} SSO! Welcome, #{user.name}."
-    redirect_to after_sign_in_path_for(user)
   end
 
   def destroy
